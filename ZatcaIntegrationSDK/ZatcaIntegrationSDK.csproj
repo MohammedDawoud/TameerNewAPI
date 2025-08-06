@@ -1,0 +1,89 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup Label="Globals">
+		<SccProjectName>SAK</SccProjectName>
+		<SccProvider>SAK</SccProvider>
+		<SccAuxPath>SAK</SccAuxPath>
+		<SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Data\addQRElement.xsl" />
+    <None Remove="Data\addSignatureElement.xsl" />
+    <None Remove="Data\addUBLElement.xsl" />
+    <None Remove="Data\CEN-EN16931-UBL.xsl" />
+    <None Remove="Data\invoice.xsl" />
+    <None Remove="Data\qr.xml" />
+    <None Remove="Data\removeElements.xsl" />
+    <None Remove="Data\signature.xml" />
+    <None Remove="Data\UBL-Invoice-2.1.xsd" />
+    <None Remove="Data\ubl.xml" />
+    <None Remove="Data\xsd\common\CCTS_CCT_SchemaModule-2.1.xsd" />
+    <None Remove="Data\xsd\common\UBL-CommonAggregateComponents-2.1.xsd" />
+    <None Remove="Data\xsd\common\UBL-CommonBasicComponents-2.1.xsd" />
+    <None Remove="Data\xsd\common\UBL-CommonExtensionComponents-2.1.xsd" />
+    <None Remove="Data\xsd\common\UBL-CommonSignatureComponents-2.1.xsd" />
+    <None Remove="Data\xsd\common\UBL-CoreComponentParameters-2.1.xsd" />
+    <None Remove="Data\xsd\common\UBL-ExtensionContentDataType-2.1.xsd" />
+    <None Remove="Data\xsd\common\UBL-QualifiedDataTypes-2.1.xsd" />
+    <None Remove="Data\xsd\common\UBL-SignatureAggregateComponents-2.1.xsd" />
+    <None Remove="Data\xsd\common\UBL-SignatureBasicComponents-2.1.xsd" />
+    <None Remove="Data\xsd\common\UBL-UnqualifiedDataTypes-2.1.xsd" />
+    <None Remove="Data\xsd\common\UBL-XAdESv132-2.1.xsd" />
+    <None Remove="Data\xsd\common\UBL-XAdESv141-2.1.xsd" />
+    <None Remove="Data\xsd\common\UBL-xmldsig-core-schema-2.1.xsd" />
+    <None Remove="Data\xsd\maindoc\UBL-Invoice-2.1.xsd" />
+    <None Remove="Data\ZATCA_Validation_Rules.xsl" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Data\addQRElement.xsl" />
+    <EmbeddedResource Include="Data\addSignatureElement.xsl" />
+    <EmbeddedResource Include="Data\addUBLElement.xsl" />
+    <EmbeddedResource Include="Data\CEN-EN16931-UBL.xsl" />
+    <EmbeddedResource Include="Data\invoice.xsl" />
+    <EmbeddedResource Include="Data\qr.xml" />
+    <EmbeddedResource Include="Data\removeElements.xsl" />
+    <EmbeddedResource Include="Data\signature.xml" />
+    <EmbeddedResource Include="Data\UBL-Invoice-2.1.xsd" />
+    <EmbeddedResource Include="Data\ubl.xml" />
+    <EmbeddedResource Include="Data\xsd\common\CCTS_CCT_SchemaModule-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\common\UBL-CommonAggregateComponents-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\common\UBL-CommonBasicComponents-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\common\UBL-CommonExtensionComponents-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\common\UBL-CommonSignatureComponents-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\common\UBL-CoreComponentParameters-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\common\UBL-ExtensionContentDataType-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\common\UBL-QualifiedDataTypes-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\common\UBL-SignatureAggregateComponents-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\common\UBL-SignatureBasicComponents-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\common\UBL-UnqualifiedDataTypes-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\common\UBL-XAdESv132-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\common\UBL-XAdESv141-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\common\UBL-xmldsig-core-schema-2.1.xsd" />
+    <EmbeddedResource Include="Data\xsd\maindoc\UBL-Invoice-2.1.xsd" />
+    <EmbeddedResource Include="Data\ZATCA_Validation_Rules.xsl" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	  <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
+	  <PackageReference Include="SaxonHE10Net31Api" Version="10.9.0.1" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="itextsharp">
+      <HintPath>..\newdlls\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.pdfa">
+      <HintPath>..\newdlls\itextsharp.pdfa.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
