@@ -193,6 +193,7 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
         public virtual DbSet<ServicesPricingForm> ServicesPricingForm { get; set; }
         public virtual DbSet<Settings> Settings { get; set; }
         public virtual DbSet<SettingsNew> SettingsNew { get; set; }
+        public virtual DbSet<Sys_UserLogin> Sys_UserLogin { get; set; }
 
         public virtual DbSet<SMSSettings> SMSSettings { get; set; }
         public virtual DbSet<SocialMediaLinks> SocialMediaLinks { get; set; }
@@ -3584,6 +3585,14 @@ public virtual DbSet<Pro_ProjectSteps> Pro_ProjectSteps { get; set; }
                 modelBuilder.Entity<Service>().HasOne(s => s.Account).WithMany().HasForeignKey(e => e.AccountId);
 
                 modelBuilder.Entity<Service>().HasMany<Contracts>(s => s.Contracts).WithOne(g => g.Service).HasForeignKey(s => s.ServiceId);
+            });
+
+            //--------------------------------END--------------------------------------------------
+
+            modelBuilder.Entity<Sys_UserLogin>(entity =>
+            {
+                entity.HasKey(e => e.UserLoginId);
+                entity.ToTable("Sys_UserLogin");
             });
 
             //--------------------------------END--------------------------------------------------
