@@ -25,6 +25,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using DocumentFormat.OpenXml.InkML;
 using TaamerProject.Models.DBContext;
+using Dropbox.Api.TeamLog;
 
 namespace TaamerProject.API.Controllers
 {
@@ -44,7 +45,9 @@ namespace TaamerProject.API.Controllers
             private readonly IPrivilegesService _privilegesService;
             private readonly IBranchesService _branchesService;
             private readonly ILicencesService _LicencesService;
-            private IOrganizationsService _organizationsservice;
+             private readonly ISys_UserLoginService _UserLoginService;
+
+        private IOrganizationsService _organizationsservice;
 
             private IConfiguration Configuration;
             public GlobalShared _globalshared;
@@ -54,7 +57,7 @@ namespace TaamerProject.API.Controllers
         private readonly TaamerProjectContext _taamerProjectContext;
         public UsersController(IUsersService usersService, IOrganizationsService organizationsService, INotificationService notificationService, IProjectPhasesTasksService projectPhasesTasksService,
                 IProjectWorkersService projectWorkers, IFileService fileService, IUserMailsService userMailsService, IPrivilegesService privilegesService, IBranchesService branchesService,
-                ILicencesService licencesService, IOrganizationsService organizationsService1, IConfiguration _configuration, IWebHostEnvironment webHostEnvironment,
+                ILicencesService licencesService, ISys_UserLoginService UserLoginService, IOrganizationsService organizationsService1, IConfiguration _configuration, IWebHostEnvironment webHostEnvironment,
                 TaamerProjectContext taamerProjectContext)
             {
                 _usersservice = usersService;
@@ -67,6 +70,7 @@ namespace TaamerProject.API.Controllers
                 _userMailsService = userMailsService;
                 _branchesService = branchesService;
                 _LicencesService = licencesService;
+                _UserLoginService = UserLoginService;
                 this._organizationsservice = organizationsService1;
 
 
@@ -77,79 +81,7 @@ namespace TaamerProject.API.Controllers
             _hostingEnvironment = webHostEnvironment;
             _taamerProjectContext = taamerProjectContext;
         }
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
-        //public ActionResult UsersN()
-        //{
-        //    var NoOfUsersUsed = _usersservice.GetAllUsersCount().Count();
-        //    var TheUsers = Convert.ToInt32(_LicencesService.GetAllLicences("").FirstOrDefault().NoOfUsers);
-        //    ViewBag.NoOfUsersUsed = NoOfUsersUsed;
-        //    if ((TheUsers - NoOfUsersUsed) >= 0)
-        //    {
-        //        ViewBag.TheRestOfUsers = TheUsers - NoOfUsersUsed;
-        //        ViewBag.NoOfUnauthorized = 0;
-        //    }
-        //    else
-        //    {
-        //        ViewBag.TheRestOfUsers = 0;
-        //        ViewBag.NoOfUnauthorized = NoOfUsersUsed - TheUsers;
-        //    }
 
-        //    return View();
-        //}
-        //public ActionResult OnlineUsers()
-        //{
-        //    return View();
-        //}
-        //public ActionResult UserPrivReport()
-        //{
-        //    return View();
-        //}
-        //public ActionResult UserProfile()
-        //{
-        //    try
-        //    {
-        //        GenerateUserQR();
-        //    }
-        //    catch
-        //    {
-
-        //    }
-        //    ViewBag.Users = _usersservice.GetAllUsers();
-        //    int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G);
-
-        //    var user = _usersservice.GetUserById(_globalshared.UserId_G, _globalshared.Lang_G);
-        //    //Encrypt Stamp Image
-        //    if (!string.IsNullOrEmpty(user.StampUrl))
-        //    {
-        //        string ImageIn = Server.MapPath("~" + user.StampUrl);
-        //        string ImageOut = ImageIn.Replace("\\Encrypted", "");
-        //        bool flag = RijndaelHelper.DecryptFile(ImageIn, ImageOut);
-        //        if (flag)
-        //        {
-        //            //Not encrypted
-        //            user.StampUrl = user.StampUrl.Replace("/Encrypted", "");
-        //            Session["DecryptedStamp"] = ImageOut;
-        //        }
-        //    }
-        //    ViewBag.User = user;
-        //    ViewBag.PassWord = _usersservice.DecryptValue1(_usersservice.GetUserById(_globalshared.UserId_G, _globalshared.Lang_G).Password);
-        //    ViewBag.ComDomainAddres = _organizationservice.GetComDomainLink_Org(orgId).ComDomainAddress;
-        //    ViewBag.AllUserNotifications = _notificationservice.GetNotificationReceived(_globalshared.UserId_G);
-        //    ViewBag.AllUserAlerts = _notificationservice.GetUserAlert(_globalshared.UserId_G);
-        //    ViewBag.AllUserTasks = _ProjectPhasesTasksService.GetTasksByUserId(_globalshared.UserId_G, 0, _globalshared.BranchId_G);
-        //    ViewBag.TasksCount = _ProjectPhasesTasksService.GetUserTaskCount(_globalshared.UserId_G, _globalshared.BranchId_G);
-        //    ViewBag.ProjectWorkerCount = _projectWorkersservice.GetUserProjectWorkerCount(_globalshared.UserId_G, _globalshared.BranchId_G);
-        //    ViewBag.FileUploadCount = _fileservice.GetUserFileUploadCount(_globalshared.UserId_G);
-        //    ViewBag.NotificationsSent = _notificationservice.NotificationsSent(_globalshared.UserId_G);
-        //    // return PartialView("~/Views/Menus/_Profile.cshtml");
-
-
-
-        //    return View();
-        //}
         [HttpGet("GenerateUserQR")]
         public ActionResult GenerateUserQR()
             {
@@ -286,20 +218,6 @@ namespace TaamerProject.API.Controllers
                     string resetCode = Guid.NewGuid().ToString();
                     var verifyUrl = Link + "/" + resetCode;
 
-                    //var verifyUrl = "Login/ResetPassword/" + resetCode;
-
-                    //var UrlS = _hostingEnvironment.WebRootPath;
-
-                    //StringBuilder sb = new StringBuilder(UrlS);
-
-                    //// sb.ToString().Contains()
-                    //sb.Replace("SaveUsers", "ResetPassword/");
-                    //sb.Replace("Users", "login");
-
-                    //var link = sb.ToString() + resetCode;// "http://144.91.68.47:8090/login/ResetPassword/" + resetCode;
-                    //var link2 = "http://144.91.68.47:1010/login/ResetPassword/" + resetCode;
-
-                    //  var file = Server.MapPath("~/dist/assets/images/logo.png");
                     var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G).Result;
                     //var file = Path.Combine("~") + org.LogoUrl;
                     var file = "";
@@ -308,9 +226,6 @@ namespace TaamerProject.API.Controllers
                         string resulta = org.LogoUrl.Remove(0, 1);
                         file = Path.Combine(resulta);
                     }
-                    //int UserSession = int.Parse(Request.
-                    //var UserSession = Request["USession"];
-
 
                     if (users.Session == 1)
                         users.Session = 2;
@@ -340,28 +255,7 @@ namespace TaamerProject.API.Controllers
                     string resetCode = Guid.NewGuid().ToString();
                 var verifyUrl = Link + "/" + resetCode;
 
-                //var verifyUrl = "Login/ResetPassword/" + resetCode;
-
-                //var UrlS = _hostingEnvironment.WebRootPath;
-
-                //StringBuilder sb = new StringBuilder(UrlS);
-
-                //// sb.ToString().Contains()
-                //sb.Replace("SaveUsers", "ResetPassword/");
-                //sb.Replace("Users", "login");
-
-                //var link = sb.ToString() + resetCode;// "http://144.91.68.47:8090/login/ResetPassword/" + resetCode;
-                //var link2 = "http://144.91.68.47:1010/login/ResetPassword/" + resetCode;
-
                 var file = Path.Combine("distnew/images/logo.png");
-                    //var file = "";
-                    //if (org.LogoUrl != null && org.LogoUrl != "")
-                    //{
-                    //    string result = org.LogoUrl.Remove(0, 1);
-                    //    file = Path.Combine(result);
-                    //}
-                //int UserSession = int.Parse(Request.
-                //var UserSession = Request["USession"];
 
                 if (users.Session == 1)
                         users.Session = 2;
@@ -375,46 +269,6 @@ namespace TaamerProject.API.Controllers
                 }
             }
 
-        //public ActionResult LogoutUser(int userId)
-        //{
-        //    GeneralMessage generalMessage;
-        //    if (_globalshared.UserId_G != 1 && userId != _globalshared.UserId_G)
-        //    {
-        //        var result = _usersservice.LogoutUser(false, userId, userId, _globalshared.BranchId_G);
-        //        //----------------
-        //        System.Web.HttpContext.Current.Application.Lock();
-        //        List<int> LogoutUsersArr = (List<int>)System.Web.HttpContext.Current.Application["ForcedLogoutUsers"];
-        //        if (LogoutUsersArr == null)
-        //        {
-        //            LogoutUsersArr = new List<int>();
-        //        }
-        //        LogoutUsersArr.Add(_globalshared.UserId_G);
-        //        System.Web.HttpContext.Current.Application["ForcedLogoutUsers"] = LogoutUsersArr;
-        //        System.Web.HttpContext.Current.Application.UnLock();
-        //        //-------------------
-        //        if (result > 0)
-        //            generalMessage = new GeneralMessage() {StatusCode = HttpStatusCode.OK, ReasonPhrase = "تم استبعاد المستخدم بنجاح" };
-        //        else
-        //            generalMessage = new GeneralMessage() { Result = false, Message = "فشل في استبعاد المستخدم" };
-        //        return Ok(generalMessage);
-        //    }
-        //    else
-        //    {
-        //        string msg = _globalshared.Lang_G == "rtl" ? "لا يمكن استبعاد الأدمن" : "Can't force Admin to logout";
-        //        generalMessage = new GeneralMessage() { Result = false, Message = msg };
-        //        return Ok(generalMessage);
-        //    }
-        //}
-
-        //public string GetIp()
-        //{
-        //    string ip = System.Web.HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-        //    if (string.IsNullOrEmpty(ip))
-        //    {
-        //        ip = System.Web.HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
-        //    }
-        //    return ip;
-        //}
 
         [HttpPost("PopulateBody")]
         public string PopulateBody(int type, string EmailUrl, string url, int userid, string resetCode)
@@ -458,27 +312,6 @@ namespace TaamerProject.API.Controllers
         public ActionResult ChangeUserImage(IFormFile? UploadedFile,[FromForm] Users users)
             {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //HttpPostedFileBase file = Request.Files["UploadedFile"];
-            //if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
-            //{
-            //    if (Request.Files["UploadedFile"].ContentLength > 0)
-            //    {
-            //        string fileLocation = Server.MapPath("~/Uploads/Users/") + Request.Files["UploadedFile"].FileName;
-            //        try
-            //        {
-            //            if (System.IO.File.Exists(fileLocation))
-            //            {
-            //                System.IO.File.Delete(fileLocation);
-            //            }
-            //            Request.Files["UploadedFile"].SaveAs(fileLocation);
-            //            users.ImgUrl = "/Uploads/Users/" + Request.Files["UploadedFile"].FileName;
-            //        }
-            //        catch
-            //        {
-            //            return Ok(new GeneralMessage { Result = false, Message = "فشل في رفع الصوره" } );
-            //        }
-            //    }
-            //}
 
             if (UploadedFile != null)
             {
@@ -535,37 +368,6 @@ namespace TaamerProject.API.Controllers
         public ActionResult ChangeStampImage(IFormFile? UploadedFile, [FromForm] Users users)
             {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //HttpPostedFileBase file = Request.Files["UploadedFile2"];
-            //if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
-            //{
-            //    if (Request.Files["UploadedFile2"].ContentLength > 0)
-            //    {
-            //        string fileLocation = Server.MapPath("~/Uploads/Users/") + Request.Files["UploadedFile2"].FileName;
-            //        string fileLocationOut = Server.MapPath("~/Uploads/Users/Encrypted/") + Request.Files["UploadedFile2"].FileName;
-            //        try
-            //        {
-            //            if (System.IO.File.Exists(fileLocation))
-            //            {
-            //                System.IO.File.Delete(fileLocation);
-            //            }
-            //            Request.Files["UploadedFile2"].SaveAs(fileLocation);
-            //            bool flag = RijndaelHelper.EncryptFile(fileLocation, fileLocationOut);
-
-            //            users.StampUrl = "/Uploads/Users/Encrypted/" + Request.Files["UploadedFile2"].FileName;
-            //            if (System.IO.File.Exists(fileLocation))
-            //            {
-            //                GC.Collect();
-            //                GC.WaitForPendingFinalizers();
-
-            //                System.IO.File.Delete(fileLocation);
-            //            }
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            return Ok(new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "فشل في رفع الصوره" } );
-            //        }
-            //    }
-            //}
             if (UploadedFile != null)
             {
                 System.Net.Http.HttpResponseMessage response = new System.Net.Http.HttpResponseMessage();
@@ -1015,100 +817,6 @@ namespace TaamerProject.API.Controllers
 
         }
 
-
-        //[HttpPost("SaveSupportDate")]
-        //public async Task<IActionResult> SaveSupportDate([FromForm]Licences licences)
-        //{
-        //    try
-        //    {
-        //        try
-        //        {
-        //            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-
-        //            var licence = _LicencesService.UpdatSupportDate(licences, _globalshared.UserId_G, _globalshared.BranchId_G);
-        //            if (licence.StatusCode == HttpStatusCode.OK)
-        //            {
-        //                //var uri = "https://api2.tameercloud.com/"; //"https://localhost:44334/";// "http://164.68.110.173:8080/";
-        //                var uri = "https://localhost:44334/";// "http://164.68.110.173:8080/";
-        //                if (uri != null && uri != "")
-        //                {
-        //                    //Generate Token
-        //                    var token = getapitoken(uri);
-
-        //                    var org = _organizationservice.GetBranchOrganization();
-
-        //                    var formData = new MultipartFormDataContent();
-
-        //                    // Add the fields to the formdata
-        //                    formData.Add(new StringContent((licences.LicenceId).ToString()), "LicenceId");
-        //                    formData.Add(new StringContent(licence.ReasonPhrase ?? ""), "G_UID");
-        //                    formData.Add(new StringContent(licences.LicenceContractNo ?? ""), "LicenceContractNo");
-        //                    formData.Add(new StringContent(licences.NoOfUsers ?? ""), "NoOfUsers");
-        //                    formData.Add(new StringContent(licences.Mobile ?? ""), "Mobile");
-        //                    formData.Add(new StringContent(org.Result.NameAr ?? ""), "CustomerName");
-        //                    formData.Add(new StringContent(licences.Hosting_Expiry_Date ?? ""), "Hosting_Expiry_Date");
-        //                    formData.Add(new StringContent(licences.Support_Expiry_Date ?? ""), "Support_Expiry_Date");
-        //                    formData.Add(new StringContent((licences.Type).ToString() ?? ""), "Type");
-        //                    formData.Add(new StringContent(org.Result.ComDomainAddress ?? ""), "Domain");
-        //                    formData.Add(new StringContent(licences.Email3 ?? ""), "ComputerName");
-        //                    formData.Add(new StringContent((org.Result.TameerAPIURL ?? "").ToString()), "CustomerULR");
-        //                    formData.Add(new StringContent(licences.Support_Start_Date ?? ""), "Support_Start_Date");
-
-
-
-
-        //                    using (var client = new HttpClient())
-        //                    {
-        //                        //Base API URI
-        //                        client.BaseAddress = new Uri(uri);
-        //                        //JWT TOKEN
-        //                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        //                        client.DefaultRequestHeaders
-        //                        .Accept
-        //                        .Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        //                        //HTTP POST API
-        //                        //var responseTask = client.PostAsync("api/ServiceRequest/SaveServiceRequest", null);
-
-        //                        var res = await client.PostAsync("api/Licences/SaveLicence", formData);
-        //                        res.EnsureSuccessStatusCode();  // This will throw an exception for non-success status codes
-
-        //                        string responseBody = await res.Content.ReadAsStringAsync();
-        //                        dynamic data = JsonConvert.DeserializeObject(responseBody);
-
-        //                        // Access the 'token' property
-
-        //                        //res.Wait();
-        //                        Console.WriteLine(data);
-        //                        if (data != null && data.statusCode == HttpStatusCode.OK)
-        //                        {
-        //                            return Ok();
-        //                        }
-        //                        else
-        //                        {
-        //                            return BadRequest();
-
-
-        //                        }
-
-        //                    }
-
-        //                }
-        //            }
-        //            return BadRequest();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            return BadRequest(ex.Message);
-
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-
-        //}
-
         [HttpPost("getapitoken")]
         public string getapitoken(string URI)
         {
@@ -1145,6 +853,39 @@ namespace TaamerProject.API.Controllers
         }
 
 
+        [HttpGet("GetAllUserLogin")]
+        public IActionResult GetAllUserLogin()
+        {
+            var list = _UserLoginService.GetAllUserLogin(0);
+            return Ok(list);
+        }
+        [HttpPost("SaveUserLogin")]
+        public IActionResult SaveUserLogin(Sys_UserLogin UserLogin)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _UserLoginService.SaveUserLogin(UserLogin, _globalshared.UserId_G, _globalshared.BranchId_G);
+            return Ok(result);
+        }
+        [HttpPost("DeleteUserLogin")]
+        public IActionResult DeleteUserLogin(int UserLoginId)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _UserLoginService.DeleteUserLogin(UserLoginId, _globalshared.UserId_G, _globalshared.BranchId_G);
+            return Ok(result);
+        }
+        [HttpPost("ConfirmUserLogin")]
+        public IActionResult ConfirmUserLogin(UserLogin_Class UserLogin)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _UserLoginService.ConfirmUserLogin(UserLogin.UserLoginIds??new List<int>(), UserLogin.Status??0, _globalshared.UserId_G, _globalshared.BranchId_G);
+            return Ok(result);
+        }
+
+    }
+    public class UserLogin_Class
+    {
+        public List<int>? UserLoginIds { set; get; }
+        public Int16? Status { set; get; }
 
     }
     public class SetNoOfUsers_Rest_Class
