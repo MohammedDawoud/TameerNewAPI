@@ -1,16 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using System.Data;
 using System.Globalization;
-using System.Net.Http;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Repository.Interfaces;
-using TaamerProject.Repository.Repositories;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
 
 namespace TaamerProject.API.Controllers
 {
@@ -64,13 +59,7 @@ namespace TaamerProject.API.Controllers
         public async Task<IActionResult> GetAllAccounts(string? SearchText)
         {
             List<AccountVM> resu =await _accountsService.GetAllAccounts(SearchText??"", _globalshared.Lang_G, _globalshared.BranchId_G);
-
-
             var GroupByMS = resu.OrderBy(s => s.Code);
-
-            //IEnumerable<IGrouping<string, AccountVM>> GroupByQS = (from std in Student.GetStudents()
-            // group std by std.Barnch);
-
             return Ok(GroupByMS);
         }
 
@@ -203,9 +192,6 @@ namespace TaamerProject.API.Controllers
             int? AccIDParent = 0;
             if (Branch == null || Branch.CustomersAccId == null){AccIDParent = 0;}
             else{AccIDParent = Branch.CustomersAccId; }
-            //CustomersAccId
-            //LoanAccId
-            //PurchaseDelayAccId
             var treeAccounts = _accountsService.GetAccountTreeIncome(_globalshared.Lang_G, _globalshared.BranchId_G);
             return Ok(treeAccounts);
         }
@@ -640,25 +626,6 @@ namespace TaamerProject.API.Controllers
                 }
                 else if (param == 17)
                 {
-
-                    //var Branch = _branchesService.GetBranchById(userBranch.BranchId);
-                    //int? AccId = 0;
-                    //if (Branch == null || Branch.BoxAccId2 == null)
-                    //{
-                    //    AccId = Branch.BoxAccId;
-
-                    //}
-                    //else
-                    //{
-                    //    AccId = Branch.BoxAccId2;
-                    //}
-
-                    //SelectStetment = "select accountid,accountcode+' '+ namear from  Acc_Accounts where AccountId = " + AccId + "and IsDeleted=0";
-
-                    //var Accounts = _accountsService.FillAccountSelect(Con, SelectStetment);
-                    //var Accountst = SomeAccounts.Union(Accounts);
-                    //SomeAccounts = Accountst.ToList();
-
                     var Branch = _branchesService.GetBranchById(userBranch.BranchId).Result;
                     int? AccIDParent = 0;
                     if (Branch == null || Branch.BoxAccId2 == null)
@@ -744,29 +711,7 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var SelectStetment = "";
-            //var Branch = _branchesService.GetBranchById(_globalshared.BranchId_G).Result;
-            //int? CustomersAccParent = 0; int? PurchaseDelayAccIdParent = 0; int? LoanAccIdParent = 0; int? SuppliersAccIdParent = 0;
-            //            var userBranchs = _branchesService.GetAllBranchesByUserId(_globalshared.Lang_G, _globalshared.UserId_G).Result;
-
-            //if (Branch == null || Branch.CustomersAccId == null) {CustomersAccParent = 0;}
-            //else {CustomersAccParent = Branch.CustomersAccId;}
-
-            //if (Branch == null || Branch.PurchaseDelayAccId == null) { PurchaseDelayAccIdParent = 0; }
-            //else { PurchaseDelayAccIdParent = Branch.PurchaseDelayAccId; }
-
-            //if (Branch == null || Branch.LoanAccId == null) { LoanAccIdParent = 0; }
-            //else { LoanAccIdParent = Branch.LoanAccId; }
-
-            //if (Branch == null || Branch.SuppliersAccId == null) { SuppliersAccIdParent = 0; }
-            //else { SuppliersAccIdParent = Branch.SuppliersAccId; }
-
-            //SelectStetment = "select  AccountId,AccountCode+'-'+NameAr from Acc_Accounts where (BranchId=" + _globalshared.BranchId_G+ " and ParentId in (" + CustomersAccParent + "," + PurchaseDelayAccIdParent + "," + LoanAccIdParent + "," + SuppliersAccIdParent + ") or (ParentId not in (" + CustomersAccParent + "," + PurchaseDelayAccIdParent + "," + LoanAccIdParent + "," + SuppliersAccIdParent + "))) and IsDeleted=0";
-            //SelectStetment = "select  AccountId,AccountCode+'-'+NameAr from Acc_Accounts where BranchId=" + _globalshared.BranchId_G + " and ParentId in (" + CustomersAccParent + "," + PurchaseDelayAccIdParent + "," + LoanAccIdParent + "," + SuppliersAccIdParent + ") and IsDeleted=0 union all  select  AccountId,AccountCode+'-'+NameAr from Acc_Accounts where  ParentId not in (select AccountId from V_ParentAccountBranches) and IsDeleted=0";
-
-            //last update 
-           // SelectStetment = "select  AccountId,AccountCode+'-'+NameAr from Acc_Accounts where ParentId in (select AccountId from V_ParentAccountBranches where branchid in(select branchid from Sys_UserBranches where userid=" + _globalshared.UserId_G + ") or BranchId in(select branchid from Sys_Users where userid=" + _globalshared.UserId_G + ")) and IsDeleted=0 and (BranchId in(select branchid from Sys_UserBranches where userid="+_globalshared.UserId_G+") or BranchId in(select branchid from Sys_Users where userid="+_globalshared.UserId_G+")) union all  select  AccountId,AccountCode+'-'+NameAr from Acc_Accounts where ParentId not in (select AccountId from V_ParentAccountBranches) and IsDeleted=0";
             SelectStetment = "select  AccountId,AccountCode+'-'+NameAr from Acc_Accounts where IsDeleted=0 and (BranchId in(select branchid from Sys_UserBranches where userid=" + _globalshared.UserId_G + ") or BranchId in(select branchid from Sys_Users where userid=" + _globalshared.UserId_G + ")) union  select  AccountId,AccountCode+'-'+NameAr from Acc_Accounts where IsDeleted=0 and  ParentId in (select AccountId from V_ParentAccountBranches where (branchid in(select branchid from Sys_UserBranches where userid=" + _globalshared.UserId_G + ") or BranchId in(select branchid from Sys_Users where userid=" + _globalshared.UserId_G + ")))  union   select  AccountId,AccountCode+'-'+NameAr from Acc_Accounts where ParentId not in (select AccountId from V_ParentAccountBranches) and IsDeleted=0";
-
 
             var Accounts = _accountsService.FillAccountSelect(Con, SelectStetment);
             
@@ -825,11 +770,6 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            //if (Type == 6 || Type == 5)
-            //{
-            //    return Ok(_accountsService.GetAllReceiptExchangeAccounts(SearchText,_globalshared.Lang_G, _globalshared.BranchId_G, Type) );
-            //}
-
             var userBranchs = _branchesService.GetAllBranchesByUserId(_globalshared.Lang_G, _globalshared.UserId_G).Result;
             var someAccount = _accountsService.GetAllSubAccounts(SearchText??"",_globalshared.Lang_G, 0).Result;
             foreach (var userBranch in userBranchs)
@@ -842,53 +782,7 @@ namespace TaamerProject.API.Controllers
 
             return Ok(someAccount );
 
-
-            //return Ok(_accountsService.GetAllSubAccounts(SearchText,_globalshared.Lang_G, _globalshared.BranchId_G) );
         }
-        //public IActionResult FillCustomerSelect()
-        //{
-        //    return Ok(_customersService.GetAllCustomers() );
-        //}
-
-
-        //public IActionResult FillCustSelect(int? param)
-        //{
-        //    string SelectStetment = "";
-        //    if (param == 0)
-        //    {
-        //        SelectStetment = "select accountid,accountcode+' '+ namear from  Acc_Accounts where AccountCode =0  and ismain=0 and IsDeleted=0";
-        //    }
-        //    if (param == 1)
-        //    {
-        //        SelectStetment = "select accountid,accountcode+' '+ namear from  Acc_Accounts where AccountCode like '124%' and ismain=0 and IsDeleted=0";
-        //    }
-        //    else if (param == 2) // الصندوق
-        //    {
-        //        SelectStetment = "select accountid,accountcode+' '+ namear from Acc_Accounts where AccountCode like '121%' and ismain=0 and IsDeleted=0";
-        //    }
-        //    else if (param == 3)//حسابات بنكية
-        //    {
-        //        SelectStetment = "select accountid,accountcode+' '+ namear from Acc_Accounts where AccountCode like '122%' and ismain=0 and IsDeleted=0";
-        //    }
-        //    else if (param == 4)//عهدة
-        //    {
-        //        SelectStetment = "select accountid,accountcode+' '+ namear from Acc_Accounts where AccountCode like '126%' and ismain=0 and IsDeleted=0";
-        //    }
-        //    else if (param == 5)//خصم مكتسب
-        //    {
-        //        SelectStetment = "select accountid,accountcode+' '+ namear from Acc_Accounts where AccountCode like '4102%' and ismain=0 and IsDeleted=0";
-        //    }
-        //    else if (param == 6)//خسم مسموح
-        //    {
-        //        SelectStetment = "select accountid,accountcode+' '+ namear from Acc_Accounts where AccountCode like '5205%' and ismain=0 and IsDeleted=0";
-        //    }
-        //    else if (param == 7)
-        //    {
-        //        SelectStetment = "select CostCenterId,code+' '+ namear from Acc_CostCenters where code like '11%'";
-        //    }
-        //    var Accounts = _accountsService.FillAccountSelect(Con, SelectStetment);
-        //    return Ok(Accounts );
-        //}
 
         #region Reports
         [HttpGet("GetAccountStatment")]
@@ -947,39 +841,7 @@ namespace TaamerProject.API.Controllers
 
         public IActionResult GetGeneralLedgerDGV(string FromDate, string ToDate)
         {
-
-            
-             
-            //DataOperations operation = new DataOperations();
-            // DataTable dt = new DataTable();
-            // string constring = ConfigurationManager.ConnectionStrings["TameerProConn"].ConnectionString;
-            // using (SqlConnection con = new SqlConnection(constring))
-            // {
-            //     using (SqlCommand cmd = new SqlCommand())//"rptGetIncomeStatment", con
-            //     {
-            //         con.Open();
-            //         cmd.Connection = con;
-            //         cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            //         cmd.CommandText = "rptGetTrailBalance";
-            //         cmd.Parameters.Add(new SqlParameter("@From", FromDate));
-            //         cmd.Parameters.Add(new SqlParameter("@To", ToDate));
-            //         cmd.Parameters.Add(new SqlParameter("@CCID", "0"));
-            //         SqlDataReader dr = cmd.ExecuteReader();
-            //         // Load into the dataTable 
-            //         dt.Load(dr);
-            //         dr.Close();
-            //         con.Close();
-            //     }
-            // }
-            // //Convert the dataTable into list 
-            // //var resList = dt.AsEnumerable().ToList();
-            // //... 
-            //// return Ok(new { result = resList } );
-
-
-
             var result = _accountsService.GetGeneralLedgerDGV(_globalshared.BranchId_G, _globalshared.Lang_G, FromDate, ToDate, Con, _globalshared.BranchId_G);
-            //var result = dt.AsEnumerable().ToList();
             return Ok(result );
         }
         [HttpGet("GetTrailBalanceDGV_old")]
@@ -1355,15 +1217,10 @@ namespace TaamerProject.API.Controllers
             var result = _accountsService.GetFullAccountStatmentDGV(FromDate, ToDate, AccountCode, CCID, Con, _globalshared.BranchId_G, _globalshared.YearId_G);
             return Ok(result );
         }
-        //public IActionResult GetAllAccStatBySearch(AccountStatmentVM voucherFilterVM)
-        //{
-        //    return Ok(_accountsService.GetAllVouchers(voucherFilterVM,, _globalshared.BranchId_G) );
-        //}
         [HttpGet("GetNewCodeByParentId")]
 
         public IActionResult GetNewCodeByParentId(int ParentId)
         {
-            //string code = _accountsService.GetNewCodeByParentId(ParentId).Result;
             var code = _accountsService.GetNewCodeByParentId(ParentId,0);
 
             return Ok(code);
@@ -1421,89 +1278,6 @@ namespace TaamerProject.API.Controllers
             return Ok(_accountsService.GetAllAccountBySearch(Account, _globalshared.BranchId_G) );
         }
         #endregion
-
-        //public IActionResult DetailedRevenuReport(string CustomerId, string FromDate, string ToDate)
-        //{
-
-
-        //    int? customerId = string.IsNullOrEmpty(CustomerId) ? (int?)null : Convert.ToInt32(CustomerId);
-        //    var result = _accountsService.GetDetailedRevenu(customerId, FromDate, ToDate, _globalshared.BranchId_G, Con, _globalshared.YearId_G);
-        //    //List<DetailedRevenuVM> res = result.ToList();
-        //    int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G);
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId).Result;
-        //    string[] infoDoneTasksReport = {_globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email,
-        //        objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.DetailedRevenu(result.ToList(), FromDate, ToDate, infoDoneTasksReport);
-
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-
-        //[HttpGet]
-        //public IActionResult DetailedRevenuReportNew(string CustomerId, string FromDate, string ToDate, string[] Sortedlist)
-        //{
-        //    int? customerId = string.IsNullOrEmpty(CustomerId) ? (int?)null : Convert.ToInt32(CustomerId);
-        //    var result = _accountsService.GetDetailedRevenu(customerId, FromDate, ToDate, _globalshared.BranchId_G, Con, UsersData.YearId_G);
-
-        //    string s = Sortedlist[0];
-        //    string[] values = s.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        //    List<string> vale = new List<string>();
-        //    List<DetailedRevenuVM> _resultVM = new List<DetailedRevenuVM>();
-        //    foreach (var item in values)
-        //    {
-        //        string Intitem = string.Empty;
-        //        for (int i = 0; i < item.Length; i++)
-        //        {
-        //            if (Char.IsDigit(item[i]))
-        //                Intitem += item[i];
-        //        }
-        //        vale.Add(Intitem);
-        //    }
-        //    int GridLength = 0;
-        //    GridLength = result.Count();
-        //    for (int i = 0; i < GridLength; i++)
-        //    {
-        //        _resultVM.Add(result.Where(d => Convert.ToInt32(d.TransactionId) == Convert.ToInt32(vale[i])).FirstOrDefault());
-        //    }
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = {_globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email,
-        //        objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.DetailedRevenu(_resultVM.ToList(), FromDate, ToDate, infoDoneTasksReport);
-
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-
-        //}
-
 
 
         [HttpPost("DetailedRevenuReportNew")]
@@ -1603,41 +1377,6 @@ namespace TaamerProject.API.Controllers
 
         }
 
-
-
-        ////public IActionResult DetailedRevenuReportExtra(string CustomerId, string ProjectId, string FromDate, string ToDate)
-        ////{
-        ////    int? customerId = string.IsNullOrEmpty(CustomerId) ? (int?)null : Convert.ToInt32(CustomerId);
-        ////    int? projectId = string.IsNullOrEmpty(ProjectId) ? (int?)null : Convert.ToInt32(ProjectId);
-
-        ////    var result = _accountsService.GetDetailedRevenuExtra(customerId, projectId, FromDate, ToDate, _globalshared.BranchId_G, Con, UsersData.YearId_G);
-        ////    //List<DetailedRevenuVM> res = result.ToList();
-        ////    int orgId = _branchesService.GetOrganizationId(BranchId);
-        ////    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        ////    string[] infoDoneTasksReport = {_globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email,
-        ////        objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        ////    ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.DetailedRevenuExtra(result.ToList(), FromDate, ToDate, infoDoneTasksReport);
-
-        ////    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        ////    if (!Directory.Exists(existTemp))
-        ////    {
-        ////        Directory.CreateDirectory(existTemp);
-        ////    }
-        ////    //File  
-        ////    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        ////    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        ////    //create and set PdfReader  
-        ////    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        ////    //return file 
-        ////    string FilePathReturn = @"TempFiles/" + FileName;
-        ////    return Content(FilePathReturn);
-        ////}
-
-
-
         [HttpPost("DetailedRevenuReportExtra")]
 
         public IActionResult DetailedRevenuReportExtra([FromForm] string? CustomerId, [FromForm] string? ProjectId, [FromForm] string? FromDate, [FromForm] string? ToDate, [FromForm] string? ProjectNo)
@@ -1691,103 +1430,6 @@ namespace TaamerProject.API.Controllers
             _revenuReportVM.BranchName = branch.NameAr;
             return Ok(_revenuReportVM);
         }
-
-
-
-
-
-
-        //public IActionResult DetailedExpensesdReport(string AccountId, string FromDate, string ToDate, string ExpenseType)
-        //{
-
-
-        //    int? accountId = string.IsNullOrEmpty(AccountId) ? (int?)null : Convert.ToInt32(AccountId);
-        //    var result = _accountsService.GetDetailedExpensesd(accountId, FromDate, ToDate, ExpenseType, _globalshared.BranchId_G, Con, _globalshared.YearId_G);
-        //    //List<DetailedExpenseVM> res = result.ToList();
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = {_globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email,
-        //        objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        //    //string taxType = "";
-        //    //if (Convert.ToInt32(ExpenseType) == 2)
-        //    //    taxType = "خاضعة للضريبة";
-        //    //else if (Convert.ToInt32(ExpenseType) == 3)
-        //    //    taxType = "غير خاضعة للضريبة";
-        //    ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.DetailedExpenses(result.ToList(), FromDate, ToDate, infoDoneTasksReport);
-
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-        ////[HttpPost]
-        ////public IActionResult DetailedExpensesdReportGrid(string AccountId, string FromDate, string ToDate, string ExpenseType, string[] Sortedlist)
-        ////{
-        ////    int? accountId = string.IsNullOrEmpty(AccountId) ? (int?)null : Convert.ToInt32(AccountId);
-        ////    var result = _accountsService.GetDetailedExpensesd(accountId, FromDate, ToDate, ExpenseType, _globalshared.BranchId_G, Con, UsersData.YearId_G);
-        ////    //result = result.OrderBy(d => Sortedlist.IndexOf(d.InvoiceReference)).ToList();
-        ////    string s = Sortedlist[0];
-        ////    string[] values = s.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        ////    List<string> vale = new List<string>();
-        ////    List<Bayanateck.TameerPro.DataModel.ViewModels.DetailedExpenseVM> _DetailedExpenseVM = new List<Bayanateck.TameerPro.DataModel.ViewModels.DetailedExpenseVM>();
-        ////    foreach (var item in values)
-        ////    {
-        ////        string Intitem = string.Empty;
-        ////        for (int i = 0; i < item.Length; i++)
-        ////        {
-        ////            if (Char.IsDigit(item[i]))
-        ////                Intitem += item[i];
-        ////        }
-        ////        vale.Add(Intitem);
-        ////    }
-        ////    for (int i = 0; i < result.Count(); i++)
-        ////    {
-        ////        _DetailedExpenseVM.Add(result.Where(d => d.TransactionId == vale[i]).FirstOrDefault());
-        ////    }
-        ////    int orgId = _branchesService.GetOrganizationId(BranchId);
-        ////    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        ////    string[] infoDoneTasksReport = {_globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email,
-        ////        objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        ////    //string taxType = "";
-        ////    //if (Convert.ToInt32(ExpenseType) == 2)
-        ////    //    taxType = "خاضعة للضريبة";
-        ////    //else if (Convert.ToInt32(ExpenseType) == 3)
-        ////    //    taxType = "غير خاضعة للضريبة";
-        ////    ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.DetailedExpenses(_DetailedExpenseVM.ToList(), FromDate, ToDate, infoDoneTasksReport);
-
-        ////    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        ////    if (!Directory.Exists(existTemp))
-        ////    {
-        ////        Directory.CreateDirectory(existTemp);
-        ////    }
-        ////    //File  
-        ////    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        ////    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        ////    //create and set PdfReader  
-        ////    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        ////    //return file 
-        ////    string FilePathReturn = @"TempFiles/" + FileName;
-        ////    return Content(FilePathReturn);
-        ////}
-
-
-
-
-
-
         [HttpPost("DetailedExpensesdReportGrid")]
 
         public IActionResult DetailedExpensesdReportGrid([FromForm] string? AccountId, [FromForm] string? FromDate, [FromForm] string? ToDate, [FromForm] string ExpenseType, [FromForm] string[] Sortedlist)
@@ -1835,111 +1477,6 @@ namespace TaamerProject.API.Controllers
 
         }
 
-        //public IActionResult GetReport_old(string FromDate, string ToDate, string CCID, string Zerocheck, string AccountCode, string LVL, string typeOfReport)
-        //{
-        //    int costID = Convert.ToInt32(CCID == "" ? "0" : CCID);
-        //    int ZerocheckValue = Convert.ToInt32(Zerocheck == "" ? "0" : Zerocheck);
-        //    var result = _accountsService.GetTrailBalanceDGVNew_old(FromDate, ToDate, costID, _globalshared.BranchId_G,_globalshared.Lang_G, Con, UsersData.YearId_G, ZerocheckValue, AccountCode, LVL);
-        //    List<TrainBalanceVM> res = result.ToList();
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = {_globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        //    if (typeOfReport == "1")
-        //        ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.reviewReporttype1(res, FromDate, ToDate, infoDoneTasksReport);//الارصده
-        //    else
-        //        ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.reviewReporttype2(res, FromDate, ToDate, infoDoneTasksReport);//المجاميع
-
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-
-        ////heba
-        ////[HttpGet]
-        ////ميزان االمراجعة
-        //public IActionResult GetReport(string FromDate, string ToDate, string CCID, string Zerocheck, string AccountCode, string LVL, string typeOfReport, int FilteringType, string FilteringTypeStr, string AccountIds)
-        //{
-
-
-        //    int costID = Convert.ToInt32(CCID == "" ? "0" : CCID);
-        //    int ZerocheckValue = Convert.ToInt32(Zerocheck == "" ? "0" : Zerocheck);
-        //    var result = _accountsService.GetTrailBalanceDGVNew(FromDate, ToDate, costID, _globalshared.BranchId_G,_globalshared.Lang_G, Con, _globalshared.YearId_G, ZerocheckValue, AccountCode, LVL, FilteringType, FilteringTypeStr, AccountIds);
-        //    List<TrainBalanceVM> res = result.ToList();
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = {_globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        //    if (typeOfReport == "1")
-        //        ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.reviewReporttype1(res, FromDate, ToDate, infoDoneTasksReport);//الارصده
-        //    else
-        //        ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.reviewReporttype2(res, FromDate, ToDate, infoDoneTasksReport);//المجاميع
-
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-        ////الميزانية العامة                          
-        ////public IActionResult GetReportOfGeneralBudget(string FromDate, string ToDate, string CCID, int ZeroCheck, string LVL, string AccountCode, string typeOfReport)
-        ////{
-        ////    int costID = Convert.ToInt32(CCID);
-
-        ////    int orgId = _branchesService.GetOrganizationId(BranchId);
-        ////    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        ////    string[] infoDoneTasksReport = {_globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        ////    if (typeOfReport == "1")
-        ////    {
-        ////        var result = _accountsService.GetGeneralBudgetAMRDGV(FromDate, ToDate, LVL, costID, _globalshared.BranchId_G,_globalshared.Lang_G, Con, UsersData.YearId_G, ZeroCheck);
-        ////        List<GeneralBudgetVM> res = result.ToList();
-        ////        ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.americanFin(res, FromDate, ToDate, infoDoneTasksReport);
-        ////    }
-        ////    else
-        ////    {
-        ////        DataTable result = _accountsService.GetGeneralBudgetFRENCHDGV(FromDate, ToDate, LVL, costID, _globalshared.BranchId_G,_globalshared.Lang_G, Con, UsersData.YearId_G, ZeroCheck);
-        ////        ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.frenshFin(result, FromDate, ToDate, infoDoneTasksReport);
-
-        ////    }
-
-        ////    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        ////    if (!Directory.Exists(existTemp))
-        ////    {
-        ////        Directory.CreateDirectory(existTemp);
-        ////    }
-        ////    //File  
-        ////    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        ////    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        ////    //create and set PdfReader  
-        ////    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        ////    //return file 
-        ////    string FilePathReturn = @"TempFiles/" + FileName;
-        ////    return Content(FilePathReturn);
-        ////}
-
         [HttpPost("GetReportOfGeneralBudget")]
 
         public IActionResult GetReportOfGeneralBudget([FromForm]string? FromDate, [FromForm] string? ToDate, [FromForm] string? CCID, [FromForm] int? ZeroCheck, [FromForm] string? LVL, [FromForm] string? AccountCode, [FromForm] string? typeOfReport)
@@ -1967,37 +1504,6 @@ namespace TaamerProject.API.Controllers
 
         }
 
-
-        ////ايرادات مدرائ المشاريع
-        ////public IActionResult PrintProjectManagerRevenueReport(int? ManagerId, string ManagerName, string FromDate, string ToDate)
-        ////{
-        ////    int orgId = _branchesService.GetOrganizationId(BranchId);
-
-        ////    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        ////    string[] infoDoneTasksReport = {_globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        ////    List<GeneralmanagerRevVM> GeneralmanagerRevVM = _accountsService.GetGeneralManagerRevenueAMRDGV(ManagerId, FromDate, ToDate, _globalshared.BranchId_G, Con, UsersData.YearId_G).ToList();
-
-        ////    ReportPDF = ReportsOf7sabat.PrintProjectManagerRevenueReport(GeneralmanagerRevVM, ManagerName, FromDate, ToDate, infoDoneTasksReport);
-        ////    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        ////    if (!Directory.Exists(existTemp))
-        ////    {
-        ////        Directory.CreateDirectory(existTemp);
-        ////    }
-        ////    //File  
-        ////    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        ////    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        ////    //create and set PdfReader  
-        ////    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        ////    //return file 
-        ////    string FilePathReturn = @"TempFiles/" + FileName;
-        ////    return Content(FilePathReturn);
-        ////}
-
-
-
         [HttpPost("PrintProjectManagerRevenueReport")]
 
         public IActionResult PrintProjectManagerRevenueReport([FromForm]int? ManagerId, [FromForm] string? ManagerName, [FromForm] string? FromDate, [FromForm] string? ToDate)
@@ -2024,38 +1530,6 @@ namespace TaamerProject.API.Controllers
             return Ok(_managerRevenueReport);
         }
 
-
-
-
-        ////الدليل المحاسبى
-        ////public IActionResult PrintTrewView()
-        ////{
-        ////    int orgId = _branchesService.GetOrganizationId(BranchId);
-
-        ////    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        ////    string[] infoDoneTasksReport = {_globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        ////    DataTable TrewView = _accountsService.TreeView(Con);
-
-        ////    ReportPDF = ReportsOf7sabat.accountReferenceNew(TrewView, infoDoneTasksReport);
-        ////    //ReportPDF = ReportsOf7sabat.accountReference(TrewView, infoDoneTasksReport);
-
-        ////    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        ////    if (!Directory.Exists(existTemp))
-        ////    {
-        ////        Directory.CreateDirectory(existTemp);
-        ////    }
-        ////    //File  
-        ////    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        ////    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        ////    //create and set PdfReader  
-        ////    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        ////    //return file 
-        ////    string FilePathReturn = @"TempFiles/" + FileName;
-        ////    return Content(FilePathReturn);
-        ////}
 
         [HttpGet("PrintTrewView")]
 
@@ -2180,59 +1654,5 @@ namespace TaamerProject.API.Controllers
                 return "";
             }
         }
-        //public IActionResult ChangeTrialBalance_PDF_old(string FromDate, string ToDate, string CCID, string Zerocheck, string AccountCode, string LVL, string typeOfReport)
-        //{
-        //    int costID = Convert.ToInt32(CCID == "" ? "0" : CCID);
-        //    int ZerocheckValue = Convert.ToInt32(Zerocheck == "" ? "0" : Zerocheck);
-        //    var result = _accountsService.GetTrailBalanceDGVNew_old(FromDate, ToDate, costID, _globalshared.BranchId_G,_globalshared.Lang_G, Con, UsersData.YearId_G, ZerocheckValue, AccountCode, LVL);
-        //    List<TrainBalanceVM> res = result.ToList();
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = {_globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        //    if (objOrganization != null)
-        //        ViewData["Org_VD"] = objOrganization;
-        //    else
-        //        ViewData["Org_VD"] = null;
-
-        //    //if (typeOfReport == "1")
-        //    //    ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.reviewReporttype1(res, FromDate, ToDate, infoDoneTasksReport);//الارصده
-        //    //else
-        //    //    ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.reviewReporttype2(res, FromDate, ToDate, infoDoneTasksReport);//المجاميع
-        //    string costCenterNam = "";
-
-        //    if (costID != null && costID != 0)
-        //    {
-
-        //        costCenterNam = _CostCenterservice.GetCostCenterById(costID).NameAr;
-        //    }
-        //    else
-        //    {
-        //        costCenterNam = "";
-        //    }
-
-
-
-        //    var objBranch = _branchesService.GetBranchByBranchId(Lang, _globalshared.BranchId_G).FirstOrDefault();
-        //    var OrgIsRequired = _systemSettingsService.GetSystemSettingsByBranchId(BranchId).OrgDataIsRequired;
-        //    ViewData["costCenterNam"] = costCenterNam;
-        //    ViewData["Branch_VD"] = objBranch;
-        //    ViewData["TrainBalanceVM_VD"] = res;
-        //    ViewData["OrgIsRequired_VD"] = OrgIsRequired;
-        //    ViewData["TempCheck"] = typeOfReport;
-        //    ViewData["InfoDoneTasksReport"] = infoDoneTasksReport;
-        //    ViewData["DateTimeNow"] = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-
-        //    ViewData["FromDate"] = FromDate;
-        //    ViewData["ToDate"] = ToDate;
-        //    if (typeOfReport == "2")
-        //    {
-        //        return PartialView("_TrialBalanceCredit");
-        //    }
-        //    else
-        //    {
-        //        return PartialView("_TrialBalanceRe");
-        //    }
-
-        //}
     }
 }

@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Globalization;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
 
 namespace TaamerProject.API.Controllers
 {
@@ -240,31 +238,7 @@ namespace TaamerProject.API.Controllers
             return Ok(costCenters);
 
         }
-        //public ActionResult TreeViewOfCostCenterReport()
-        //{
-        //    HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-        //    int orgId = _BranchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
 
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { _globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        //    DataTable CostCenters = _CostCenterservice.TreeViewOfCostCenter(Con).Result;
-        //    ReportPDF = ReportsOf7sabat.PrintTreeViewOfCostCenterReport(CostCenters, infoDoneTasksReport);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
         [HttpPost("CostCenterMovementReport")]
 
         public IActionResult CostCenterMovementReport([FromForm]int CostCenterId, [FromForm] string? CostCenterName, [FromForm] string? FromDate, [FromForm] string? ToDate)

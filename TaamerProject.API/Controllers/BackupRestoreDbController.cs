@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
-using System.Drawing;
 using System.Text;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
-using System.Web;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using TaamerProject.Models.DomainObjects;
 
@@ -103,7 +100,6 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
             string backupRelativePath = "Backup/"; // Your desired relative path
-            //string backupDIR = _hostingEnvironment.WebRootPath + backupRelativePath;
             string backupDIR = System.IO.Path.Combine(backupRelativePath);
             if (!System.IO.Directory.Exists(backupDIR))
             {
@@ -125,7 +121,6 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
             string backupRelativePath = "Backup/"; // Your desired relative path
-            //string backupDIR = _hostingEnvironment.WebRootPath + backupRelativePath;
             string backupDIR = System.IO.Path.Combine(backupRelativePath);
             if (!System.IO.Directory.Exists(backupDIR))
                 {
@@ -193,16 +188,6 @@ namespace TaamerProject.API.Controllers
                     StringBuilder sb = new StringBuilder(UrlS);
                     sb.Replace("BackupRestoreDb/DownloadBackupFile", FullPath);
                     URII = sb.ToString();
-
-
-                    //var UrlS = filepath;
-                    //StringBuilder sb = new StringBuilder(UrlS);
-                    //sb.Replace(UrlS, filepath + filename);
-                    //URII = sb.ToString();
-
-                    //var UrlS = "";
-                    //UrlS = filepath + filename;
-                    //URII = UrlS.ToString();
 
                 }
                 catch
@@ -274,12 +259,9 @@ namespace TaamerProject.API.Controllers
 
                 if (BackupFile != null)
                 {
-                    //  filepath = Convert.ToString(BackupFile.Select(s => s.LocalSavedPath).FirstOrDefault());
                     filename = Convert.ToString(BackupFile.Select(s => s.SavedName).FirstOrDefault());
 
                 }
-
-                //   string FullPath = "/Uploads/BackupDb/" + filename + ".Bak";
 
 
 
@@ -293,8 +275,6 @@ namespace TaamerProject.API.Controllers
                     FileName = filename,
                     Inline = true,
                 };
-
-                //Response.AppendHeader("Content-Disposition", cd.ToString());
 
                 return File(filedata, contentType);
             }
@@ -328,14 +308,9 @@ namespace TaamerProject.API.Controllers
                     FileName = filename,
                     Inline = true,
                 };
-
-                //Response.AppendHeader("Content-Disposition", cd.ToString());
-                //Convert File to Base64 string and send to Client.
                 string base64 = Convert.ToBase64String(filedata, 0, filedata.Length);
 
                 return Content(base64);
-                //return File(filedata, contentType);
-                // return File(filepath, "application/zip", filename);
             }
 
         [HttpGet("GetackupFileName")]
@@ -350,7 +325,6 @@ namespace TaamerProject.API.Controllers
 
                 if (BackupFile != null)
                 {
-                    //  filepath = Convert.ToString(BackupFile.Select(s => s.LocalSavedPath).FirstOrDefault());
                     filename = Convert.ToString(BackupFile.SavedName);
 
                 }
@@ -384,7 +358,6 @@ namespace TaamerProject.API.Controllers
                     string backupRelativePath = "GoogleDriveFiles/"; // Your desired relative path
                     string pth = _hostingEnvironment.WebRootPath + backupRelativePath;
 
-                    //var pth = Server.MapPath("~/GoogleDriveFiles");
                     Path.GetFileName(filename);
                 var cspth = _hostingEnvironment.WebRootPath;// System.Web.Hosting.HostingEnvironment.MapPath("~/");
                 var fldrpth = _hostingEnvironment.WebRootPath;// System.Web.Hosting.HostingEnvironment.MapPath("~/");
@@ -401,146 +374,7 @@ namespace TaamerProject.API.Controllers
                     return Ok(new { result, ex.Message });
                 }
 
-            }
-
-
-        //[HttpGet("GetAllStatistics")]
-        //public BackupStatistics GetAllStatistics()
-        //{
-        //    HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-
-        //    BackupStatistics statistics = new BackupStatistics();
-        //    var userBranchs = _branchesService.GetAllBranchesByUserId(_globalshared.Lang_G, _globalshared.UserId_G).Result;
-        //    var someProject = _projectService.GetAllProject(_globalshared.Lang_G, 0).Result;
-        //    foreach (var userBranch in userBranchs)
-        //    {
-
-        //        var AllPojects = _projectService.GetAllProject(_globalshared.Lang_G, userBranch.BranchId).Result.ToList();
-
-        //        var Projects = someProject.Union(AllPojects);
-        //        someProject = Projects.ToList();
-        //    }
-
-        //    //اخر مشروع
-        //    var lastpro = someProject.Max(p => p.ProjectId);
-        //    var proj = _projectService.GetProjectById(_globalshared.Lang_G, lastpro);
-        //    statistics.LastProject = proj.Result;
-
-
-        //    //اخر فاتوره
-        //    var invoic = _voucherService.GetAllVouchersback().Result;
-        //    var lastinvoice = invoic.Max(p => p.InvoiceId);
-        //    var lastone = _voucherService.GetVoucherById(lastinvoice);
-
-        //    statistics.LastInvoice = lastone.Result;
-
-        //    //اخر مردود
-        //    VoucherFilterVM voucherFilterVM = new VoucherFilterVM();
-        //    voucherFilterVM.Type = 2;
-        //    var someVoucher = _voucherService.GetAllVouchersRet(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
-
-        //    statistics.LastInvoice = someVoucher.FirstOrDefault();
-
-        //    //اخر سند قبض
-        //    VoucherFilterVM voucherFilterVMre = new VoucherFilterVM();
-        //    voucherFilterVMre.Type = 6;
-        //    var someVoucherre = _voucherService.GetAllVouchers(voucherFilterVMre, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
-        //    var lastinvoicere = someVoucherre.Max(p => p.InvoiceId);
-        //    var lastonere = _voucherService.GetVoucherById(lastinvoicere);
-        //    statistics.lastRevoucern = lastonere.Result;
-
-        //    //اخر سند صرف
-        //    VoucherFilterVM voucherFilterVMpay = new VoucherFilterVM();
-        //    voucherFilterVMpay.Type = 5;
-        //    var someVoucherpay = _voucherService.GetAllVouchers(voucherFilterVMpay, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
-        //    var lastinvoicepay = someVoucherpay.Max(p => p.InvoiceId);
-        //    var lastonepay = _voucherService.GetVoucherById(lastinvoicepay);
-        //    statistics.lastpayvoucern = lastonepay.Result;
-
-        //    //اخر قيد يوميه
-        //    VoucherFilterVM voucherFilterVMentry = new VoucherFilterVM();
-        //    voucherFilterVMentry.Type = 8;
-        //    var someVoucherentry = _voucherService.GetAllVouchers(voucherFilterVMentry, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
-        //    var lastinvoiceentry = someVoucherentry.Max(p => p.InvoiceId);
-        //    var lastoneentry = _voucherService.GetVoucherById(lastinvoiceentry);
-        //    statistics.lastEntyvoucher = lastoneentry.Result;
-
-        //    //اخر عقد
-        //    EmpContractVM Search = new EmpContractVM();
-        //    IEnumerable<EmpContractVM> someContracts = _EmpContractService.GetAllEmpContractSearch(Search, _globalshared.Lang_G, 0).Result;
-        //    if ((bool)!Search.IsSearch)
-        //    {
-        //        foreach (var userBranch in userBranchs)
-        //        {
-        //            var empContract = _EmpContractService.GetAllEmpContractSearch(Search, _globalshared.Lang_G, userBranch.BranchId).Result;
-        //            var contract = someContracts.Union(empContract);
-        //            someContracts = contract;
-        //        }
-        //    }
-        //    var lastcontract = someContracts.Max(p => p.ContractId);
-        //    var lastcont = _EmpContractService.GetLastEmpContractSearch(lastinvoice, _globalshared.Lang_G);
-
-        //    statistics.LastEmpContract = lastcont.Result.FirstOrDefault();
-
-        //    //اخر عميل 
-        //    var someCustomer = _customerservice.GetAllCustomerExist(_globalshared.Lang_G);
-        //    var custid = someCustomer.Result.Max(M => M.CustomerId);
-        //    var cust = _customerservice.GetCustomersByCustomerId(custid, _globalshared.Lang_G);
-
-        //    statistics.LastCustomer = cust.Result;
-        //    // عدد المشاريع قيد التنفيذ
-        //    var ProjectCount = 0;
-        //    foreach (var userBranch in userBranchs)
-        //    {
-        //        var AllPojects = _projectService.GetAllProject(_globalshared.Lang_G, userBranch.BranchId).Result.Count();
-        //        var Projects = ProjectCount + AllPojects;
-        //        ProjectCount = Projects;
-        //    }
-
-        //    statistics.ProjectCount=ProjectCount;
-
-        //    //عدد المشاريع المؤرشفه
-        //    var ProjectarchiveCount = 0;
-        //    foreach (var userBranch in userBranchs)
-        //    {
-        //        var AllPojectsarchived = _projectService.GetAllArchiveProject(userBranch.BranchId).Result.Count();
-        //        var Projectsarchived = ProjectarchiveCount + AllPojectsarchived;
-        //        ProjectarchiveCount = Projectsarchived;
-        //    }
-        //    statistics.ProjectArchivedCount = ProjectarchiveCount;
-
-        //    //عدد العملا
-        //    var someCustomercount = _customerservice.GetAllCustomersCount(0).Result.Count();
-        //    foreach (var userBranch in userBranchs)
-        //    {
-        //        var AllCustomers = _customerservice.GetAllCustomersCount(userBranch.BranchId).Result.Count();
-        //        var Customerscount = someCustomercount + AllCustomers;
-        //        someCustomercount = Customerscount;
-        //    }
-        //    statistics.Customercount = someCustomercount;
-
-        //    //اجمالي المصروفات
-        //    var Revenu = _accountsService.GetDetailedRevenu(null, "", "", _globalshared.BranchId_G, Con, _globalshared.YearId_G);
-        //    statistics.TotalDetailedRevenu=(int)Revenu.Result.Sum(item => Convert.ToDouble(item.TotalValue));
-
-        //    //اجمالي الايرادات
-        //    var Expensesd = _accountsService.GetDetailedExpensesd(null, "", "", "", _globalshared.BranchId_G, Con, _globalshared.YearId_G);
-        //    statistics.TotalDetailedExpensed=(int) Expensesd.Result.Sum(item => Convert.ToDouble(item.Price));
-        //    //عدد المشاريع
-        //    int count = _branchesService.GetAllBranches(_globalshared.Lang_G).Result.Count();
-        //    statistics.BranchesCount=count;
-
-        //    // عدد لامستخدمين
-        //    int usrcount = _usersservice.GetAllUsers().Result.Count();
-
-        //    statistics.UsersCount=usrcount;
-
-
-        //    return statistics;
-        //}
-
-
-
+            }      
 
         [HttpGet("GetAllStatistics")]
         public IActionResult GetAllStatistics()

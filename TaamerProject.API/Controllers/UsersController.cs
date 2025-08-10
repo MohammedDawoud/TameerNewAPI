@@ -1,31 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using QRCoder;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net.Mail;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-//using System.Web.Mvc;
 using TaamerProject.Service.Interfaces;
 using TaamerProject.Models;
 using TaamerProject.API.Helper;
 using TaamerProject.Models.Common;
 using System.Net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using static TaamerProject.API.Controllers.UsersController;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using DocumentFormat.OpenXml.InkML;
 using TaamerProject.Models.DBContext;
-using Dropbox.Api.TeamLog;
 
 namespace TaamerProject.API.Controllers
 {
@@ -95,11 +79,9 @@ namespace TaamerProject.API.Controllers
                 try
                 {
                     string fileName = user.UserId + "EmpQrCodeImg.Jpeg";
-                   // string fileLocation = Path.Combine("/Uploads/Organizations/DomainLink/") + ;
-                  string fileLocation = Path.Combine("Uploads/Organizations/DomainLink/",fileName);
-                  //string fileLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Uploads/Organizations/DomainLink/");
+                    string fileLocation = Path.Combine("Uploads/Organizations/DomainLink/",fileName);
 
-                string ImgReturn = "";
+                    string ImgReturn = "";
                     QRCodeGenerator qrGenerator = new QRCodeGenerator();
                     QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrstring, QRCodeGenerator.ECCLevel.Q, true);
                     QRCode qrCode = new QRCode(qrCodeData);
@@ -272,45 +254,41 @@ namespace TaamerProject.API.Controllers
 
         [HttpPost("PopulateBody")]
         public string PopulateBody(int type, string EmailUrl, string url, int userid, string resetCode)
-            {
+        {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             string body = string.Empty;
-                //var userdata = _usersservice.GetUserById(_globalshared.UserId_G, _globalshared.Lang_G);
-                //var OrganizationData = _organizationservice.GetBranchOrganization((int)userdata._globalshared.BranchId_G);
-             string path = System.IO.Path.Combine(url);
+            string path = System.IO.Path.Combine(url);
             using (StreamReader reader = new StreamReader(path))
-                {
-                    body = reader.ReadToEnd();
-                }
-                if (type == 1)
-                {
-                    body = body.Replace("{EmailUrl}", EmailUrl);
-
-                }
-                else if (type == 2) { }
-
-
-
-                return body;
+            {
+                body = reader.ReadToEnd();
             }
+            if (type == 1)
+            {
+                body = body.Replace("{EmailUrl}", EmailUrl);
+
+            }
+            else if (type == 2) { }
+
+            return body;         
+        }
         [HttpPost("ChangePassword")]
         public ActionResult ChangePassword(Users users)
-            {
+        {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var result = _usersservice.ChangePassword(users, _globalshared.UserId_G, _globalshared.BranchId_G);
-                return Ok( result );
-            }
+            return Ok( result );
+        }
 
         [HttpPost("Disappearewelcomeuser")]
         public ActionResult Disappearewelcomeuser()
-            {
+        {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var result = _usersservice.Disappearewelcomeuser(_globalshared.UserId_G, _globalshared.BranchId_G);
-                return Ok(result );
-            }
+            return Ok(result );
+        }
         [HttpPost("ChangeUserImage")]
         public ActionResult ChangeUserImage(IFormFile? UploadedFile,[FromForm] Users users)
-            {
+        {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
             if (UploadedFile != null)
@@ -331,7 +309,6 @@ namespace TaamerProject.API.Controllers
                 //foreach (IFormFile postedFile in postedFiles)
                 //{
                 string fileName = System.IO.Path.GetFileName(Guid.NewGuid() + UploadedFile.FileName);
-                //string fileName = System.IO.Path.GetFileName(postedFiles.FileName);
 
                 var path2 = Path.Combine(path, fileName);
                 if (System.IO.File.Exists(path2))
@@ -358,12 +335,8 @@ namespace TaamerProject.API.Controllers
 
 
             var result = _usersservice.ChangeUserImage(users, _globalshared.UserId_G, _globalshared.BranchId_G);
-                //if (result.Result && users.UserId == UserId)
-                //{
-                //    Request.Cookies["ImgUrl"].Value = users.ImgUrl;
-                //}
-                return Ok(result );
-            }
+            return Ok(result );
+        }
         [HttpPost("ChangeStampImage")]
         public ActionResult ChangeStampImage(IFormFile? UploadedFile, [FromForm] Users users)
             {
@@ -387,7 +360,6 @@ namespace TaamerProject.API.Controllers
                 //{
                 string fileName = System.IO.Path.GetFileName(Guid.NewGuid() + UploadedFile.FileName);
                 string fileLocationOut = Path.Combine(pathencrypt, fileName);
-                //string fileName = System.IO.Path.GetFileName(postedFiles.FileName);
 
                 var path2 = Path.Combine(path, fileName);
                 if (System.IO.File.Exists(path2))
@@ -420,12 +392,8 @@ namespace TaamerProject.API.Controllers
             }
 
             var result = _usersservice.ChangeUserStamp(users, _globalshared.UserId_G, _globalshared.BranchId_G);
-                //if (result.Result && users.UserId == UserId)
-                //{
-                //    Request.Cookies["ImgUrl"].Value = users.ImgUrl;
-                //}
-                return Ok(result );
-            }
+            return Ok(result );
+        }
         [HttpPost("DeleteUsers")]
         public ActionResult DeleteUsers(int userId)
             {

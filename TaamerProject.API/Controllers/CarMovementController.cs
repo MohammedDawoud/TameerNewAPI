@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Configuration;
 using System.Data;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
 
 namespace TaamerProject.API.Controllers
 {
@@ -135,22 +132,6 @@ namespace TaamerProject.API.Controllers
             DataTable CarMovementsVMs = _carMovementService.GetAllCarMovementsByDateSearch(CarType, CarId, StartDate, EndDate, EmpId, Con).Result;
             
             return Ok(CarMovementsVMs);
-            //ReportPDF = humanResourcesReports.PrintCarMovement(CarMovementsVMs, StartDate, EndDate, infoDoneTasksReport);
-            //string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-            //if (!Directory.Exists(existTemp))
-            //{
-            //    Directory.CreateDirectory(existTemp);
-            //}
-            ////File  
-            //string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-            //string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-            ////create and set PdfReader  
-            //System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-            ////return file 
-            //string FilePathReturn = @"TempFiles/" + FileName;
-            //return Content(FilePathReturn);
         }
     }
 

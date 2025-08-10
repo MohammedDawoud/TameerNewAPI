@@ -1,14 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaamerProject.API.Helper;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
 using System.Net;
-using System.Net.Mail;
-using TaamerProject.Service.Services;
 
 namespace TaamerProject.API.Controllers
 {

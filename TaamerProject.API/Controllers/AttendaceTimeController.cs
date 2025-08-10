@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;

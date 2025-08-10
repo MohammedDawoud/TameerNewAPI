@@ -7,9 +7,7 @@ using TaamerProject.API.Helper;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
-using System.Net.Mail;
 using System.Net;
-using TaamerProject.Service.Services;
 
 namespace TaamerProject.API.Controllers
 {
