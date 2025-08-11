@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaamerProject.API.Helper;
-using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
 
 namespace TaamerProject.API.Controllers
@@ -20,13 +18,6 @@ namespace TaamerProject.API.Controllers
             _empStructureservice = empStructureservice;
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
         }
-        //[HttpPost("SaveEmpStructure")]
-        //public IActionResult SaveEmpStructure(List<EmpStructure> EmpLinkList, List<NodeLocations> NodeLocList)
-        //{
-        //    HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-        //    var result = _empStructureservice.SaveEmpStructure(EmpLinkList, NodeLocList, _globalshared.UserId_G, _globalshared.BranchId_G);
-        //    return Ok(result);
-        //}
         [HttpGet("GetAllNodesEmps")]
         public IActionResult GetAllNodesEmps()
         {

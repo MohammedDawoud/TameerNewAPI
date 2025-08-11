@@ -7,7 +7,6 @@ using Spire.Doc.Fields;
 using Paragraph = Spire.Doc.Documents.Paragraph;
 using System.Drawing;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
 using System.Net;
 using TaamerProject.API.Helper;
 using System.Text;
@@ -15,11 +14,7 @@ using DocumentFormat.OpenXml.Packaging;
 using System.Text.RegularExpressions;
 using Spire.Doc;
 using System.Globalization;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using TaamerP.Service.LocalResources;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Drawing;
 
 namespace TaamerProject.API.Controllers
 {
@@ -146,72 +141,23 @@ namespace TaamerProject.API.Controllers
                 }
             }
         }
-                        catch (Exception ex)
-                        {
-                            var massege = "";
-                            if (_globalshared.Lang_G == "rtl")
-                            {
-                                massege = "فشل في رفع المسودة";
-                            }
-                            else if (_globalshared.Lang_G == "ltr")
-                            {
-                                massege = "Uploaded Failed";
-                            }
-                      return Ok(new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = massege });
-                        }
+        catch (Exception ex)
+        {
+            var massege = "";
+            if (_globalshared.Lang_G == "rtl")
+            {
+                massege = "فشل في رفع المسودة";
+            }
+            else if (_globalshared.Lang_G == "ltr")
+            {
+                massege = "Uploaded Failed";
+            }
+        return Ok(new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = massege });
+        }
                    
                 
-                  return Ok(result);
-            //string fileLocation = "";
-            //    GeneralMessage result = null;
-            //    if (!Request.Files["UploadedFile"].FileName.Contains(".doc") && !Request.Files["UploadedFile"].FileName.Contains(".pdf"))
-            //    {
-            //        result = new GeneralMessage() { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = " يرجى أن يكون الملف بإحدى الصيغ : '.doc', '.docx', '.pdf' " };
-            //    }
-            //    HttpPostedFileBase file = Request.Files["UploadedFile"];
-            //    if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
-            //    {
-            //        if (Request.Files["UploadedFile"].ContentLength > 0)
-            //        {
-            //            string fileName = System.IO.Path.GetFileName(GenerateRandomNo() + Request.Files["UploadedFile"].FileName);
-
-            //            fileLocation = Server.MapPath("~/Uploads/Drafts/") + fileName;
-            //            try
-            //            {
-            //                Request.Files["UploadedFile"].SaveAs(fileLocation);
-            //                draft.DraftUrl = "/Uploads/Drafts/" + fileName;
-            //                draft.Name = fileName;
-
-            //                //Not exists 
-            //                //if (draft.Name.Contains(".doc") && (_draftService.GetAllDrafts().Where(x => x.DraftName == draft.Name).FirstOrDefault() == null))
-            //                //    result = appendFile_Draft(ContractId, fileLocation);
-            //                //else //If exists before
-            //                {
-            //                    var UrlS = _hostingEnvironment.WebRootPath.Replace("Draft/SaveDraft", "");
-            //                    draft.DraftUrl = UrlS + "Uploads/Drafts/" + fileName;
-            //                    result = _draftService.SaveDraft(draft, _globalshared.UserId_G, _globalshared.BranchId_G);
-            //                }
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                var massege = "";
-            //                if (_globalshared.Lang_G == "rtl")
-            //                {
-            //                    massege = "فشل في رفع المسودة";
-            //                }
-            //                else if (_globalshared.Lang_G == "ltr")
-            //                {
-            //                    massege = "Uploaded Failed";
-            //                }
-            //                return Ok(new GeneralMessage {  StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = massege });
-            //            }
-            //        }
-            //    }
-            //    else
-            //        result = new GeneralMessage() {  StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "لا يوجد ملف أو الملف غير صالح" };
-
-            //    return Ok(result);
-            }
+                  return Ok(result);                    
+        }
 
 
         [HttpPost("ConnectProjectTypeId")]
@@ -553,15 +499,7 @@ namespace TaamerProject.API.Controllers
                 string[] fileNamedSplit = uploadedFile.Split('/');
                 string uploadedFileName = fileNamedSplit[(fileNamedSplit.Count() - 1)];
             string result_uploadedFile = System.IO.Path.Combine(uploadedFile.Remove(0, 1));
-            //if (System.IO.File.Exists(result_uploadedFile))
-            //{
-            //    return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully, ReturnedStr = uploadedFile });
-            //}
 
-            //if (uploadedFileName.Contains("Contract_" + project.ProjectNo))
-            //    {
-            //        return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully, ReturnedStr = uploadedFile });
-            //    }
             var EmptyFile = "Reports/Contract/EmptyFile.docx";
             string fileName = "DraftTemplate.docx";
 
@@ -773,15 +711,6 @@ namespace TaamerProject.API.Controllers
                         Spire.Doc.Table table2 = section3.AddTable(true);
                         var countS = conservices.Count();
                         table2.ResetCells(1, 5);
-
-                        // table.AddRow(false, 2);
-                        //table2.Rows[0].Cells[0].Width = table2.Rows[0].Cells[1].Width = 60F;
-
-
-                        //Spire.Doc.TableCell cell = table2.Rows[0].Cells[0];
-
-                        //cell.CellFormat.TextDirection = TextDirection.RightToLeft;
-
                         table2.TableFormat.Bidi = true;
                         Paragraph paragraphTemp;
                         paragraphTemp = table2[0, 0].AddParagraph();

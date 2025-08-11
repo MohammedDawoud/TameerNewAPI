@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using TaamerProject.API.Helper;
@@ -330,32 +328,6 @@ namespace TaamerProject.API.Controllers
             return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = FilePathReturn });
         }
     
-
-        //public ActionResult PrintEmpContractReport(int? ContractId)
-        //{
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    System.Data.DataTable EmpContractDetail = _EmpContractService.GetAllContractDetailsByContractId(ContractId, Con);
-        //    //ReportPDF = humanResourcesReports.PrintEmpContractReport(EmpContractDetail, infoDoneTasksReport);
-
-        //    ViewData["EmpContractDetail"] = EmpContractDetail;
-
-
-        //    var objOrganization2 = _organizationsservice.GetBranchOrganizationDataInvoice(orgId);
-        //    if (objOrganization2 != null)
-        //        ViewData["Org_VD"] = objOrganization2;
-        //    else
-        //        ViewData["Org_VD"] = null;
-
-        //    ViewData["Date"] = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-
-        //    return PartialView("_StaffContract");
-        //}
-
-
         [HttpPost("PrintEmpEndWork")]
         public ActionResult PrintEmpEndWork([FromBody]EndWorkPrintVM endWork)
         {
