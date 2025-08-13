@@ -1771,6 +1771,10 @@ namespace TaamerProject.Service.Services
         {
             return await _UsersRepository.GetUser(username);
         }
+        public async Task<UsersLoginVM> GetUserLogin(string username, string password)
+        {
+            return await _UsersRepository.GetUserLogin(username, password);
+        }
         public async Task<UsersVM> GetUser_tadmin(string username)
         {
             return await _UsersRepository.GetUser_tadmin(username);

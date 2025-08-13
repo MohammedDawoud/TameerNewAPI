@@ -24,14 +24,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using TaamerProject.Models.Common;
 using System.Net.Mail;
 using ZXing;
-using TaamerProject.Service.Services;
 using TaamerProject.Models.ViewModels;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class ProjectController : ControllerBase
     {
@@ -97,74 +96,7 @@ namespace TaamerProject.API.Controllers
             _globalshared = new GlobalShared(httpContext);
             _hostingEnvironment = webHostEnvironment;
         }
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
-        //public IActionResult DetailedRevenue()
-        //{
-        //    return View();
-        //}
-        //public IActionResult DetailedRevenueExtra()
-        //{
-        //    return View();
-        //}
-        //public IActionResult DetailedExpenses()
-        //{
-        //    return View();
-        //}
-        ////public IActionResult GetUserProjectsCount()
-        ////{
-        ////    var Counts = new
-        ////    {
-        ////        GetUserProjects = _projectservice.GetUserProjects(UserId,  _globalshared.BranchId_G).Count(),
-        ////    };
-        ////    return Ok(Counts );
-        ////}
-        //public IActionResult ArchiveProjects()
-        //{
-        //    //return PartialView("_archiveProjects");
-        //    return View();
-        //}
-        //public IActionResult CostProjects()
-        //{
-        //    return View();
-        //}
-        //public IActionResult followProject()
-        //{
-        //    return View();
-        //}
-        //public IActionResult ProjectUsers()
-        //{
-        //    return View();
-        //}
-        //public IActionResult ProjectsTasksReport()
-        //{
-        //    return View();
-        //}
-        //public IActionResult FileSearch()
-        //{
-        //    return View();
-        //}
-        //public IActionResult ProjectManagerRevenue()
-        //{
-        //    return View();
-        //}W
-        //public IActionResult PrintProjectManagerRevenue()
-        //{
-        //    return View();
-        //}
-
-        //public IActionResult ProjectReport()
-        //{
-        //    return View();
-        //}
-
-        //public IActionResult ProjectStatus()
-        //{
-        //    return View();
-        //}
-
+        
         [HttpGet("ProjectDetails")]
         public IActionResult ProjectDetails(int ProjectId)
             {
@@ -347,50 +279,7 @@ namespace TaamerProject.API.Controllers
                 return Ok(proj );
 
             }
-        //public IActionResult GetAllProjects()
-        //{
-        //    var userBranchs = _branchesService.GetAllBranchesByUserId(_globalshared.Lang_G,_globalshared.UserId_G);
-        //    var someProject = _projectservice.GetAllProject(_globalshared.Lang_G, 0);
-        //    foreach (var userBranch in userBranchs)
-        //    {
-
-        //        var AllPojects = _projectservice.GetAllProject(_globalshared.Lang_G, userBranch. _globalshared.BranchId_G).ToList();
-
-        //        var Projects = someProject.Union(AllPojects);
-        //        someProject = Projects.ToList();
-        //    }
-        //    List<ProjectVM> allproject = new List<ProjectVM>();
-        //    foreach (var item in someProject)
-        //    {
-        //        var imp = _importantProjectService.GetImportantProjects(item.ProjectId,_globalshared.UserId_G).FirstOrDefault();
-        //        if (imp != null)
-        //        {
-        //            item.Isimportant = imp.IsImportant ?? 0;
-        //            item.importantid = imp.ImportantProId;
-        //            item.flag = imp.Flag ?? 0;
-        //        }
-        //        else
-        //        {
-        //            item.Isimportant = 0;
-        //            item.importantid = 0;
-        //            item.flag = 0;
-        //        }
-        //        allproject.Add(item);
-        //    }
-
-        //    var serializer = new JavaScriptSerializer();
-        //    serializer.MaxJsonLength = Int32.MaxValue;
-        //    var result = new ContentResult
-        //    {
-        //        Content = serializer.Serialize(allproject),
-        //        ContentType = "application/json"
-        //    };
-        //    //return Ok(someProject );
-        //    return result;
-
-        //}
-
-
+       
         //Get Projects With Procedure
         [HttpGet("GetAllProjects")]
         public IActionResult GetAllProjects()
@@ -499,15 +388,7 @@ namespace TaamerProject.API.Controllers
                     var Projects = someProject.Union(AllPojects);
                     someProject = Projects.ToList();
                 }
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someProject),
-            //    ContentType = "application/json"
-            //};
-            ////return Ok(someProject );
-            //return result;
+
             return Ok(someProject);
 
         }
@@ -1013,19 +894,6 @@ namespace TaamerProject.API.Controllers
                 return Ok(fileUrls );
             }
 
-
-        //public IActionResult AddTask(int ProjectNo, string ProjectMainPhases, string ProjectSubPhases, string CustomerName, int ProjectId)
-        //{
-
-        //    TempData["ProjectNo"] = ProjectNo;
-        //    TempData["ProjectMainPhases"] = ProjectMainPhases;
-        //    TempData["ProjectSubPhases"] = ProjectSubPhases;
-        //    TempData["CustomerName"] = CustomerName;
-        //    TempData["ProjectId"] = ProjectId;
-
-        //    //return View("~/Views/ProjectPhasesTasks/Tasks.cshtml");
-        //    return View("../ProjectPhasesTasks/Tasks", 2);
-        //}
         [HttpPost("GetProjectsSearch")]
         public IActionResult GetProjectsSearch(ProjectVM ProjectsSearch)
         {
@@ -1167,14 +1035,6 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var someTask = _projectservice.GetUserProjectsReportW( _globalshared.BranchId_G, "").Result.ToList();
 
-                //var serializer = new JavaScriptSerializer();
-                //serializer.MaxJsonLength = Int32.MaxValue;
-                //var result = new ContentResult
-                //{
-                //    Content = serializer.Serialize(someTask),
-                //    ContentType = "application/json"
-                //};
-                //return result;
             return Ok(someTask);
             }
         [HttpGet("CheckPercentage")]
@@ -1230,103 +1090,7 @@ namespace TaamerProject.API.Controllers
 
             return Ok(AllPojects);
         }
-        //public IActionResult GetAllProjectUsersData(int_globalshared.UserId_G)
-        //{
-        //     ouddddd
-        //    try
-        //    {
-        //        List<ProjectVM> Proj=new List<ProjectVM>();
-        //        using (SqlConnection con = new SqlConnection(Con))
-        //        {
-        //            using (SqlCommand command = new SqlCommand())
-        //            {
-        //                command.CommandType = CommandType.StoredProcedure;
-        //                command.CommandText = "Rpt_ProjectsUsers";
-        //                command.Connection = con;
-        //                //if(us)
-        //                command.Parameters.Add(new SqlParameter("@userid",_globalshared.UserId_G));
-        //                con.Open();
-        //                SqlDataAdapter a = new SqlDataAdapter(command);
-        //                DataSet ds = new DataSet();
-        //                a.Fill(ds);
-        //                DataTable dt = new DataTable();
-        //                dt = ds.Tables[0];
-        //                var x = dt.Rows.ToString();
-        //                foreach (DataRow dr in dt.Rows)
-        //                {
-        //                    Proj.Add(new ProjectVM
-        //                    {
-        //                        ProjectId =Convert.ToInt32((dr[0]).ToString()),
-        //                        ProjectNo = dr[1].ToString(),
-        //                        ProjectTypesName = dr[2].ToString(),
-        //                        ProjectDescription = dr[3].ToString(),
-        //                        CustomerName = dr[4].ToString(),
-        //                        ProjectSubTypeName = dr[5].ToString(),
-        //                        ProjectMangerName = dr[6].ToString(),
-        //                        NoOfDays =Convert.ToInt32(dr[7].ToString()),
-        //                        FirstProjectDate = dr[8].ToString(),
-        //                        FirstProjectExpireDate = dr[9].ToString(),
-
-        //                    });
-        //                }
-        //            }
-        //        }
-        //        return Ok(Proj );
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return Ok(null );
-        //    }
-
-        //}
-
-        //public IActionResult GetAllProjectUsersDataw()
-        //{
-        //    try
-        //    {
-        //        List<ProjectVM> Proj = new List<ProjectVM>();
-        //        using (SqlConnection con = new SqlConnection(Con))
-        //        {
-        //            using (SqlCommand command = new SqlCommand())
-        //            {
-        //                command.CommandType = CommandType.StoredProcedure;
-        //                command.CommandText = "Rpt_ProjectsUsers";
-        //                command.Connection = con;
-        //                //if(us)
-        //                command.Parameters.Add(new SqlParameter("@userid", DBNull.Value));
-        //                con.Open();
-        //                SqlDataAdapter a = new SqlDataAdapter(command);
-        //                DataSet ds = new DataSet();
-        //                a.Fill(ds);
-        //                DataTable dt = new DataTable();
-        //                dt = ds.Tables[0];
-        //                foreach (DataRow dr in dt.Rows)
-        //                {
-        //                    Proj.Add(new ProjectVM
-        //                    {
-        //                        ProjectId = Convert.ToInt32((dr[0]).ToString()),
-        //                        ProjectNo = dr[1].ToString(),
-        //                        ProjectTypesName = dr[2].ToString(),
-        //                        ProjectDescription = dr[3].ToString(),
-        //                        CustomerName = dr[4].ToString(),
-        //                        ProjectSubTypeName = dr[5].ToString(),
-        //                        ProjectMangerName = dr[6].ToString(),
-        //                        NoOfDays = Convert.ToInt32(dr[7].ToString()),
-        //                        FirstProjectDate = dr[8].ToString(),
-        //                        FirstProjectExpireDate = dr[9].ToString(),
-
-        //                    });
-        //                }
-        //            }
-        //        }
-        //        return Ok(Proj );
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return Ok(null );
-        //    }
-
-        //}
+        
         [HttpGet("GetAllProjectsByDateSearch")]
         public IActionResult GetAllProjectsByDateSearch(string DateFrom, string DateTo)
             {
@@ -1848,15 +1612,6 @@ namespace TaamerProject.API.Controllers
         }
 
 
-
-
-
-        //public IActionResult UpdateImportant(int ProjectId,int Important)
-        //{
-        //    var result = _projectservice.UpdateImportant(ProjectId, Important,_globalshared.UserId_G,  _globalshared.BranchId_G);
-        //    return Ok(new { result.Result, result.ReasonPhrase });
-        //}
-
         [HttpPost("ChangeImportant")]
         public IActionResult ChangeImportant(ImportantProject impproject)       
         {
@@ -1929,55 +1684,7 @@ namespace TaamerProject.API.Controllers
 
                 return Ok(Privs );
             }
-
-        //[HttpPost]
-        //public JsonResult PDFDownloadProjectCustomer(string branch, List<ProjectVM> listDataed)
-        //{
-        //HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-        //byte[] pdfByte = { 0 };
-
-        //    int orgId = _BranchesService.GetOrganizationId( _globalshared.BranchId_G);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-
-        //    string[] infoDoneTasksReport = { _globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, " مشاريع المستخدم", objOrganization.LogoUrl, branch };
-        //    string[] columnDoneTasksReportHeader = { "رقم المشروع", "نوع المشروع", "نوع المشروع الفرعى", "نسبة الانجاز", "مدة المشروع بالأيام", "وصف المشروع" };
-        //    string[] columnHeader = { "ProjectNo", "ProjectTypesName", "ProjectSubTypeName", "BuildingPercent", "TimeStr", "ProjectDescription" };
-        //    //List<rptGetEmpDoneTasksVM> DataDoneTasks = _ProjectPhasesTasksService.GetDoneTasksDGV(FromDate, ToDate,_globalshared.UserId_G, Con).ToList();
-        //    // var myList = JsonConvert.DeserializeObject<List<ProjectVM>>(listedData);
-        //    DataTable listArchive = ToDataTable(listDataed);
-
-        //    pdfByte = pdfClass.DataProjectCustomer(infoDoneTasksReport, columnDoneTasksReportHeader, listArchive, columnHeader);
-
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, pdfByte);
-        //    //return file 
-        //    string FilePathReturn = FileName;
-
-        //    return Ok(new { fileName = FilePathReturn, errorMessage = "" }); ;
-
-        //}
-
-        //[HttpGet]
-        //public FileResult DownloadPDFProjectCustomer(string fileName)
-        //{
-        //    string fullPath = Path.Combine(Server.MapPath("~/TempFiles"), fileName);
-        //    byte[] FileBytes = System.IO.File.ReadAllBytes(fullPath);
-        //    //return the file for download, this is an Excel 
-        //    //so I set the file content type to "application/vnd.ms-excel"
-        //    return File(FileBytes, "application/pdf");
-
-        //}
+       
         [HttpGet("ToDataTable")]
         public DataTable ToDataTable<T>(List<T> items)
             {
@@ -2002,180 +1709,7 @@ namespace TaamerProject.API.Controllers
 
                 return dataTable;
             }
-        ////مشاريع المستخدمين
-        //public IActionResult PrintUserProjects(int_globalshared.UserId_G, string UserName, string DateFrom, string DateTo)
-        //{
-        //    int orgId = _branchesService.GetOrganizationId( _globalshared.BranchId_G);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { _globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    List<ProjectVM> AllPojects =_globalshared.UserId_G == 0 ? _projectservice.GetUserProjectsReportW2( _globalshared.BranchId_G, DateFrom, DateTo).ToList() : _projectservice.GetUserProjectsReport(UserId,  _globalshared.BranchId_G, DateFrom, DateTo).ToList();
-
-        //    ReportPDF = ProjectsReports.PrintUserProjects(AllPojects, UserName, infoDoneTasksReport, DateFrom, DateTo);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-
-
-        ////جميع المهام
-        //public IActionResult PrintAllEmpTasksRpt(int_globalshared.UserId_G, int? status, string UserName, string DateFrom, string DateTo)
-        //{
-        //    int orgId = _branchesService.GetOrganizationId( _globalshared.BranchId_G);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { _globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        //    List<ProjectPhasesTasksVM> AllPojects = new List<ProjectPhasesTasksVM>();
-        //    List<ProjectPhasesTasksVM> AllPojects2 = new List<ProjectPhasesTasksVM>();
-        //    if (status == null)
-        //    {
-        //        AllPojects =_globalshared.UserId_G == 0 ? _projectPhasesTasksservice.GetAllTasksByProjectIdW2(DateFrom, DateTo,  _globalshared.BranchId_G).ToList() : _projectPhasesTasksservice.GetAllProjectPhasesTasksU2(UserId,  _globalshared.BranchId_G, _globalshared.Lang_G, DateFrom, DateTo).ToList();
-        //    }
-
-        //    else if (status == 8)
-        //    {
-        //        if (DateFrom == "" && DateTo == "")
-        //        {
-        //            AllPojects = _projectPhasesTasksservice.GetAllLateProjectPhasesTasksbyUserId2(DateTo,  _globalshared.BranchId_G,_globalshared.UserId_G, _globalshared.Lang_G).ToList();
-
-
-        //        }
-        //        else
-        //        {
-        //            AllPojects = _projectPhasesTasksservice.GetLateTasksByUserIdrptsearch(UserId, status, _globalshared.Lang_G, DateFrom, DateTo,  _globalshared.BranchId_G).ToList();
-
-
-        //        }
-
-        //    }
-        //    else
-        //    {
-        //        AllPojects = _projectPhasesTasksservice.GetAllProjectPhasesTasksbystatus(UserId,  _globalshared.BranchId_G, status, _globalshared.Lang_G, DateFrom, DateTo).ToList();
-        //    }
-        //    var wo2 = _workOrdersService.GetWorkOrderReport_print(UserId, status ?? 0,  _globalshared.BranchId_G, _globalshared.Lang_G, DateFrom, DateTo);
-        //    AllPojects2 = AllPojects.Union(wo2).ToList();
-        //    ReportPDF = ProjectsReports.PrintAllEmpTasksRpt(AllPojects2, UserName, status, infoDoneTasksReport, DateFrom, DateTo);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-        ////مهام المشروع
-        //public IActionResult PrintProjectsTasksReport(int ProjectId, string ProjectName, string DateFrom, string DateTo)
-        //{
-        //    int orgId = _branchesService.GetOrganizationId( _globalshared.BranchId_G);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { _globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        //    //List<ProjectPhasesTasksVM> AllPojects = ProjectId == 0 ? _projectPhasesTasksservice.GetAllProjectPhasesTasks( "", _globalshared.BranchId_G, _globalshared.Lang_G).ToList(): _projectPhasesTasksservice.GetAllTasksPhasesByProjectId(ProjectId,  _globalshared.BranchId_G).ToList();
-        //    List<ProjectPhasesTasksVM> AllPojects = ProjectId == 0 ? _projectPhasesTasksservice.GetAllProjectPhasesTasks_WithB("",  _globalshared.BranchId_G, _globalshared.Lang_G).ToList() : _projectPhasesTasksservice.GetAllTasksPhasesByProjectId(ProjectId,  _globalshared.BranchId_G).ToList();
-        //    if (!(DateFrom == "" || DateTo == ""))
-        //    {
-        //        AllPojects = AllPojects.ToList().Where(m => (string.IsNullOrEmpty(DateFrom) || (!string.IsNullOrEmpty(m.TaskStart) && DateTime.ParseExact(m.TaskStart, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(DateFrom, "yyyy-MM-dd", CultureInfo.InvariantCulture))) && (string.IsNullOrEmpty(DateTo) || string.IsNullOrEmpty(m.EndDateCalc) || DateTime.ParseExact(m.EndDateCalc, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(DateTo, "yyyy-MM-dd", CultureInfo.InvariantCulture))).ToList();
-        //    }
-        //    var wo = _workOrdersService.GetWorkOrderReport_ptoject(ProjectId, _globalshared.Lang_G, "", "",  _globalshared.BranchId_G).ToList();
-        //    AllPojects.Union(wo);
-        //    //ReportPDF = ProjectsReports.PrintProjectsTasksReport(AllPojects, ProjectName, infoDoneTasksReport);
-        //    ReportPDF = ProjectsReports.PrintProjectsTasksReport2(AllPojects, ProjectName, infoDoneTasksReport, "", "");
-
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-        ////تكلفة المشروع
-        //public IActionResult PrintCostProjects(int? ProjectTypeId, int? SubProjectTypeId, int? CustomerId, string ProjectNo, string DateFrom, string DateTo)
-        //{
-        //    int orgId = _branchesService.GetOrganizationId( _globalshared.BranchId_G);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { _globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        //    //var userBranchs = _branchesService.GetAllBranchesByUserId(_globalshared.Lang_G,_globalshared.UserId_G);
-        //    //var someProject = _projectservice.GetProjectsSearch(ProjectsSearch, 0, Con, _globalshared.Lang_G);
-        //    //foreach (var userBranch in userBranchs)
-        //    //{
-        //    //    var AllPojects = _projectservice.GetProjectsSearch(ProjectsSearch, userBranch. _globalshared.BranchId_G, Con, _globalshared.Lang_G).ToList();
-        //    //    var Projects = someProject.Union(AllPojects);
-        //    //    someProject = Projects.ToList();
-        //    //}
-        //    ProjectVM ProjectsSearch = new ProjectVM();
-        //    ProjectsSearch.ProjectTypeId = ProjectTypeId;
-        //    ProjectsSearch.SubProjectTypeId = SubProjectTypeId;
-        //    ProjectsSearch.CustomerId = CustomerId;
-        //    if (ProjectNo == "")
-        //    {
-        //        ProjectsSearch.ProjectNo = null;
-        //    }
-        //    else
-        //    {
-        //        ProjectsSearch.ProjectNo = ProjectNo;
-
-        //    }
-        //    ProjectsSearch.DateFrom_Search = DateFrom;
-        //    ProjectsSearch.DateTo_Search = DateTo;
-
-        //    var someProject = _projectservice.GetProjectsSearch(ProjectsSearch,  _globalshared.BranchId_G, Con, _globalshared.Lang_G).ToList();
-
-        //    if (!(ProjectsSearch.DateFrom_Search == "" || ProjectsSearch.DateTo_Search == "" || ProjectsSearch.DateFrom_Search == null || ProjectsSearch.DateTo_Search == null))
-        //    {
-        //        someProject = someProject.ToList().Where(s => DateTime.ParseExact(s.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) >= DateTime.ParseExact(ProjectsSearch.DateFrom_Search, "yyyy-MM-dd", CultureInfo.InvariantCulture) && DateTime.ParseExact(s.ProjectDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) <= DateTime.ParseExact(ProjectsSearch.DateTo_Search, "yyyy-MM-dd", CultureInfo.InvariantCulture)).ToList();
-        //    }
-
-
-        //    List<ProjectVM> res = someProject.ToList();
-
-        //    ReportPDF = ProjectsReports.PrintCostProjects(res, (ProjectsSearch.ProjectNo == null ? "" : res[0].CustomerName), infoDoneTasksReport);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
+        
         [HttpGet("GetAllSuperContractor")]
         public IActionResult GetAllSuperContractor(string? SearchText)
             {
@@ -2413,38 +1947,6 @@ namespace TaamerProject.API.Controllers
             var result = _projectservice.GetProjectLocation(ProjectId);
             return Ok(result);
         }
-
-
-        //public IActionResult PrintProjDist(int ProjectId, decimal ContractValue, decimal CostE, decimal CostS, string ProjectNo, string TimeStr)
-        //{HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-        //    int orgId = _branchesService.GetOrganizationId( _globalshared.BranchId_G);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { _globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    List<FollowProjVM> followproj = _followProjService.GetAllFollowProjByProId(ProjectId).ToList();
-
-        //    ReportPDF = ProjectsReports.PrintProjDist(followproj, ContractValue, CostE, CostS, ProjectNo, TimeStr, infoDoneTasksReport);
-
-        //    //List<ProjectVM> AllPojects =_globalshared.UserId_G == 0 ? _projectservice.GetUserProjectsReportW( _globalshared.BranchId_G, "").ToList() : _projectservice.GetUserProjectsReport(UserId,  _globalshared.BranchId_G, "").ToList();
-
-        //    //ReportPDF = ProjectsReports.PrintUserProjects(AllPojects, "", infoDoneTasksReport);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
 
         public class ListOfFollowProj
         {

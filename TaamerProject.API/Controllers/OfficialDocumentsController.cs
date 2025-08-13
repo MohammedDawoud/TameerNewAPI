@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaamerProject.API.Helper;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
 using System.Net;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class OfficialDocumentsController : ControllerBase
     {
@@ -40,11 +38,6 @@ namespace TaamerProject.API.Controllers
             }));
         }
 
-        //public IActionResult SaveOfficialDocuments(OfficialDocuments officialDocuments)
-        //{
-        //    var result = _officialDocumentsservice.SaveOfficialDocuments(officialDocuments);
-        //    return Ok(new { result.Result, result.Message }, OkRequestBehavior.AllowGet);
-        //}
         [HttpPost("SaveOfficialDocuments")]
         public IActionResult SaveOfficialDocuments([FromForm]OfficialDocuments officialDocuments, List<IFormFile>? postedFiles)
         {

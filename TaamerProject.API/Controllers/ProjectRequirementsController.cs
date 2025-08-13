@@ -1,21 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TaamerProject.Service.Interfaces;
 using TaamerProject.API.Helper;
-//using System.Drawing;
 using iTextSharp.text;
 using TaamerProject.Models;
 using System.Net;
 using iTextSharp.text.pdf;
 using TaamerProject.Models.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using TaamerProject.Service.Services;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class ProjectRequirementsController : ControllerBase
     {
@@ -67,10 +64,6 @@ namespace TaamerProject.API.Controllers
             filesHelper = new FilesHelper(DeleteURL, DeleteType, StorageRoot, UrlBase, tempPath, serverMapPath);
 
             }
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
 
         [HttpGet("GetAllProjectRequirement")]
         public IActionResult GetAllProjectRequirement()
@@ -92,183 +85,55 @@ namespace TaamerProject.API.Controllers
         }
         [HttpGet("GetAllProjectRequirementByOrderId")]
         public IActionResult GetAllProjectRequirementByOrderId(int OrderId)
-            {
-            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            return Ok(_projectRequirementsservice.GetAllProjectRequirementByOrder(_globalshared.BranchId_G, OrderId).Result);
-            }
+        {
+        HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+        return Ok(_projectRequirementsservice.GetAllProjectRequirementByOrder(_globalshared.BranchId_G, OrderId).Result);
+        }
         [HttpGet("GetProjectRequirementByProjectSubTypeId")]
         public IActionResult GetProjectRequirementByProjectSubTypeId(int ProjectSubTypeId, string? SearchText)
-            {
-            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            return Ok(_projectRequirementsservice.GetProjectRequirementByProjectSubTypeId(ProjectSubTypeId, SearchText??"",_globalshared.BranchId_G).Result);
-            }
+        {
+        HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+        return Ok(_projectRequirementsservice.GetProjectRequirementByProjectSubTypeId(ProjectSubTypeId, SearchText??"",_globalshared.BranchId_G).Result);
+        }
         [HttpGet("GetProjectRequirementByTaskId")]
         public IActionResult GetProjectRequirementByTaskId(int TaskId)
-            {
-            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            return Ok(_projectRequirementsservice.GetProjectRequirementByTaskId(TaskId,_globalshared.BranchId_G).Result);
-            }
+        {
+        HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+        return Ok(_projectRequirementsservice.GetProjectRequirementByTaskId(TaskId,_globalshared.BranchId_G).Result);
+        }
 
         [HttpGet("GetProjectRequirementByTaskId_Count")]
         public int GetProjectRequirementByTaskId_Count(int TaskId)
-            {
-            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var Result = _projectRequirementsservice.GetProjectRequirementByTaskId(TaskId,_globalshared.BranchId_G).Result.Count();
-                return Result;
-            }
+        {
+        HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+        var Result = _projectRequirementsservice.GetProjectRequirementByTaskId(TaskId,_globalshared.BranchId_G).Result.Count();
+            return Result;
+        }
         [HttpGet("GetProjectRequirementByOrderId_Count")]
         public int GetProjectRequirementByOrderId_Count(int Orderid)
-            {
-            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            var Result = _projectRequirementsservice.GetProjectRequirementOrderId(Orderid,_globalshared.BranchId_G).Result.Count();
-                return Result;
-            }
+        {
+        HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+        var Result = _projectRequirementsservice.GetProjectRequirementOrderId(Orderid,_globalshared.BranchId_G).Result.Count();
+            return Result;
+        }
 
 
-        //[HttpPost("UploadFiles")]
-        //public IActionResult UploadFiles([FromBody]List<ProjectRequirements> Proreq)
-        //    {
-        //    HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-        //    List<ProjectRequirements> Prorjeq = new List<ProjectRequirements>();
-        //        var count = Convert.ToInt32(Request.Form["rowcount"]) - 1;
-        //        int counter = 1;
-
-        //        for (int x = 1; x <= count; x++)
-        //        {
-        //            ProjectRequirements pro = new ProjectRequirements();
-        //            pro.RequirementId = Convert.ToInt32(Request.Form["RequirementId" + x + ""]);
-        //            pro.ProjectTypeId = Convert.ToInt32(Request.Form["ProjectTypeId" + x + ""]);
-
-        //            pro.ProjectSubTypeId = Convert.ToInt32(Request.Form["ProjectSubTypeId" + x + ""]);
-        //            pro.NameAr = Request.Form["NameAr" + x + ""];
-        //            pro.NameEn = Request.Form["NameEn" + x + ""];
-        //            var cos = Request.Form["Cost" + x + ""];
-        //            if (cos != null && cos != "")
-        //            {
-        //                pro.Cost = Convert.ToDecimal(cos);
-        //            }
-        //            var fileline = Convert.ToInt32(Request.Form["Fileline" + x + ""]);
-        //            if (fileline == x)
-        //            {
-
-        //                if (Request.Files.Count > 0)
-        //                {
-        //                    try
-        //                    {
-        //                        //List<string> attach = new List<string>();
-        //                        ////  Get all files from Request object  
-        //                        HttpFileCollectionBase files = Request.Files;
-        //                        var model = Request.Form["Proreq"];
-
-
-        //                        for (int i = 0; i < files.Count; i++)
-        //                        {
-
-        //                            //string path = AppDomain.CurrentDomain.BaseDirectory + "Uploads/";  
-        //                            //string filename = Path.GetFileName(Request.Files[i].FileName);  
-        //                            if (i == (counter - 1))
-        //                            {
-        //                                HttpPostedFileBase file = files[counter - 1];
-        //                                string fname;
-
-        //                                // Checking for Internet Explorer  
-        //                                if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
-        //                                {
-        //                                    string[] testfiles = file.FileName.Split(new char[] { '\\' });
-        //                                    fname = testfiles[testfiles.Length - 1];
-        //                                }
-        //                                else
-        //                                {
-        //                                    fname = file.FileName;
-        //                                }
-
-        //                                // Get the complete folder path and store the file inside it.  
-        //                                fname = Path.Combine(Server.MapPath("~/Uploads/ProjectRequirements/"), fname);
-        //                                file.SaveAs(fname);
-        //                                string atturl = Path.Combine(Server.MapPath("/Uploads/ProjectRequirements/"), fname);
-        //                                //attach.Add(atturl);
-        //                                pro.AttachmentUrl = "/Uploads/ProjectRequirements/" + files[counter - 1].FileName;
-
-        //                            }
-        //                        }
-        //                        counter++;
-        //                    }
-        //                    catch
-        //                    {
-
-        //                    }
-        //                }
-
-        //            }
-
-        //            Prorjeq.Add(pro);
-
-        //        }
-        //        var result = _projectRequirementsservice.SaveProjectRequirement2(Prorjeq, UserId,_globalshared.BranchId_G);
-        //        if (Lang == "ltr" && result.Result == true)
-        //        {
-        //            result.Message = "Saved Successfully";
-        //        }
-        //        else if (Lang == "ltr" && result.Result == false)
-        //        {
-        //            result.Message = "Saved Falied";
-        //        }
-        //        return Ok(result);
-        //    }
-
-
-
-            [HttpPost("SaveAllProjectRequirement")]
-            public IActionResult SaveAllProjectRequirement([FromBody]List<ProjectRequirements> Proreq)
-            {
-            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-
-            //HttpPostedFileBase file = Request.Files["UploadedFile"];
-                //IList<HttpPostedFileBase> additionalDocs = Request.Files.GetMultiple("UploadedFile");
-                //var file = Request.Files;
-                //if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
-                //{
-                //    if (Request.Files["UploadedFile"].ContentLength > 0)
-                //    {
-                //        string fileLocation = Server.MapPath("~/Uploads/ProjectRequirements");
-                //        try
-                //        {
-                //            if (!System.IO.Directory.Exists(fileLocation))
-                //            {
-                //                System.IO.Directory.CreateDirectory(fileLocation);
-                //            }
-                //            var filePath = Server.MapPath("~/Uploads/ProjectRequirements/") + Request.Files["UploadedFile"].FileName;
-                //            Request.Files["UploadedFile"].SaveAs(filePath);
-                //            //projectRequirements.AttachmentUrl = "/Uploads/ProjectRequirements/" + Request.Files["UploadedFile"].FileName;
-                //        }
-                //        catch
-                //        {
-                //            var massage = "";
-                //            if (Lang == "rtl")
-                //            {
-                //                massage = "فشل في رفع المرفقات";
-                //            }
-                //            else
-                //            {
-                //                massage = "Failed To Upload Files";
-                //            }
-                //            return Ok(new GeneralMessage { Result = false, Message = massage } );
-                //        }
-                //    }
-                //}
-
-
-                var result = _projectRequirementsservice.SaveProjectRequirement2(Proreq, _globalshared.UserId_G,_globalshared.BranchId_G);
+       
+    [HttpPost("SaveAllProjectRequirement")]
+    public IActionResult SaveAllProjectRequirement([FromBody]List<ProjectRequirements> Proreq)
+    {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);     
+            var result = _projectRequirementsservice.SaveProjectRequirement2(Proreq, _globalshared.UserId_G,_globalshared.BranchId_G);
             if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.OK)
-                {
-                    result.ReasonPhrase = "Saved Successfully";
-                }
-                else if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    result.ReasonPhrase = "Saved Falied";
-                }
-                return Ok(result);
+            {
+                result.ReasonPhrase = "Saved Successfully";
             }
+            else if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.BadRequest)
+            {
+                result.ReasonPhrase = "Saved Falied";
+            }
+            return Ok(result);
+    }
 
         [HttpPost("SaveProjectRequirement")]
         public IActionResult SaveProjectRequirement(IFormFile? UploadedFile, [FromForm] string? RequirementId
@@ -336,29 +201,7 @@ namespace TaamerProject.API.Controllers
         public IActionResult SaveProjectRequirement2(ProjectRequirements projectRequirements)
             {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //HttpPostedFileBase file = Request.Files["UploadedFile"];
-            //if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
-            //{
-            //    if (Request.Files["UploadedFile"].ContentLength > 0)
-            //    {
-            //        string fileLocation = Server.MapPath("~/Uploads/ProjectRequirements/") + Request.Files["UploadedFile"].FileName;
-            //        try
-            //        {
-            //            if (System.IO.File.Exists(fileLocation))
-            //            {
-            //                System.IO.File.Delete(fileLocation);
-            //            }
-            //            Request.Files["UploadedFile"].SaveAs(fileLocation);
-            //            projectRequirements.AttachmentUrl = "/Uploads/ProjectRequirements/" + Request.Files["UploadedFile"].FileName;
-            //        }
-            //        catch
-            //        {
-            //            return Ok(new GeneralMessage { Result = false, Message = "فشل في رفع المرفقات" } );
-            //        }
-            //    }
-            //}
-            //var result = _projectRequirementsservice.SaveProjectRequirement(projectRequirements, UserId,_globalshared.BranchId_G);
-            //return Ok(new { result.Result, result.Message } );
+           
             var resultList = new List<ViewDataUploadFilesResult>();
                 var CurrentContext = HttpContext;
                 //filesHelper.UploadAndShowResults(CurrentContext, resultList);

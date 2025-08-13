@@ -115,4 +115,78 @@ namespace TaamerProject.Models
         public int? AppearInInvoicePrint { get; set; }
 
     }
+
+    public class UsersLoginVM
+    {
+        public int UserId { get; set; }
+        public string? FullName { get; set; }
+        public int? JobId { get; set; }
+        public int? DepartmentId { get; set; }
+        public string? Email { get; set; }
+        public string? Mobile { get; set; }
+        public int? GroupId { get; set; }
+        public int? BranchId { get; set; }
+        public string? ImgUrl { get; set; }
+        public int? EmpId { get; set; }
+        public string? UserName { get; set; }
+        public string? Password { get; set; }
+        public int? Status { get; set; }
+        public int? Session { get; set; }
+        public string? ExpireDate { get; set; }
+        public string? Notes { get; set; }
+        public string? DepartmentName { get; set; }
+        public string? JobName { get; set; }
+        public string? GroupName { get; set; }
+        public string? BranchName { get; set; }
+        public bool? IsOnline { get; set; }
+        public string? LastSeenDate { get; set; }
+        public string? LastLoginDate { get; set; }
+        public bool? ISOnlineNew { get; set; }
+        public bool? IsAdmin { get; set; }
+        public DateTime? ActiveTime { get; set; }
+        public string? BranchManager { get; set; }
+        public string? StampUrl { get; set; }
+        public int? TimeId { get; set; }
+        public string? AccStatusConfirm { get; set; }
+
+        public string? SupEngineerName { get; set; }
+        public string? SupEngineerNationalId { get; set; }
+        public string? SupEngineerCert { get; set; }
+        public string? FullNameAr { get; set; }
+        public string? FullNameEn { get; set; }
+
+        public string? DeviceId { get; set; }
+
+        public string? AddUsers { get; set; }
+
+        public string? tokenkey { get; set; }
+        public List<int> UserPrivilliges { get; set; }
+        public bool? IsActivated { get; set; }
+        public string? EncryptedCode { get; set; }
+
+        public int? AppearWelcome { get; set; }
+
+        public string? QrCodeUrl { get; set; }
+
+        public int? DeviceType { get; set; }
+        public string? DeviceTokenId { get; set; }
+
+        public int? AppearInInvoicePrint { get; set; }
+
+        public int UserLoginId { get; set; }
+        public string? NameAr { get; set; }
+        public string? NameEn { get; set; }
+        public string? CompanyName { get; set; }
+        public string? NationalId { get; set; }
+        public string? MainActivity { get; set; }
+        public string? SubMainActivity { get; set; }
+        public string? CommercialId { get; set; }
+        public Int16? Type { get; set; }
+        public string? AuthenticatorSecret { get; set; }
+        public bool? Is2FAEnabled { get; set; }
+        public string? TypeName { get; set; }
+        public string? StatusName { get; set; }
+
+
+    }
 }

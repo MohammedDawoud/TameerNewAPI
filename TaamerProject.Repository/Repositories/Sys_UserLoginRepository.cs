@@ -38,9 +38,35 @@ namespace TaamerProject.Repository.Repositories
                 Status = x.Status,
                 AuthenticatorSecret = x.AuthenticatorSecret,
                 Is2FAEnabled = x.Is2FAEnabled??false,
-                TypeName = x.Type == 1 ? "عميل":"مقاول",
+                TypeName = x.Type == 2 ? "عميل": x.Type == 3 ? "مقاول" : "غير معروف",
                 StatusName = x.Status == 1 ? "نشط" : "غير نشط",
             }).ToList();
+            return UserLogin;
+        }
+        public async Task<UsersLoginVM> GetUserLogin(string Email, string Password, int Type)
+        {
+            var UserLogin = _TaamerProContext.Sys_UserLogin.Where(s => s.IsDeleted == false && s.Email == Email && s.Password==Password && s.Type == Type).Select(x => new UsersLoginVM
+            {
+                UserLoginId = x.UserLoginId,
+                Email = x.Email,
+                Password = x.Password,
+                NameAr = x.NameAr,
+                FullNameAr = x.NameAr,
+                NameEn = x.NameEn,
+                CompanyName = x.CompanyName,
+                Mobile = x.Mobile,
+                NationalId = x.NationalId,
+                MainActivity = x.MainActivity,
+                SubMainActivity = x.SubMainActivity,
+                CommercialId = x.CommercialId,
+                Notes = x.Notes,
+                Type = x.Type,
+                Status = x.Status,
+                //AuthenticatorSecret = x.AuthenticatorSecret,
+                //Is2FAEnabled = x.Is2FAEnabled ?? false,
+                TypeName = x.Type == 2 ? "عميل" : x.Type == 3 ? "مقاول" : "غير معروف",
+                StatusName = x.Status == 1 ? "نشط" : "غير نشط",
+            }).FirstOrDefault();
             return UserLogin;
         }
 

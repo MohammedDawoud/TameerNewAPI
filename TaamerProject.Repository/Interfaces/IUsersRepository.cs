@@ -21,6 +21,8 @@ namespace TaamerProject.Repository.Interfaces
         Task<IEnumerable<UsersVM>> GetAllOnlineUsers(int UserId);
         Task<int> GetOnlineUsers();
         Task<UsersVM> GetUser(string UserName);
+        Task<UsersLoginVM> GetUserLogin(string username, string password);
+
         Task<UsersVM >GetUser_tadmin(string UserName);
 
         Task<int> GetAllUsersCount();

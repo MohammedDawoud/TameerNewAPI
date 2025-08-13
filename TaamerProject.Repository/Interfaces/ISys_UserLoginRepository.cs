@@ -10,6 +10,7 @@ namespace TaamerProject.Repository.Interfaces
     public interface ISys_UserLoginRepository
     {
         Task<IEnumerable<Sys_UserLoginVM>> GetAllUserLogin(int Type);
+        Task<UsersLoginVM> GetUserLogin(string Email, string Password, int Type);
 
     }
 }

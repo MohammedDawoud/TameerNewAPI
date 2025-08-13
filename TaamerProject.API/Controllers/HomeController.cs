@@ -1,23 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
-using System.Globalization;
 using System.Net;
-using System.Net.Http;
 using System.Reflection;
-//using System.Web.Helpers;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class HomeController : ControllerBase
     {
@@ -654,85 +649,7 @@ namespace TaamerProject.API.Controllers
             }
             //Source data returned as JSON  
             return Ok(iData);
-        }
-
-        //public ActionResult IndexUser()
-        //{
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_FiscalyearsService.GetYearID(Convert.ToInt32(FiscalId)));
-        //    var checkadmin = Request.Cookies["HomeIndex"].Value;
-        //    if (checkadmin == "1")
-        //    {
-        //        return RedirectToAction("Index", "Home");
-        //    }
-
-        //    TameerProContext tameerProContext = new TameerProContext(Con);
-        //    int? Raseed = 0;
-        //    int? Consumed = 0;
-        //    var year = _fiscalyearsService.GetActiveYear();
-        //    //if (year != null)
-        //    //{
-        //    //    var yearslist = tameerProContext.FiscalYears.Where(w => w.YearId <= year.YearId).Select(s => s.YearId).ToList();
-        //    //    try
-        //    //    {
-        //    //        Raseed = tameerProContext.Emp_VacationsStat.Where(w => w.UserId == _globalshared.UserId_G && yearslist.Contains(w.Year)).Sum(s => s.Balance);
-        //    //    }
-        //    //    catch (Exception ex)
-        //    //    {
-        //    //        Raseed = -1000000;
-        //    //    }
-
-        //    //    try
-        //    //    {
-        //    //        Consumed = tameerProContext.Emp_VacationsStat.Where(w => w.UserId == _globalshared.UserId_G && yearslist.Contains(w.Year)).Sum(s => s.Consumed);
-        //    //    }
-        //    //    catch (Exception ex)
-        //    //    {
-        //    //        Consumed = -1000000;
-        //    //    }
-
-        //    //}
-        //    //ViewBag.Raseed = Raseed;
-        //    //ViewBag.Consumed = Consumed;
-
-
-        //    ViewBag.Users = _UsersService.GetAllUsers();
-        //    ViewBag.AllUserTasks = _ProjectPhasesTasksService.GetTasksByUserId( _globalshared.UserId_G, 0, BranchId);
-        //    ViewBag.Statistics = _homerservice.GetAllStatistics(BranchId, YearNEW);
-        //    ViewBag.UserStatistics = _homerservice.GetAllUserStatistics( _globalshared.UserId_G, BranchId, _globalshared.Lang_G);
-        //    string NDay = DateTime.Now.Day.ToString();
-        //    if (Convert.ToInt32(NDay) < 10)
-        //    {
-        //        NDay = "0" + NDay;
-        //    }
-        //    string NMonth = DateTime.Now.Month.ToString();
-        //    if (Convert.ToInt32(NMonth) < 10)
-        //    {
-        //        NMonth = "0" + NMonth;
-        //    }
-        //    ViewBag.AllUserNewTasks = _ProjectPhasesTasksService.GetNewTasksByUserId(DateTime.Now.Year.ToString() + "-" + NMonth + "-" + NDay, _globalshared.UserId_G, BranchId, _globalshared.Lang_G);
-        //    ViewBag.AllUserLateTasks = _ProjectPhasesTasksService.GetLateTasksByUserIdHome(DateTime.Now.Year.ToString() + "-" + NMonth + "-" + NDay, _globalshared.UserId_G, BranchId, _globalshared.Lang_G);
-        //    ViewBag.AllUserLateWorkOrders = _workOrdersService.GetLateWorkOrdersByUserId(DateTime.Now.Year.ToString() + "-" + NMonth + "-" + NDay, _globalshared.UserId_G, BranchId);
-
-        //    return View();
-        //}
-
-
-
-        //public ActionResult ChangeLanguage(string Lang)
-        //{
-        //    try
-        //    {
-        //        var cultureInfo = new CultureInfo(Lang);
-        //        Thread.CurrentThread.CurrentUICulture = cultureInfo;
-        //        Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cultureInfo.Name);
-        //        HttpCookie _globalshared.Lang_GCookie = new HttpCookie("culture", _globalshared.Lang_G);
-        //        _globalshared.Lang_GCookie.Expires = DateTime.Now.AddYears(1);
-        //        HttpContext.Response.Cookies.Add(_globalshared.Lang_GCookie);
-        //    }
-        //    catch (Exception) { }
-        //    return Redirect(Request.UrlReferrer.ToString());
-        //}
+        }       
         [HttpGet("GetUserStatistics")]
         public ActionResult GetUserStatistics()
         {
@@ -762,15 +679,9 @@ namespace TaamerProject.API.Controllers
             return Ok(result);
         }
 
-        //public ActionResult Popup()
-        //{
-        //    return View();
-        //}
         [HttpGet("GetOnlineUsers")]
         public ActionResult GetOnlineUsers()
         {
-          //  string Con = ConfigurationManager.ConnectionStrings["TameerProConn"].ConnectionString;
-            //var result = _UsersService.GetOnlineUsers();
             var result = _UsersService.GetAllUsersOnline2().Result.Count();
             return Ok(result);
         }
@@ -1011,53 +922,7 @@ namespace TaamerProject.API.Controllers
 
 
             var FiscalyearsPriv_M = _accountsService.FillAccountSelect(Con, SelectStetment);
-
-            //string ActiveYearID_MJson = new JavaScriptSerializer().Serialize(ActiveYearID_M);
-            //var ActiveYearID_Mcookie = new HttpCookie("ActiveYearID_MKey", ActiveYearID_MJson)
-            //{ Expires = DateTime.Now.AddYears(1)};
-            //HttpContext.Response.Cookies.Add(ActiveYearID_Mcookie);
-
-            //string BackupAlertLoad_MJson = new JavaScriptSerializer().Serialize(BackupAlertLoad_M);
-            //var BackupAlertLoad_Mcookie = new HttpCookie("BackupAlertLoad_MKey", BackupAlertLoad_MJson)
-            //{ Expires = DateTime.Now.AddYears(1) };
-            //HttpContext.Response.Cookies.Add(BackupAlertLoad_Mcookie);
-
-            //string ItemsAccountload_MJson = new JavaScriptSerializer().Serialize(ItemsAccountload_M);
-            //var ItemsAccountload_Mcookie = new HttpCookie("ItemsAccountload_MKey", ItemsAccountload_MJson)
-            //{ Expires = DateTime.Now.AddYears(1) };
-            //HttpContext.Response.Cookies.Add(ItemsAccountload_Mcookie);
-
-            //string ValueAdded_Global_MJson = new JavaScriptSerializer().Serialize(ValueAdded_Global_M);
-            //var ValueAdded_Global_Mcookie = new HttpCookie("ValueAdded_Global_MKey", ValueAdded_Global_MJson)
-            //{ Expires = DateTime.Now.AddYears(1) };
-            //HttpContext.Response.Cookies.Add(ValueAdded_Global_Mcookie);
-
-            //string SystemSettingsByBranchId_MJson = new JavaScriptSerializer().Serialize(SystemSettingsByBranchId_M);
-            //var SystemSettingsByBranchId_Mcookie = new HttpCookie("SystemSettingsByBranchId_MKey", SystemSettingsByBranchId_MJson)
-            //{ Expires = DateTime.Now.AddYears(1) };
-            //HttpContext.Response.Cookies.Add(SystemSettingsByBranchId_Mcookie);
-
-            //string NotificationsCount_MJson = new JavaScriptSerializer().Serialize(NotificationsCount_M);
-            //var NotificationsCount_Mcookie = new HttpCookie("NotificationsCount_MKey", NotificationsCount_MJson)
-            //{ Expires = DateTime.Now.AddYears(1) };
-            //HttpContext.Response.Cookies.Add(NotificationsCount_Mcookie);
-
-            //string AllertCount_MJson = new JavaScriptSerializer().Serialize(AllertCount_M);
-            //var AllertCount_Mcookie = new HttpCookie("AllertCount_MKey", AllertCount_MJson)
-            //{ Expires = DateTime.Now.AddYears(1) };
-            //HttpContext.Response.Cookies.Add(AllertCount_Mcookie);
-
-            //string TasksByUserCount_MJson = new JavaScriptSerializer().Serialize(TasksByUserCount_M);
-            //var TasksByUserCount_Mcookie = new HttpCookie("TasksByUserCount_MKey", TasksByUserCount_MJson)
-            //{ Expires = DateTime.Now.AddYears(1) };
-            //HttpContext.Response.Cookies.Add(TasksByUserCount_Mcookie);
-
-            //string MyInboxCount_MJson = new JavaScriptSerializer().Serialize(MyInboxCount_M);
-            //var MyInboxCount_Mcookie = new HttpCookie("MyInboxCount_MKey", MyInboxCount_MJson)
-            //{ Expires = DateTime.Now.AddYears(1) };
-            //HttpContext.Response.Cookies.Add(MyInboxCount_Mcookie);
-
-
+           
             var result = new
             {
                 Branch_DropLoad = _branchesService.GetAllBranchesByUserId(_globalshared.Lang_G, _globalshared.UserId_G).Result.Select(x => new

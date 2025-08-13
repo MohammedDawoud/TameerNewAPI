@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
@@ -28,39 +27,7 @@ namespace TaamerProject.API.Controllers
             Configuration = _configuration; Con = this.Configuration.GetConnectionString("DBConnection");
 
         }
-        //public ActionResult GetReport(string StartDate, string ToDate, string CCID, string Zerocheck, string LVL)
-        //{
-        //    int costID = Convert.ToInt32(CCID == "" ? "0" : CCID);
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_fiscalyearsservice.GetYearID(Convert.ToInt32(FiscalId)));
-        //    int ZerocheckValue = Convert.ToInt32(Zerocheck == "" ? "0" : Zerocheck);
-        //    var result = _accountsService.GetIncomeStatmentDGVNew(StartDate, ToDate, costID, BranchId, Lang, Con, YearNEW, ZerocheckValue, LVL);
 
-        //    List<IncomeStatmentVM> res = result.ToList();
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    //ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.incomeList(res, StartDate, ToDate, infoDoneTasksReport);//المجاميع
-        //    ViewData["result"] = res;
-
-        //    ViewData["FromDate"] = StartDate;
-
-        //    ViewData["ToDate"] = ToDate;
-
-
-        //    string Date = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-        //    ViewData["Date"] = Date;
-
-        //    var objOrganization2 = _organizationsservice.GetBranchOrganizationDataInvoice(orgId);
-        //    if (objOrganization2 != null)
-        //        ViewData["Org_VD"] = objOrganization2;
-        //    else
-        //        ViewData["Org_VD"] = null;
-
-
-        //    return PartialView("_IncomeStatePDF");
-        //}
         [HttpPost("GetReportIncomeLevels")]
 
         public IActionResult GetReportIncomeLevels([FromForm] string? FromDate, [FromForm] string? ToDate, [FromForm] string? CostCenter, [FromForm] int? ZeroCheck, [FromForm] string? LVL, [FromForm] int? FilteringType, [FromForm] int? FilteringTypeAll, [FromForm] string? FilteringTypeStr, [FromForm] string? FilteringTypeAllStr, [FromForm] string? AccountIds, [FromForm] int? PeriodFillterType, [FromForm] int? PeriodCounter, [FromForm] int? TypeF, [FromForm] string? Filtertxt)
@@ -94,39 +61,5 @@ namespace TaamerProject.API.Controllers
             _reportIncomeLevelsVM.Org_VD = objOrganization2;
             return Ok(_reportIncomeLevelsVM);
         }
-
-
-
-        //public ActionResult GetReportAllIncome(string StartDate, string ToDate, string CCID, string Zerocheck, string LVL)
-        //{
-        //    int costID = Convert.ToInt32(CCID == "" ? "0" : CCID);
-        //    int ZerocheckValue = Convert.ToInt32(Zerocheck == "" ? "0" : Zerocheck);
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_fiscalyearsservice.GetYearID(Convert.ToInt32(FiscalId)));
-        //    var result = _accountsService.GetAllIncomeStatmentDGVNew(StartDate, ToDate, costID, BranchId, Lang, Con, YearNEW, ZerocheckValue, LVL);
-
-        //    List<IncomeStatmentVM> res = result.ToList();
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-
-        //    ViewData["result"] = res;
-
-        //    ViewData["FromDate"] = StartDate;
-
-        //    ViewData["ToDate"] = ToDate;
-
-
-        //    string Date = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-        //    ViewData["Date"] = Date;
-
-        //    var objOrganization2 = _organizationsservice.GetBranchOrganizationDataInvoice(orgId);
-        //    if (objOrganization2 != null)
-        //        ViewData["Org_VD"] = objOrganization2;
-        //    else
-        //        ViewData["Org_VD"] = null;
-
-
-        //    return PartialView("_IncomeStatePDF");
-        //}
     }
 }

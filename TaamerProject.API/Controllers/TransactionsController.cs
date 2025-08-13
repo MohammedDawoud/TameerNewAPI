@@ -1,21 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Identity.Client;
 using System.Globalization;
 using TaamerProject.API.Helper;
-using TaamerProject.API.pdfHandler;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
-using static TaamerProject.API.Controllers.VoucherController;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class TransactionsController : ControllerBase
     {
@@ -103,46 +97,7 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             return Ok(_TransactionsService.GetAllTransSearchByAccIDandCostId_New(AccountId, FromDate ?? "", ToDate ?? ""  , CostCenterId, _globalshared.BranchId_G, _globalshared.YearId_G).Result);
         }
-        //public void AccountTrnsactionReport(string FromDate, string ToDate, int? AccountId, int? CostCenterId)
-        //{
-        //    HttpContext.Session["Reportname"] = "حركة الحسابات";
-        //    HttpContext.Session["AccountId"] = AccountId;
-        //    HttpContext.Session["CostCenterId"] = CostCenterId;
-        //    HttpContext.Session["FromDate"] = FromDate;
-        //    HttpContext.Session["ToDate"] = ToDate;
-        //}
-        //[HttpGet]
-        //public ActionResult GetReport(int? AccountId, string FromDate, string ToDate, int? CostCenterId)
-        //{
-
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_fiscalyearsservice.GetYearID(Convert.ToInt32(FiscalId)));
-        //    var transactions = _TransactionsService.GetAllTransSearch(AccountId, FromDate, ToDate, CostCenterId, BranchId, YearNEW).ToList();
-        //    int orgId = _BranchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.kashf7sab((List<TransactionsVM>)transactions, FromDate, ToDate, "", infoDoneTasksReport);
-
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-
-        //}
-
-
+        
         [HttpPost("GetReportGrid")]
         public ActionResult GetReportGrid([FromForm]int? AccountId, [FromForm] string? FromDate, [FromForm] string? ToDate, [FromForm] int? CostCenterId, [FromForm] string? RasedBefore, [FromForm] string[] Sortedlist, [FromForm] bool? isCheckedYear, [FromForm] bool? isCheckedBranch)
         {
@@ -269,78 +224,7 @@ namespace TaamerProject.API.Controllers
 
             return Ok(_reportGrid);
         }
-
-
-        //[HttpGet]
-        //public ActionResult GetReportGridCustomer(int? AccountId, string FromDate, string ToDate, int? CostCenterId, string RasedBefore, string[] Sortedlist)
-        //{
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_fiscalyearsservice.GetYearID(Convert.ToInt32(FiscalId)));
-        //    var transactions = _TransactionsService.GetAllTransSearch_New(AccountId, FromDate, ToDate, CostCenterId, BranchId, YearNEW).ToList();
-        //    var account = _accountsService.GetAccountById((int)AccountId);
-        //    string s = Sortedlist[0];
-        //    string[] values = s.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        //    List<string> vale = new List<string>();
-        //    List<TransactionsVM> _TransactionsVM = new List<TransactionsVM>();
-        //    foreach (var item in values)
-        //    {
-        //        string Intitem = string.Empty;
-        //        for (int i = 0; i < item.Length; i++)
-        //        {
-        //            if (Char.IsDigit(item[i]))
-        //                Intitem += item[i];
-        //        }
-        //        vale.Add(Intitem);
-        //    }
-        //    int GridLength = 0;
-
-        //    GridLength = transactions.Count();
-        //    for (int i = 0; i < GridLength; i++)
-        //    {
-        //        _TransactionsVM.Add(transactions.Where(d => d.TransactionId == Convert.ToInt32(vale[i])).FirstOrDefault());
-        //    }
-        //    int orgId = _BranchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    ViewData["TransactionVM"] = _TransactionsVM.ToList();
-        //    ViewData["StartDate"] = FromDate;
-        //    ViewData["EndDate"] = ToDate;
-        //    ViewData["RasedBefore"] = RasedBefore;
-        //    Decimal result = Decimal.Parse(RasedBefore, CultureInfo.InvariantCulture.NumberFormat);
-        //    ViewData["Result"] = result;
-
-
-        //    ViewData["AccountName"] = account.NameAr;
-        //    ViewData["AccountCode"] = account.Code;
-
-
-
-        //    var objOrganization2 = _organizationsservice.GetBranchOrganizationDataInvoice(orgId);
-        //    if (objOrganization2 != null)
-        //        ViewData["Org_VD"] = objOrganization2;
-        //    else
-        //        ViewData["Org_VD"] = null;
-
-        //    ViewData["DateTimeNow"] = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-
-        //    return PartialView("_AccountStatmentPDFCust");
-        //}
-
-        //public void CostCenterTrnsactionReport(string FromDate, string ToDate, int CostCenterId)
-        //{
-        //    HttpContext.Session["Reportname"] = "حركة مراكز التكلفة";
-        //    HttpContext.Session["CostCenterId"] = CostCenterId;
-        //    HttpContext.Session["FromDate"] = FromDate;
-        //    HttpContext.Session["ToDate"] = ToDate;
-        //}
-
-        //public void AllCostCenterTrnsactionReport(string FromDate, string ToDate)
-        //{
-        //    HttpContext.Session["Reportname"] = "حركة مراكز التكلفة";
-        //    HttpContext.Session["FromDate"] = FromDate;
-        //    HttpContext.Session["ToDate"] = ToDate;
-        //}
+       
         [HttpGet("GetAccountStatmentDGV")]
 
         public IActionResult GetAccountStatmentDGV(string? FromDate, string? ToDate, string AccountId, string CostCenterId)

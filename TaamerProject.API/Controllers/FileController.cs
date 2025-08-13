@@ -1,22 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using TaamerProject.API.Helper;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
-using System.Net.Mail;
 using System.Net;
-using TaamerProject.Service.Services;
-using System.Net.Http;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class FileController : ControllerBase
     {

@@ -39,6 +39,11 @@ namespace TaamerProject.Service.Services
             var UserLogin = _Sys_UserLoginRepository.GetAllUserLogin(Type);
             return UserLogin;
         }
+        public Task<UsersLoginVM> GetUserLogin(string Email, string Password, int Type)
+        {
+            var UserLogin = _Sys_UserLoginRepository.GetUserLogin(Email, Password,Type);
+            return UserLogin;
+        }
         public GeneralMessage SaveUserLogin(Sys_UserLogin UserLogin, int UserId, int BranchId)
         {
             try

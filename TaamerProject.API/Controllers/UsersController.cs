@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using TaamerProject.Models.DBContext;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
     public class UsersController : ControllerBase
     {
             private readonly IUsersService _usersservice;
@@ -201,7 +201,6 @@ namespace TaamerProject.API.Controllers
                     var verifyUrl = Link + "/" + resetCode;
 
                     var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G).Result;
-                    //var file = Path.Combine("~") + org.LogoUrl;
                     var file = "";
                     if (org.LogoUrl != null && org.LogoUrl != "")
                     {

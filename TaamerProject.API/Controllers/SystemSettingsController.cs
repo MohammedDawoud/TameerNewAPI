@@ -1,25 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using System.Net;
-
-
-//using System.Web.Script.Serialization;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class SystemSettingsController : ControllerBase
     {
@@ -56,60 +48,14 @@ namespace TaamerProject.API.Controllers
         {
 
             var Res = _sys_SystemActionsService.GetAllSystemActionsAll().Result;
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(Res),
-            //    ContentType = "application/json"
-            //};
             return Ok(Res);
         }
-        //[HttpGet("GetSystemActionsAll")]
-
-        //public IActionResult GetSystemActionsAll(string Searchtxt)
-        //{
-
-        //    //var Res = _sys_SystemActionsService.GetAllSystemActionsAll().Result;
-
-        //    //var serializer = new JavaScriptSerializer();
-        //    //serializer.MaxJsonLength = Int32.MaxValue;
-        //    //var result = new ContentResult
-        //    //{
-        //    //    Content = serializer.Serialize(Res),
-        //    //    ContentType = "application/json"
-        //    //};
-        //    //دى مكان الaction دا
-        //    var Res = _sys_SystemActionsService.GetAllSystemActionsAll().Result;
-
-        //    var jsonSettings = new JsonSerializerSettings
-        //    {
-        //        PreserveReferencesHandling = PreserveReferencesHandling.None,
-        //        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-        //        Formatting = Formatting.Indented
-        //    };
-
-        //    var jsonContent = JsonConvert.SerializeObject(Res, jsonSettings);
-
-        //    var result = new ContentResult
-        //    {
-        //        Content = jsonContent,
-        //        ContentType = "application/json"
-        //    };
-        //    return result;
-        //}
+       
         [HttpGet("GetSystemActions")]
 
         public IActionResult GetSystemActions(string? Searchtxt, string? DateFrom, string? DateTo, int? UserId, int? ActionType)
         {
             var Res = _sys_SystemActionsService.GetAllSystemActions(Searchtxt, DateFrom, DateTo, _globalshared.BranchId_G, UserId.Value, ActionType.Value).Result;
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(Res),
-            //    ContentType = "application/json"
-            //};
             return Ok(Res);
         }
 

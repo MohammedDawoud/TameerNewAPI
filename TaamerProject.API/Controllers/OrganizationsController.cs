@@ -1,18 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QRCoder;
-using Spire.Pdf.Barcode;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Globalization;
 using System.Net;
-using System.Runtime.ConstrainedExecution;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
 using ZatcaIntegrationSDK;
 using ZatcaIntegrationSDK.APIHelper;
 using ZatcaIntegrationSDK.HelperContracts;
@@ -21,7 +15,7 @@ namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class OrganizationsController : ControllerBase
     {
@@ -120,56 +114,7 @@ namespace TaamerProject.API.Controllers
         public ActionResult SaveOrganizations(IFormFile? UploadedFile, [FromForm] Organizations organizations)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //HttpPostedFileBase file = Request.Files["UploadedImage"];
-            //    if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
-            //    {
-            //        if (Request.Files["UploadedImage"].ContentLength > 0)
-            //        {
-
-            //            string fileName = System.IO.Path.GetFileName(GenerateRandomNo() + Request.Files["UploadedImage"].FileName);
-
-            //            string fileLocation = Server.MapPath("~/Uploads/Organizations/pictures/") + fileName;
-            //            try
-            //            {
-            //                if (System.IO.File.Exists(fileLocation))
-            //                {
-            //                    System.IO.File.Delete(fileLocation);
-            //                }
-            //                string width = Request.Form["imgwidth"];
-            //                string hight = Request.Form["imghight"];
-
-            //                double intwidth = Convert.ToDouble(width);// int.Parse(width);// Convert.ToInt32(width);
-            //                double inthight = Convert.ToDouble(hight);// Convert.ToInt32(hight);
-
-            //                //edit by M.Salah
-            //                var scaleImage = ScaleImage(Bitmap.FromStream(Request.Files["UploadedImage"].InputStream), (int)inthight, (int)intwidth);
-
-            //                scaleImage.Save(fileLocation);
-
-
-            //                //WebImage img = new WebImage(Request.Files["UploadedImage"].InputStream);
-
-            //                //    img.Resize(100, 100);
-
-            //                //img.Save(fileLocation);
-            //                //Request.Files["UploadedImage"].SaveAs(fileLocation);
-            //                organizations.LogoUrl = "/Uploads/Organizations/pictures/" + fileName;
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                var massage = "";
-            //                if (_globalshared.Lang_G == "rtl")
-            //                {
-            //                    massage = "فشل في رفع الصورة";
-            //                }
-            //                else
-            //                {
-            //                    massage = "Failed To Upload Image";
-            //                }
-            //                return Ok(new GeneralMessage { Result = false, Message = massage } );
-            //            }
-            //        }
-            //    }
+            
             if (UploadedFile != null)
             {
                 System.Net.Http.HttpResponseMessage response = new System.Net.Http.HttpResponseMessage();
@@ -253,29 +198,7 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var objBranch = _BranchesService.GetBranchByBranchId("rtl", _globalshared.BranchId_G).Result.FirstOrDefault();
             var objOrganization = _organizationsservice.GetBranchOrganization().Result;
-
-            //string Address1 = "";
-            //string BuildingNumber1 = "";
-            //string StreetName1 = "";
-            //string Neighborhood1 = "";
-            //string CityName1 = "";
-            //string Country1 = "";
-            //string PostalCode1 = "";
-            //string PostalCodeFinal1 = "";
-            //string ExternalPhone1 = "";
-            //string TaxCode1 = "";
-
-            //Address1 = objBranch.Address ?? objOrganization.Address;
-            //BuildingNumber1 = objBranch.BuildingNumber ?? objOrganization.BuildingNumber;
-            //StreetName1 = objBranch.StreetName ?? objOrganization.StreetName;
-            //Neighborhood1 = objBranch.Neighborhood ?? objOrganization.Neighborhood;
-            //CityName1 = objBranch.CityName ?? objOrganization.CityName;
-            //Country1 = objBranch.Country ?? objOrganization.Country;
-            //PostalCode1 = objBranch.PostalCode ?? objOrganization.PostalCode;
-            //PostalCodeFinal1 = objBranch.PostalCodeFinal ?? objOrganization.PostalCodeFinal;
-            //ExternalPhone1 = objBranch.ExternalPhone ?? objOrganization.ExternalPhone;
-            //TaxCode1 = objBranch.TaxCode ?? objOrganization.TaxCode;
-
+          
             Invoice inv = new Invoice();
             inv.ID = "INV00001"; // مثال SME00010
 
@@ -350,13 +273,8 @@ namespace TaamerProject.API.Controllers
             else { mode = Mode.developer; }
 
             CSIDGenerator generator = new CSIDGenerator(mode);
-            //var path = Directory.GetCurrentDirectory();
-            //path = path + "\\" + "cert";
-
             var path = Path.Combine("cert");
 
-            //path = "D:\\Bayanatech\\Web Application\\APINew\\Bayanatech.OnionArchitecture\\TaamerProject.API\\cert";
-            //path = System.IO.Path.Combine("cert");
             CertificateResponse response = generator.GenerateCSID(certrequest, inv, path);
             //CertificateResponse response = generator.GenerateCSR(certrequest);
 

@@ -109,5 +109,8 @@ namespace TaamerProject.API.Helper
 
         public  string? CurrentBranch { get; set; }
         public string? Token { get; set; }
+        public string? base32Secret { get; set; }
+        public string? qrCodeUrl { get; set; }
+
     }
 }

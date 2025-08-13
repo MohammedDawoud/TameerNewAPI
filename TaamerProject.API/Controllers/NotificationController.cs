@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-//using System.Web.Script.Serialization;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
-using TaamerProject.Models.Common;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
     
     public class NotificationController : ControllerBase
     {
@@ -38,30 +34,14 @@ namespace TaamerProject.API.Controllers
         [HttpGet("GetAllNotifications")]
         public IActionResult GetAllNotifications(int ProjectId)
         {
-            //return Ok(_notificationservice.GetAllNotifications(ProjectId) );
 
             var someNoti = _notificationservice.GetAllNotifications(ProjectId);
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someNoti),
-            //    ContentType = "application/json"
-            //};
             return Ok(someNoti);
         }
         [HttpGet("GetAllNotificationsBackup")]
         public IActionResult GetAllNotificationsBackup()
         {
-            //return Ok(_notificationservice.GetAllNotificationsBackup() );
             var someNoti = _notificationservice.GetAllNotificationsBackup();
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someNoti),
-            //    ContentType = "application/json"
-            //};
             return Ok(someNoti);
         }
         [HttpGet("GetAllAlerts")]
@@ -69,17 +49,7 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var someNoti = _notificationservice.GetAllAlerts(_globalshared.BranchId_G);
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someNoti),
-            //    ContentType = "application/json"
-            //};
             return Ok(someNoti);
-            //return Ok(_notificationservice.GetAllAlerts(BranchId) );
-
-
         }
         [HttpPost("SaveNotification")]
         public IActionResult SaveNotification(Notification notification)
@@ -126,16 +96,7 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var someNoti = _notificationservice.GetUserNotification(_globalshared.UserId_G);
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someNoti),
-            //    ContentType = "application/json"
-            //};
             return Ok(someNoti);
-
-            //return Ok(_notificationservice.GetUserNotification(UserId) );
         }
 
         [HttpGet("GetUnReadUserNotification")]
@@ -160,62 +121,27 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var someNoti = _notificationservice.GetUserAlert(_globalshared.UserId_G);
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someNoti),
-            //    ContentType = "application/json"
-            //};
             return Ok(someNoti);
-
-            //return Ok(_notificationservice.GetUserAlert(UserId) );
         }
         [HttpGet("NotificationsSent")]
         public IActionResult NotificationsSent()
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var someNoti = _notificationservice.NotificationsSent(_globalshared.UserId_G);
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someNoti),
-            //    ContentType = "application/json"
-            //};
             return Ok(someNoti);
-            //return Ok(_notificationservice.NotificationsSent(UserId) );
         }
         [HttpGet("NotificationsSent2")]
         public IActionResult NotificationsSent2()
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var someNoti = _notificationservice.NotificationsSent2(_globalshared.UserId_G);
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someNoti),
-            //    ContentType = "application/json"
-            //};
             return Ok(someNoti);
-
-            //return Ok(_notificationservice.NotificationsSent2(UserId) );
         }
         [HttpGet("GetNotificationReceived")]
         public async Task<IActionResult> GetNotificationReceived()
         {
-            //return Ok(_notificationservice.GetNotificationReceived(UserId) );
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-
             var someNoti =await _notificationservice.GetNotificationReceived(_globalshared.UserId_G);
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someNoti),
-            //    ContentType = "application/json"
-            //};
             return Ok(someNoti);
 
         }
