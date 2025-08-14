@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
+using TaamerP.Models.ViewModels;
 
 namespace TaamerProject.Service.Interfaces
 {
@@ -17,7 +18,7 @@ namespace TaamerProject.Service.Interfaces
         Task<IEnumerable<ReasonLeaveVM>> FillReasonSelect(string SearchText = "");
 
         Task<ReasonLeaveVM> Getreasonbyid(int ReasonId);
-
+        EmployeeEndWork GetEmployeeWithWorkPeriods(int empId, int reasonLeave, string date);
 
     }
 }

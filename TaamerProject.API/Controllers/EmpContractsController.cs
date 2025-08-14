@@ -447,6 +447,16 @@ namespace TaamerProject.API.Controllers
         }
 
 
+        [HttpGet("GetEmployeeWithWorkPeriods")]
+
+        public ActionResult GetEmployeeWithWorkPeriods(int EmpId, int ReasonLeave)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+
+            return Ok(_ReasonLeave.GetEmployeeWithWorkPeriods(EmpId, ReasonLeave));
+        }
+
+
     }
    
 }
