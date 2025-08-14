@@ -421,11 +421,11 @@ namespace TaamerProject.API.Controllers
 
         [HttpGet("GetEmployeeWithWorkPeriods")]
 
-        public ActionResult GetEmployeeWithWorkPeriods(int EmpId, int ReasonLeave)
+        public ActionResult GetEmployeeWithWorkPeriods(int EmpId, int ReasonLeave, string Date)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            return Ok(_ReasonLeave.GetEmployeeWithWorkPeriods(EmpId, ReasonLeave));
+            return Ok(_ReasonLeave.GetEmployeeWithWorkPeriods(EmpId, ReasonLeave, Date));
         }
 
 
