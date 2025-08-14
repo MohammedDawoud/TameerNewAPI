@@ -2684,6 +2684,15 @@ namespace TaamerProject.API.Controllers
 
 
         }
+
+        [HttpPost("SaveUserLogin")]
+        public IActionResult SaveUserLogin(Sys_UserLogin UserLogin)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _UserLoginService.SaveUserLogin(UserLogin, _globalshared.UserId_G, _globalshared.BranchId_G);
+            return Ok(result);
+        }
+
         public class TokenModel
         {
             public string AccessToken { get; set; }
