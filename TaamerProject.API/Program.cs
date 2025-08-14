@@ -41,14 +41,14 @@ namespace TaamerProject.API
 
             // Add services to the container.
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy(
-                name: "AllowOrigin",
-                builder => {
-                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-                });
-            });
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy(
+            //    name: "AllowOrigin",
+            //    builder => {
+            //        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            //    });
+            //});
 
             //------------------------------------------------------------------------
 
@@ -62,6 +62,19 @@ namespace TaamerProject.API
             //        .AllowAnyHeader()
             //        .AllowCredentials());
             //});
+
+            var allowSpecificOrigins = "two_factor_auth_cors";
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(allowSpecificOrigins,
+
+                    builder => builder.AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+            });
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Require2FA", policy =>
+                    policy.RequireClaim("mfa", "true"));
+            });
 
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
@@ -92,6 +105,7 @@ namespace TaamerProject.API
             builder.Services.AddTransient<ISystemAction, SystemAction>();
 
             builder.Services.AddTransient<IUsersService, UsersService>();
+            builder.Services.AddTransient<ISys_UserLoginService, Sys_UserLoginService>();
             builder.Services.AddTransient<IAcc_CategoriesService, Acc_CategoriesService>();
             builder.Services.AddTransient<IAcc_CategorTypeService, Acc_CategorTypeService>();
             builder.Services.AddTransient<IAcc_ClausesService, Acc_ClausesService>();
@@ -289,6 +303,7 @@ namespace TaamerProject.API
             #endregion
             #region Repository
             builder.Services.AddTransient<IUsersRepository, UsersRepository>();
+            builder.Services.AddTransient<ISys_UserLoginRepository, Sys_UserLoginRepository>();
             builder.Services.AddTransient<IAcc_CategoriesRepository, Acc_CategoriesRepository>();
             builder.Services.AddTransient<IAcc_CategorTypeRepository, Acc_CategorTypeRepository>();
             builder.Services.AddTransient<IAcc_ClausesRepository, Acc_ClausesRepository>();

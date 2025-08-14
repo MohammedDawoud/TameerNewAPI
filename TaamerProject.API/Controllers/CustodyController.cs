@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
@@ -9,7 +8,7 @@ namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class CustodyController : ControllerBase
     {
@@ -64,13 +63,9 @@ namespace TaamerProject.API.Controllers
         public IActionResult SaveCustody(Custody custody)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //var url = Server.MapPath("~/Email/MailStamp.html");
-            //var path = Path.GetFullPath("");
             var url = Path.GetFullPath("Email/MailStamp.html");
 
-            // var file = Server.MapPath("~/dist/assets/images/logo.png");
             var org = _organizationsService.GetOrganizationDataLogin(_globalshared.Lang_G);
-            //var file = Server.MapPath("~") + org.LogoUrl;
             var file = Path.GetFullPath(org.Result.LogoUrl.TrimStart('/'));
 
             var result = _custodyservice.SaveCustody(custody, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.Lang_G, url, file);
@@ -100,13 +95,10 @@ namespace TaamerProject.API.Controllers
         public IActionResult FreeCustody(int CustodyId)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //var url = Server.MapPath("~/Email/MailStamp.html");
             var url = Path.GetFullPath("Email/MailStamp.html");
 
 
-            //var file = Server.MapPath("~/dist/assets/images/logo.png");
             var org = _organizationsService.GetOrganizationDataLogin(_globalshared.Lang_G);
-            //var file = Server.MapPath("~") + org.LogoUrl;
             var file = Path.GetFullPath(org.Result.LogoUrl.TrimStart('/'));
 
             var result = _custodyservice.FreeCustody(CustodyId, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.Lang_G, url, file);

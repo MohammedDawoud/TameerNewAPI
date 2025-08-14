@@ -1,42 +1,24 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-
-//using System.Web.Mvc;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.Security.Cryptography;
 using System.Text;
 using TaamerProject.Models.Common;
-using TaamerProject.Service.Services;
 using System.Net;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using Dropbox.Api;
-using Google.Apis.Auth.OAuth2.Requests;
 using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
-using static Dropbox.Api.Files.SearchMatchType;
-using Org.BouncyCastle.Utilities;
-using Twilio.TwiML.Voice;
 
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class FileUploadController : ControllerBase
     {
@@ -974,12 +956,6 @@ namespace TaamerProject.API.Controllers
                         throw new OAuth2Exception(jObject["error"].ToString(), jObject.Value<string>("error_description"));
                     }
 
-                    //string refreshToken = null;
-                    //if (jObject.Value<string>("refresh_token") != null)
-                    //{
-                    //    FileAuth.RefreshToken = jObject["refresh_token"].ToString();
-                    //}
-
                     int num = -1;
                     if (jObject.Value<string>("expires_in") != null)
                     {
@@ -1408,19 +1384,6 @@ namespace TaamerProject.API.Controllers
                 cb.SetColorFill(BaseColor.DARK_GRAY);
                 cb.SetFontAndSize(bf, 8);
 
-                // write the text in the pdf content
-                //cb.BeginText();
-                //string text = " ProjectNo : " + ProjectNo;
-
-                //cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, text, 30, 110, 0);
-                //cb.EndText();
-
-
-                //cb.BeginText();
-                //text = " ProjectNo : " + ProjectNo;
-                //cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, text, 30, 90, 0);
-                //cb.EndText();
-
                 ColumnText ct = new ColumnText(writer.DirectContent);
                 ct.RunDirection = PdfWriter.RUN_DIRECTION_RTL;
                 ct.SetSimpleColumn(0, 0, 170, 120, 8, Element.ALIGN_LEFT);
@@ -1572,39 +1535,7 @@ namespace TaamerProject.API.Controllers
             return Ok(result);
 
         }
-
-
-
-
-        //[HttpPost("UploadProjectExtractFiles")]
-        //public IActionResult UploadProjectExtractFiles(ProjectExtracts projectExtracts, bool UploadFlagType)
-        //{
-        //    HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-        //    var resultList = new List<ViewDataUploadFilesResult>();
-        //    var CurrentContext = HttpContext;
-        //    filesHelper.UploadAndShowResults(CurrentContext, resultList);
-        //    JsonFiles files = new JsonFiles(resultList);
-        //    bool isEmpty = !resultList.Any();
-        //    if (isEmpty)
-        //    {
-        //        return Ok("Error");
-        //    }
-        //    else
-        //    {
-        //        if (UploadFlagType)
-        //        {
-        //            projectExtracts.AttachmentUrl = resultList[0].url;
-        //            _projectExtractsService.UpdateExtractAttachment(projectExtracts, _globalshared.UserId_G, _globalshared.BranchId_G);
-        //        }
-        //        else
-        //        {
-        //            projectExtracts.SignatureUrl = resultList[0].url;
-        //            _projectExtractsService.UpdateExtractSignature(projectExtracts, _globalshared.UserId_G, _globalshared.BranchId_G);
-        //        }
-        //        return Ok(files);
-        //    }
-        //}
-
+     
         [HttpPost("UploadOutInBoxFiles")]
         public IActionResult UploadOutInBoxFiles([FromForm] ContacFilesDTO contacFile)
         {
@@ -1636,35 +1567,7 @@ namespace TaamerProject.API.Controllers
             return Ok(new JsonFiles(resultList));
         }
 
-        //[HttpPost("UploadOutInBoxFiles")]
-        //public IActionResult UploadOutInBoxFiles(ContacFiles ContacFiles)
-        //{
-        //    HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-        //    var resultList = new List<ViewDataUploadFilesResult>();
-        //    var CurrentContext = HttpContext;
-        //    filesHelper.UploadAndShowResults(CurrentContext, resultList);
-        //    JsonFiles files = new JsonFiles(resultList);
-        //    bool isEmpty = !resultList.Any();
-        //    if (isEmpty)
-        //    {
-        //        return Ok("Error");
-        //    }
-        //    else
-        //    {
-        //        ContacFiles.OutInBoxId = ContacFiles.OutInBoxId;
-        //        ContacFiles.FileName = resultList[0].name;
-        //        ContacFiles.FileSize = resultList[0].size;
-        //        ContacFiles.FileUrl = resultList[0].url;
-        //        ContacFiles.Extension = resultList[0].type;
-        //        ContacFiles.DeleteUrl = resultList[0].deleteUrl;
-        //        ContacFiles.DeleteType = resultList[0].deleteType;
-        //        ContacFiles.ThumbnailUrl = resultList[0].thumbnailUrl;
-        //        _contacFilesService.SaveContacFile(ContacFiles, _globalshared.UserId_G, _globalshared.BranchId_G);
-        //        _OutInBoxservice.SaveOutInboxattach((int)ContacFiles.OutInBoxId, ContacFiles.FileUrl);
-
-        //        return Ok(files);
-        //    }
-        //}
+        
         [HttpPost("UploadPayVoucherFiles")]
         public IActionResult UploadPayVoucherFiles(ContacFiles ContacFiles)
         {

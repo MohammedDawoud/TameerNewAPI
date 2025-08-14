@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using System.Net;
@@ -8,14 +7,12 @@ using TaamerProject.API.pdfHandler;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
-using static TaamerProject.API.Controllers.TransactionsController;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class DailyJournalController : ControllerBase
     {
@@ -59,7 +56,6 @@ namespace TaamerProject.API.Controllers
 
             var someVoucher = _Voucherservice.GetAllTotalJournals(FromJournal, ToJournal, FromDate, ToDate,_globalshared.BranchId_G,_globalshared.YearId_G);
             return Ok(someVoucher);
-            //return Ok(_Voucherservice.GetAllTotalJournals(FromJournal, ToJournal, FromDate, ToDate,_globalshared.BranchId_G,_globalshared.YearId_G));
         }
 
         [HttpGet("GetAllJournalsByInvID")]
@@ -372,118 +368,12 @@ namespace TaamerProject.API.Controllers
 
         [HttpGet("GetAllPayJournalsByInvIDRet")]
         public IActionResult GetAllPayJournalsByInvIDRet(int? invId)
-            {
+        {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-
             return Ok(_Voucherservice.GetAllPayJournalsByInvIDRet(invId,_globalshared.BranchId_G,_globalshared.YearId_G));
-            }
-        //public IActionResult GetReport(string StartDate, string EndDate, int? fromJournal, int? toJournal)
-        //{
-
-
-        //    var result = _Voucherservice.GetAllTotalJournals(fromJournal, toJournal, StartDate, EndDate, _globalshared.BranchId_G, _globalshared.YearId_G).ToList();
-        //    List<TransactionsVM> res = result.ToList();
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.dailyReport(res, StartDate, EndDate, infoDoneTasksReport);//الارصده
-
-        //    string existTemp = System.IO.Path.Combine("TempFiles/");
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = System.IO.Path.Combine("TempFiles/", FileName);
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    string FilePathReturn = "/TempFiles/" + FileName;
-        //    return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = FilePathReturn });
-        //}
-
-        ////public IActionResult GetReportGrid(string StartDate, string EndDate, int? fromJournal, int? toJournal, string[] SortedlistJournalNo, string[] SortedlistAccountCode)
-        ////{
-        ////    //var result2 = _Voucherservice.GetAllTotalJournals(fromJournal, toJournal, StartDate, EndDate,_globalshared.BranchId_G,_globalshared.YearId_G).ToList();
-        ////    var result = _Voucherservice.GetAllJournals(fromJournal, toJournal, StartDate, EndDate,_globalshared.BranchId_G,_globalshared.YearId_G);
-
-        ////    List<TransactionsVM> res = result.ToList();
-        ////    //result = result.OrderBy(d => Sortedlist.IndexOf(d.InvoiceReference)).ToList();
-        ////    string sJournalNo = SortedlistJournalNo[0];
-        ////    //string sAccountCode = SortedlistAccountCode[0];
-        ////    string[] valuessJournalNo = sJournalNo.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        ////    List<string> valeJournalNo = new List<string>();
-        ////    //string[] valuesAccountCode = sAccountCode.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        ////    //List<string> valeAccountCode = new List<string>();
-        ////    List<TransactionsVM> _TransactionsVM = new List<TransactionsVM>();
-        ////    foreach (var item in valuessJournalNo)
-        ////    {
-        ////        string Intitem = string.Empty;
-        ////        for (int i = 0; i < item.Length; i++)
-        ////        {
-        ////            if (Char.IsDigit(item[i]))
-        ////                Intitem += item[i];
-        ////        }
-        ////        valeJournalNo.Add(Intitem);
-        ////    }
-        ////    //foreach (var item in valuesAccountCode)
-        ////    //{
-        ////    //    string Intitem = string.Empty;
-        ////    //    for (int i = 0; i < item.Length; i++)
-        ////    //    {
-        ////    //        if (Char.IsDigit(item[i]))
-        ////    //            Intitem += item[i];
-        ////    //    }
-        ////    //    valeAccountCode.Add(Intitem);
-        ////    //}
-        ////    int GridLength = 0;
-        ////    GridLength = result.Count();
-        ////    //if (result.Count() > 100)
-        ////    //{
-        ////    //    GridLength = 100;
-        ////    //}
-        ////    //else
-        ////    //{
-        ////    //    GridLength = result.Count();
-        ////    //}
-        ////    for (int i = 0; i < GridLength; i++)
-        ////    {
-        ////        //_TransactionsVM.Add(result.Where(d => d.JournalNo == Convert.ToInt32(valeJournalNo[i]) && d.AccountCode == valeAccountCode[i]).FirstOrDefault());
-        ////        //_TransactionsVM.Add(result.Where(d => d.JournalNo == Convert.ToInt32(valeJournalNo[i]) && d.AccountCode == valeAccountCode[i]).FirstOrDefault());
-        ////        _TransactionsVM.Add(result.Where(d => d.TransactionId == Convert.ToInt32(valeJournalNo[i])).FirstOrDefault());
-
-        ////    }
-        ////    int orgId = _branchesService.GetOrganizationId(BranchId);
-        ////    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        ////    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email,
-        ////        objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        ////    //string taxType = "";
-        ////    //if (Convert.ToInt32(ExpenseType) == 2)
-        ////    //    taxType = "خاضعة للضريبة";
-        ////    //else if (Convert.ToInt32(ExpenseType) == 3)
-        ////    //    taxType = "غير خاضعة للضريبة";
-        ////    ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.dailyReport(_TransactionsVM.ToList(), StartDate, EndDate, infoDoneTasksReport);
-
-        ////    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        ////    if (!Directory.Exists(existTemp))
-        ////    {
-        ////        Directory.CreateDirectory(existTemp);
-        ////    }
-        ////    //File  
-        ////    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        ////    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        ////    //create and set PdfReader  
-        ////    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        ////    //return file 
-        ////    string FilePathReturn = @"TempFiles/" + FileName;
-        ////    return Content(FilePathReturn);
-        ////}
-
-
-
-
+        }
+       
         [HttpPost("GetReportGrid")]
 
         public IActionResult GetReportGrid([FromForm] string? StartDate, [FromForm] string? EndDate, [FromForm] int? fromJournal, [FromForm] int? toJournal, [FromForm] string[] SortedlistJournalNo, [FromForm] string[] SortedlistAccountCode)

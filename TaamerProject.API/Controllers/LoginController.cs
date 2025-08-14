@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-//using RestSharp;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
-//using System.Management;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,23 +9,20 @@ using TaamerProject.Service.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-using TaamerProject.Service.Services;
 using TaamerProject.API.pdfHandler;
 using TaamerProject.Models.Common;
 using QRCoder;
 using System.Drawing;
-using ZXing;
 using Dropbox.Api;
 using Newtonsoft.Json.Linq;
-using Google.Apis.Auth.OAuth2;
 using ZatcaIntegrationSDK;
 using ZatcaIntegrationSDK.BLL;
 using ZatcaIntegrationSDK.HelperContracts;
 using Microsoft.AspNetCore.Identity;
-using javax.crypto;
 using Microsoft.EntityFrameworkCore;
 using TaamerProject.Models.DBContext;
 using OtpNet;
+using TaamerProject.Service.Services;
 
 namespace TaamerProject.API.Controllers
 {
@@ -38,6 +31,7 @@ namespace TaamerProject.API.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IUsersService _UsersService;
+        private readonly ISys_UserLoginService _UserLoginService;
         private readonly IVersionService _Versionservice;
         private readonly IBranchesService _branchesService;
         private readonly IOrganizationsService _OrganizationService;
@@ -71,10 +65,11 @@ namespace TaamerProject.API.Controllers
         public int userGroup = 1;
         public LoginController(TaamerProjectContext dataContext, IOffersPricesService offersPricesService, IFilesAuthService filesAuthService, IUsersService usersService, IVersionService versionService,
          IBranchesService branchesService, IOrganizationsService organizationsService, IFiscalyearsService fiscalyearsService, ICustomerService customerService,
-         IUserNotificationPrivilegesService userNotificationPrivilegesService, IServicesPricingFormService servicesPricingFormService, IOrganizationsService organizations,
+         IUserNotificationPrivilegesService userNotificationPrivilegesService, ISys_UserLoginService userLoginService, IServicesPricingFormService servicesPricingFormService, IOrganizationsService organizations,
          UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ISocialMediaLinksService socialMediaLinksService, IContact_BranchesService contact_BranchesService, INewsService newsService, IFileService fileService, IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
         {
             _offersPricesService = offersPricesService;
+            _UserLoginService = userLoginService;
             _filesAuthService = filesAuthService;
             _UsersService = usersService;
             _Versionservice = versionService;
@@ -352,20 +347,6 @@ namespace TaamerProject.API.Controllers
                         }
                         if (user.Status == 0)
                         {
-                            //TempData["username"] = username;
-                            //if (Lang == "ar")
-                            //{
-                            //    TempData["msg"] = "الحساب تم إيقافه، الرجاء مراجعة مدير النظام";
-                            //}
-                            //else
-                            //{
-                            //    TempData["msg"] = "the account is stopped, please connect with the admin of the system";
-                            //}
-
-                            //TempData["password"] = password;
-                            //return RedirectToAction("Index", "Login");
-
-
                             string msg;
                             if (_globalshared.Lang_G != "en")
                             {
@@ -380,20 +361,6 @@ namespace TaamerProject.API.Controllers
                         //&& username != "admin"
                         if (IsOnline != false)
                         {
-                            //TempData["username"] = username;
-                            //if (Lang == "ar")
-                            //{
-                            //    //TempData["msg"] = "الحساب الذي تحاول الدخول به مستخدم ،وهناك احتمالان لهذه الرسالة،تأكد منها: الاول : احتمال ان تكون اغلقت البرنامج دون تسجيل خروج، عليك الانتظار لمدة 5 دقائق كاجراء امني. الثاني:قد يكون الحساب الذيتحاول الدخول به قد تم تسجيل الدخول به من خلال التطبيق، عليك تسجيل الخروج";
-                            //    TempData["msg"] = "1";
-                            //}
-                            //else
-                            //{
-                            //    TempData["msg"] = "the account is Used now, please connect with the admin of the system";
-                            //}
-
-                            //TempData["password"] = password;
-                            //return RedirectToAction("Index", "Login");
-
                             string msg;
                             if (_globalshared.Lang_G != "en")
                             {
@@ -406,25 +373,6 @@ namespace TaamerProject.API.Controllers
                             }
                             return Ok(msg);
                         }
-                        //Response.Cookies.Add(new HttpCookie("UserSessionTimeout", user.Session.ToString()));
-                        //["CurrentBranch"] = user.BranchName;
-
-                        //if (Lang == "ar")
-                        //{
-                        //    if (user.FullNameAr != null && user.FullNameAr != "")
-                        //    {
-                        //        Session["FullName"] = user.FullNameAr;
-                        //    }Session
-                        //    else
-                        //    {
-                        //        Session["FullName"] = user.FullNameEn;
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    Session["FullName"] = user.FullNameEn;
-
-                        //}
                         var BranchId_V = 0;
                         BranchId_V = user.BranchId ?? 0;
                         //BranchId = user.BranchId ?? 0;
@@ -501,17 +449,6 @@ namespace TaamerProject.API.Controllers
                 //System.Data.SqlClient.SqlException
                 catch (Exception ex)
                 {
-                    //TempData["username"] = username;
-                    //if (Lang == "ar")
-                    //{
-                    //    TempData["msg"] = "خطأ فالإتصال بالانترنت";
-                    //}
-                    //else
-                    //{
-                    //    TempData["msg"] = "There is an error in internet connction";
-                    //}
-                    //TempData["password"] = password;
-                    //return RedirectToAction("Index", "Login");
                     string msg;
                     if (_globalshared.Lang_G != "en")
                     {
@@ -527,6 +464,361 @@ namespace TaamerProject.API.Controllers
 
             }
         }
+
+        [HttpGet("LoginNew")]
+        public IActionResult LoginNew(string username, string password, int? type)
+        {
+
+            //try
+            //{
+            //    CreateFile();
+
+            //    if (ChechVaild() == false)
+            //    {
+            //        // FirstTime.ShowDialog();
+
+            //        //if (Lang == "ar")
+            //        //{
+            //        //    TempData["msg"] = "يجب تفعيل البرنامج ، من فضلك إتصل بالدعم الفني للتفعيل";
+            //        //}
+            //        //else
+            //        //{
+            //        //    TempData["msg"] = "The program must be activated, please contact technical support for activation";
+            //        //}
+
+
+            //        //return RedirectToAction("Index", "Login");
+            //    }
+            //    if (VaildationDemo() == false)
+            //    {
+            //        if (Lang == "ar")
+            //        {
+            //            TempData["msg"] = "يجب تفعيل البرنامج ، من فضلك إتصل بالدعم الفني للتفعيل";
+            //        }
+            //        else
+            //        {
+            //            TempData["msg"] = "The program must be activated, please contact technical support for activation";
+            //        }
+            //        return RedirectToAction("Index", "Login");
+            //    }
+            //    else if (programfulltime == true)
+            //    {
+            //        if (Lang == "ar")
+            //        {
+            //            TempData["msg"] = "يجب تفعيل البرنامج ، من فضلك إتصل بالدعم الفني للتفعيل";
+            //        }
+            //        else
+            //        {
+            //            TempData["msg"] = "The program must be activated, please contact technical support for activation";
+            //        }
+            //        return RedirectToAction("Index", "Login");
+            //    }
+            //}
+            //catch (Exception)
+            //{
+            //    TempData["msg"] = "يجب تفعيل البرنامج ، من فضلك إتصل بالدعم الفني للتفعيل";
+            //    return RedirectToAction("Index", "Login");
+            //}
+            //UsersData.License = "تم الترخيص";
+            UsersData UsersData = new UsersData();
+
+            if (username == AdminUsername && password == AdminPassword)
+            {
+                try
+                {
+                    var user = _UsersService.GetUserLogin(username,"").Result;
+                    var result = true;
+                    string DateNow = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    if (result)
+                    {
+                        UsersData.UserName = user.UserName;
+                        UsersData.UserId = user.UserId;
+                        var ActiveYear = _FiscalyearsService.GetActiveYear();
+                        UsersData.FiscalId_G = ActiveYear.FiscalId;
+                        UsersData.YearId_G = ActiveYear.YearId;
+                        string ExpireUserDate = user.ExpireDate;
+                        UsersData.CurrentBranch = user.BranchName.ToString();
+                        //Session["FullName"] = Lang == "ar" ? user.FullNameAr == null ? user.FullNameEn : user.FullNameAr : user.FullNameEn;
+                        var BranchId_V = 0;
+                        BranchId_V = user.BranchId ?? 0;
+                        // BranchId = user.BranchId ?? 0;
+                        var version = _Versionservice.GetVersion();
+                        var Company = _OrganizationService.GetBranchOrganizationData(_branchesService.GetOrganizationId(Convert.ToInt32(BranchId_V)).Result).Result;
+                        var pr = Privileges.PrivilegesList;
+                        List<int> nvalues = new List<int>();
+                        foreach (var item in pr)
+                        {
+                            nvalues.Add(item.Id);
+
+                        }
+
+                        var userPriv = _UsersService.GetPrivilegesIdsByUserId(user.UserId);
+                        //UsersData.UserPrivileges = userPriv;
+                        UsersData.UserPrivileges = nvalues;
+                        var userNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(user.UserId).Result;
+                        UsersData.UserNotifPrivileges = userNotifPriv;
+                        UsersData.LogoUrl = Company.LogoUrl;
+                        UsersData.CompanyID = Company.OrganizationId;
+                        if (_globalshared.Lang_G == "ar")
+                        {
+                            UsersData.CompanyName = Company.NameAr;
+                        }
+                        else
+                        {
+                            UsersData.CompanyName = Company.NameEn;
+                        }
+                        UsersData.OrgVAT = Company.VAT ?? 0;
+                        UsersData.BranchId = user.BranchId;
+                        UsersData.DepartmentId = user.DepartmentId;
+                        UsersData.DepartmentName = user.DepartmentName;
+
+                        UsersData.UserId = user.UserId;
+                        UsersData.UserName = AdminUsername;
+                        UsersData.FullName = "الأدمن العام";
+                        UsersData.Password = AdminPassword;
+                        UsersData.IsAdmin = user.IsAdmin ?? false;
+                        UsersData.Session = user.Session ?? 2;
+
+
+                        var secretBytes = KeyGeneration.GenerateRandomKey(20); // 160-bit key
+                        var base32Secret = Base32Encoding.ToString(secretBytes);
+                        var issuer = "TameerCloudApp";
+                        var qrCodeUrl = $"otpauth://totp/{issuer}:{user.Email}?secret={base32Secret}&issuer={issuer}&digits=6";
+
+                        UsersData.base32Secret = base32Secret;
+                        UsersData.qrCodeUrl = qrCodeUrl;
+                        UsersData.Token = GenerateJwtToken(user.UserId, user.Password, user.UserName);
+
+                        //UsersData.Token = Token(user.UserId, user.Password, user.UserName).ToString();
+
+
+                        _UsersService.UpdateOnlineStatus2(true, user.UserId, user.UserId, BranchId_V);
+                        return Ok(UsersData);
+
+                    }
+                    else
+                    {
+                        string msg;
+                        if (_globalshared.Lang_G == "ar")
+                        {
+                            msg = "تاكد من بيانات الدخول من فضلك";
+                        }
+                        else
+                        {
+                            msg = "Please, Insure the data you used to log in";
+                        }
+
+                        return Ok(msg);
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    string msg;
+
+                    if (_globalshared.Lang_G == "ar")
+                    {
+                        msg = "خطأ فالإتصال بالانترنت";
+                    }
+                    else
+                    {
+                        msg = "There is an error in internet connction";
+                    }
+                    return Ok(ex.Message + "-----------" + ex.InnerException);
+                }
+
+            }
+            else
+            {
+                try
+                {
+                    var pass = EncryptValue(password);
+                    var user = new UsersLoginVM();
+                    if (type==2 || type == 3)
+                        user = _UserLoginService.GetUserLogin(username, pass, type ?? 0).Result;
+                    else 
+                        user = _UsersService.GetUserLogin(username, pass).Result;
+
+
+                    bool IsOnline = false;
+                    string DateNow = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    var min = 0;
+                    //var min2 = 0;
+                    if (user!=null)
+                    {
+
+                        if (user.ActiveTime != null)
+                        {
+                            DateTime ActiveUsertime = user.ActiveTime ?? DateTime.Now;
+                            TimeSpan ts = DateTime.Now - ActiveUsertime;
+                            min = ts.Minutes;
+                            min = Math.Abs(min);
+
+                            if (min > 5)
+                            {
+                                IsOnline = false;
+                            }
+                            else
+                            {
+                                if (user.ISOnlineNew == null)
+                                {
+                                    IsOnline = false;
+                                }
+                                else
+                                {
+                                    IsOnline = user.ISOnlineNew ?? false;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (user.ISOnlineNew == null)
+                            {
+                                IsOnline = false;
+                            }
+                            else
+                            {
+                                //IsOnline = user.ISOnlineNew ?? false;
+                                IsOnline = false;
+                            }
+                        }
+                        //hna l active year 
+                        var ActiveYear = _FiscalyearsService.GetActiveYear();
+                        UsersData.FiscalId_G = ActiveYear.FiscalId;
+                        UsersData.YearId_G = ActiveYear.YearId;
+                        string ExpireUserDate = user.ExpireDate;
+                        UsersData.Session = user.Session ?? 2;
+
+
+                        var secretBytes = KeyGeneration.GenerateRandomKey(20); // 160-bit key
+                        var base32Secret = Base32Encoding.ToString(secretBytes);
+                        var issuer = "TameerCloudApp";
+                        var qrCodeUrl = $"otpauth://totp/{issuer}:{user.Email}?secret={base32Secret}&issuer={issuer}&digits=6";
+
+                        UsersData.base32Secret = base32Secret;
+                        UsersData.qrCodeUrl = qrCodeUrl;
+                        UsersData.Token = GenerateJwtToken(user.UserId, user.Password, user.UserName);
+
+                        //UsersData.Token = Token(user.UserId, user.Password, user.UserName).ToString();
+
+                        if (ExpireUserDate != "0")
+                        {
+                            if (DateTime.ParseExact(ExpireUserDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > DateTime.ParseExact(DateNow, "yyyy-MM-dd", CultureInfo.InvariantCulture))
+                            {
+                                string msg;
+                                if (_globalshared.Lang_G != "en")
+                                {
+                                    msg = "صلاحية الحساب منتهية، الرجاء مراجعة مدير النظام";
+                                }
+                                else
+                                {
+                                    msg = "the account is expaired, please connect with the admin of the system";
+                                }
+                                return Ok(msg);
+                            }
+                            else
+                            {
+                                _UsersService.ClearExpireDate(user.UserId);
+                            }
+                        }
+                        if (user.Status == 0)
+                        {
+                            string msg;
+                            if (_globalshared.Lang_G != "en")
+                            {
+                                msg = "الحساب تم إيقافه، الرجاء مراجعة مدير النظام";
+                            }
+                            else
+                            {
+                                msg = "the account is stopped, please connect with the admin of the system";
+                            }
+                            return Ok(msg);
+                        }
+                        if (IsOnline != false)
+                        {
+                            string msg;
+                            if (_globalshared.Lang_G != "en")
+                            {
+                                msg = "الحساب الذي تحاول الدخول به مستخدم ،وهناك احتمالان لهذه الرسالة،تأكد منها: الاول : احتمال ان تكون اغلقت البرنامج دون تسجيل خروج، عليك الانتظار لمدة 5 دقائق كاجراء امني. الثاني:قد يكون الحساب الذي تحاول الدخول به قد تم تسجيل الدخول به من خلال التطبيق، عليك تسجيل الخروج";
+                            }
+                            else
+                            {
+                                msg = "the account is Used now, please connect with the admin of the system";
+                            }
+                            return Ok(msg);
+                        }
+                        var BranchId_V = 0;
+                        BranchId_V = user.BranchId ?? 0;
+                        //BranchId = user.BranchId ?? 0;
+                        var version = _Versionservice.GetVersion();
+                        var Company = _OrganizationService.GetBranchOrganizationData(_branchesService.GetOrganizationId(Convert.ToInt32(BranchId_V)).Result).Result;
+
+                        var userPriv = _UsersService.GetPrivilegesIdsByUserId(user.UserId);
+                        UsersData.UserPrivileges = userPriv;
+                        var userNotifPriv = _userNotificationPrivilegesService.GetPrivilegesIdsByUserId(user.UserId).Result;
+                        UsersData.UserNotifPrivileges = userNotifPriv;
+
+                        UsersData.LogoUrl = Company.LogoUrl;
+                        _UsersService.UpdateLastLoginDate(user.UserId);
+                        UsersData.CompanyID = Company.OrganizationId;
+
+                        if (_globalshared.Lang_G != "en")
+                        {
+                            //UsersData.BranchName = Branch.NameAr;
+                            UsersData.CompanyName = Company.NameAr;
+                        }
+                        else
+                        {
+                            //  UsersData.BranchName = Branch.NameEn;
+                            UsersData.CompanyName = Company.NameEn;
+
+                        }
+                        UsersData.OrgVAT = Company.VAT ?? 0;
+                        UsersData.BranchId = user.BranchId;
+                        UsersData.DepartmentId = user.DepartmentId;
+                        UsersData.DepartmentName = user.DepartmentName;
+                        UsersData.UserId = user.UserId;
+                        UsersData.UserName = user.UserName ?? "";
+                        UsersData.FullName = user.FullName ?? "";
+                        UsersData.Password = DecryptValue(user.Password ?? "");
+                        UsersData.IsAdmin = user.IsAdmin ?? false;
+
+                        _UsersService.UpdateOnlineStatus2(true, user.UserId, user.UserId, BranchId_V);
+                        return Ok(UsersData);
+
+                    }
+
+                    string msglo;
+
+                    if (_globalshared.Lang_G != "en")
+                    {
+                        msglo = "تاكد من بيانات الدخول من فضلك";
+                    }
+                    else
+                    {
+                        msglo = "Please, Insure the data you used to log in";
+                    }
+                    return Ok(msglo);
+                }
+                catch (Exception ex)
+                {
+                    string msg;
+                    if (_globalshared.Lang_G != "en")
+                    {
+                        msg = "تاكد من بيانات الدخول من فضلك";
+                    }
+                    else
+                    {
+                        msg = "Please, Insure the data you used to log in";
+                    }
+
+                    return Ok(msg);
+                }
+
+            }
+        }
+
+
         [HttpPost("ValidateRecaptchaAsync")]
         public async Task<IActionResult> ValidateRecaptchaAsync([FromForm] string recaptchaResponse, [FromForm] string secretKey)
         {
@@ -676,42 +968,71 @@ namespace TaamerProject.API.Controllers
             public string Code { get; set; }
         }
 
-        [HttpPost("2fa-login")]
-        public async Task<IActionResult> TwoFactorLogin([FromBody] TwoFactorLoginRequest request)
-        {
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(request.Code, false, false);
+        //[HttpPost("2fa-login")]
+        //public async Task<IActionResult> TwoFactorLogin([FromBody] TwoFactorLoginRequest request)
+        //{
+        //    var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+        //    var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(request.Code, false, false);
 
-            if (!result.Succeeded)
-                return Unauthorized();
+        //    if (!result.Succeeded)
+        //        return Unauthorized();
 
-            // Generate JWT token here
-            var token = GenerateJwtToken(user);
+        //    // Generate JWT token here
+        //    var token = GenerateJwtToken(user);
 
-            return Ok(new { token });
-        }
+        //    return Ok(new { token });
+        //}
 
         public class TwoFactorLoginRequest
         {
             public string Code { get; set; }
         }
-        private string GenerateJwtToken(IdentityUser user)
+        private string GenerateJwtToken(int UserId, string Password, string UserName)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes("Your_Secret_Key_Here");
+            var apiResponse = "";
 
-            var tokenDescriptor = new SecurityTokenDescriptor
+            try
             {
-                Subject = new ClaimsIdentity(new[] {
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(ClaimTypes.Email, user.Email)
-        }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+                var claims = new[] {
+                        new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                        new Claim("2fa_verified", "true"),
+                        new Claim("mfa", "true"),
+                        new Claim("UserId",UserId.ToString()),
+                        new Claim("Password", Password.ToString()),
+                        new Claim("UserName", UserName.ToString())
+
+
+                    };
+
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var token = new JwtSecurityToken(
+                    _configuration["Jwt:Issuer"],
+                    _configuration["Jwt:Audience"],
+                    claims,
+                    expires: DateTime.UtcNow.AddHours(9),
+                    signingCredentials: signIn);
+
+                string _token = new JwtSecurityTokenHandler().WriteToken(token);
+
+                apiResponse = _token.ToString();
+
+
+            }
+            catch (System.Data.SqlClient.SqlException ex)
+            {
+                apiResponse = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                apiResponse = ex.Message;
+
+            }
+
+            return apiResponse;
         }
 
         //public bool Validate()

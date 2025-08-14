@@ -1,12 +1,8 @@
 ﻿using Dropbox.Api;
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
-using Google.Apis.Util.Store;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using Spire.Doc.Fields;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
@@ -14,15 +10,12 @@ using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
-using Twilio.TwiML.Messaging;
-using static System.Net.WebRequestMethods;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
     public class FilesAuthController : ControllerBase
     {
         private readonly IFilesAuthService _FilesAuthService;
@@ -292,12 +285,7 @@ namespace TaamerProject.API.Controllers
             string content = "C:\\Users\\Sky Hawk\\Desktop\\" + file;
             string content2 = "C:/Users/Sky Hawk/Desktop/" + file;
 
-            //using (var memoryStream = new MemoryStream())
-            //{
-            //    formFile.CopyToAsync(memoryStream);
-            //    byte[] bytes = memoryStream.ToArray();
-            //    // do what you want with the bytes
-            //}
+
             byte[] bytes2 = { };
             var Res = _dropBoxService.UploadFile(dbx, folder, file, content, bytes2);
             return Ok(Res);
@@ -327,12 +315,6 @@ namespace TaamerProject.API.Controllers
                     {
                         throw new OAuth2Exception(jObject["error"].ToString(), jObject.Value<string>("error_description"));
                     }
-
-                    //string refreshToken = null;
-                    //if (jObject.Value<string>("refresh_token") != null)
-                    //{
-                    //    FileAuth.RefreshToken = jObject["refresh_token"].ToString();
-                    //}
 
                     int num = -1;
                     if (jObject.Value<string>("expires_in") != null)
@@ -379,12 +361,6 @@ namespace TaamerProject.API.Controllers
                     {
                         throw new OAuth2Exception(jObject["error"].ToString(), jObject.Value<string>("error_description"));
                     }
-
-                    //string refreshToken = null;
-                    //if (jObject.Value<string>("refresh_token") != null)
-                    //{
-                    //    FileAuth.RefreshToken = jObject["refresh_token"].ToString();
-                    //}
 
                     int num = -1;
                     if (jObject.Value<string>("expires_in") != null)

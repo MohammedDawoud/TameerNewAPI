@@ -1,14 +1,10 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using iTextSharp.text.pdf;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Data;
 using System.Globalization;
 using System.Net;
-//using System.Web.Http;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Repository.Interfaces;
@@ -18,7 +14,7 @@ namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class ZKTecoController : ControllerBase
     {

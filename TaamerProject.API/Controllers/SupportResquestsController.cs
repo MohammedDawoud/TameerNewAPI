@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using System.Net.Http.Headers;
@@ -10,15 +7,13 @@ using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
 using System.Net;
-using System.Net.Mail;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class SupportResquestsController : ControllerBase
     {
@@ -133,22 +128,6 @@ namespace TaamerProject.API.Controllers
 
                             if (fnamepath != null && fnamepath != "")
                             {
-
-                                /////////////////////////////////////////////////////////
-                                //byte[] fileBytes;
-                                //using (var stream = new FileStream(fnamepath, FileMode.Open))
-                                //{
-                                //    using (var memoryStream = new MemoryStream())
-                                //    {
-                                //        stream.CopyToAsync(memoryStream);
-                                //        fileBytes = memoryStream.ToArray();
-                                //    }
-                                //}
-
-                                // Create a ByteArrayContent object for the file data
-                                //var fileContent = new ByteArrayContent(fileBytes);
-                                //fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                                //string fileExtension = Path.GetExtension(fname);
 
 
                                 // Read the file content

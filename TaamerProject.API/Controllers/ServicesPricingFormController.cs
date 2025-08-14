@@ -1,17 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
-using static TaamerProject.API.Controllers.VoucherController;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class ServicesPricingFormController : ControllerBase
     {
@@ -108,15 +106,6 @@ namespace TaamerProject.API.Controllers
             }
 
             return Ok(priceForm_PDF);
-
-            //if (TempCheck == 2)
-            //{
-            //    return PartialView("_Designquoterequest");
-            //}
-            //else
-            //{
-            //    return PartialView("_Generalquoterequest");
-            //}
         }
         public class PriceForm_PDF
         {

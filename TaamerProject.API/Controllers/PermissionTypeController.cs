@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TaamerProject.API.Helper;
-using TaamerProject.Models;
 using TaamerProject.Models.DomainObjects;
 using TaamerProject.Service.Interfaces;
 

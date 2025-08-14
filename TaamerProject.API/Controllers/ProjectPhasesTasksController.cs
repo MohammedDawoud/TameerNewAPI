@@ -1,12 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-//using System.Web.Mvc;
-using System.IO;
-//using System.Web.Script.Serialization;
+﻿using Microsoft.AspNetCore.Mvc;
 using TaamerProject.API.Helper;
 using TaamerProject.Service.Interfaces;
 using TaamerProject.Models;
@@ -15,17 +7,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Net.Mail;
 using TaamerProject.Models.Common;
 using static TaamerProject.API.Controllers.ProjectSettingsController;
-using TaamerProject.Service.Services;
-using DocumentFormat.OpenXml.Office2013.Drawing.ChartStyle;
 using TaamerProject.API.pdfHandler;
 using TaamerProject.Models.DBContext;
-using Twilio.TwiML.Messaging;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class ProjectPhasesTasksController : ControllerBase
     {
@@ -66,67 +55,7 @@ namespace TaamerProject.API.Controllers
                 _hostingEnvironment = webHostEnvironment;
             _settingsservice = settingsService;
         }
-        //public IActionResult Index()
-        //{
-        //    return Ok();
-        //}
-        //public IActionResult TaskDiagram()
-        //{
-        //    return Ok();
-        //}
-        [HttpGet("ProjectPhasesTasks")]
-        public IActionResult ProjectPhasesTasks(int ProjectId, int PageNo)
-            {
-           
-                //ViewBag.Flag = ProjectId;
-                //ViewBag.Flag_PageNo = PageNo;
-                //if (ProjectId != -1)
-                //{
-                //    var AllProject = _projectservice.GetProjectByIdSome(_globalshared.Lang_G, ProjectId);
-                //    ViewBag.ProjectId = AllProject.ProjectId;
-                //    ViewBag.ProjectNo = AllProject.ProjectNo;
-                //    ViewBag.CustomerId = AllProject.CustomerId;
-                //    ViewBag.ActiveMainPhaseId = AllProject.ActiveMainPhaseId;
-                //    ViewBag.ActiveSubPhaseId = AllProject.ActiveSubPhaseId;
-                //    ViewBag.ProjectDate = AllProject.ProjectDate;
-                //    ViewBag.TimeStr = AllProject.TimeStr;
-                //    ViewBag.ProjectExpireDate = AllProject.ProjectExpireDate;
 
-
-                //}
-
-                return Ok();
-            }
-
-        //public IActionResult AddNewTask()
-        //{
-        //    return Ok();
-        //}
-
-        //public IActionResult ProjectTasks_N()
-        //{
-        //    return Ok();
-        //}
-        [HttpGet("EditProjectPhasesTasks")]
-        public IActionResult EditProjectPhasesTasks(int ProjectId)
-            {
-
-                //ViewBag.Flag = ProjectId;
-                //if (ProjectId != -1)
-                //{
-                //    ViewBag.ProjectId = ProjectId;
-                //}
-                return Ok();
-            }
-
-        //public IActionResult GetTasksByUserCount()
-        //{
-        //    var Counts = new
-        //    {
-        //        TasksByUserCount = _projectPhasesTasksservice.GetTasksByUserId(_globalshared.UserId_G, 0, _globalshared.BranchId_G).Count(),
-        //    };
-        //    return Ok(Counts );
-        //}
         [HttpGet("GetProjectPhasesTasksbygoalandproject")]
         public IActionResult GetProjectPhasesTasksbygoalandproject(int ProjectId, int ProjectGoal)
             {
@@ -536,14 +465,6 @@ namespace TaamerProject.API.Controllers
                     someTask = Tasks.ToList();
                 }
 
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someTask),
-            //    ContentType = "application/json"
-            //};
-            //return result;
             return Ok(someTask);
 
         }
@@ -586,14 +507,6 @@ namespace TaamerProject.API.Controllers
 
             var someTask = _projectPhasesTasksservice.GetAllProjectPhasesTasksW(_globalshared.BranchId_G, _globalshared.Lang_G).Result.ToList();
 
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someTask),
-            //    ContentType = "application/json"
-            //};
-            //return result;
             return Ok(someTask);
 
         }
@@ -606,59 +519,20 @@ namespace TaamerProject.API.Controllers
 
                 var wo = _workOrdersService.GetALlWorkOrderReport(_globalshared.Lang_G, _globalshared.BranchId_G).Result;
 
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someTask.Union(wo)),
-            //    ContentType = "application/json"
-            //};
-            //return result;
             return Ok(someTask.Union(wo));
 
 
         }
 
-        //public IActionResult GetAllTasksPhasesByProjectId(int ProjectId )
-        //{
-        //    var AllTasks = _projectPhasesTasksservice.GetAllTasksPhasesByProjectId(ProjectId, _globalshared.BranchId_G).ToList();
 
-        //    return Ok(AllTasks );
-        //}
-        [HttpGet("Tasks")]
-        public IActionResult Tasks(int ProjectId, int PageNo)
-            {
-            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //ViewBag.Flag = ProjectId;
-            //    ViewBag.Flag_PageNo = PageNo;
-            //    if (ProjectId != -1)
-            //    {
-            //        var AllProject = _projectservice.GetProjectById(_globalshared.Lang_G, ProjectId);
-            //        ViewBag.ProjectId = AllProject.ProjectId;
-            //        ViewBag.ProjectNo = AllProject.ProjectNo;
-            //        ViewBag.CustomerId = AllProject.CustomerId;
-            //        ViewBag.ActiveMainPhaseId = AllProject.ActiveMainPhaseId;
-            //        ViewBag.ActiveSubPhaseId = AllProject.ActiveSubPhaseId;
+        [HttpGet("GetAllNewProjectPhasesTasks")]
+        public IActionResult GetAllNewProjectPhasesTasks(string? EndDateP)
+        {
 
-                    //TempData["ProjectId"] = AllProject.ProjectId;
-                    //TempData["ProjectNo"] = AllProject.ProjectNo;
-                    //TempData["CustomerId"] = AllProject.CustomerId;
-                    //TempData["ActiveMainPhaseId"] = AllProject.ActiveMainPhaseId;
-                    //TempData["ActiveSubPhaseId"] = AllProject.ActiveSubPhaseId;
-                //}
+            var AllTasks = _projectPhasesTasksservice.GetAllNewProjectPhasesTasks(EndDateP ?? "", 0).Result.ToList();
+            return Ok(AllTasks );
 
-                return Ok();
-                //return Ok();
-            }
-            [HttpGet("GetAllNewProjectPhasesTasks")]
-            public IActionResult GetAllNewProjectPhasesTasks(string? EndDateP)
-            {
-
-                var AllTasks = _projectPhasesTasksservice.GetAllNewProjectPhasesTasks(EndDateP ?? "", 0).Result.ToList();
-                return Ok(AllTasks );
-
-
-            }
+        }
 
         [HttpGet("GetTasksWithoutUser")]
         public IActionResult GetTasksWithoutUser(int ? DepartmentId)
@@ -670,60 +544,58 @@ namespace TaamerProject.API.Controllers
         }
         [HttpGet("GetAllNewProjectPhasesTasksTree")]
         public IActionResult GetAllNewProjectPhasesTasksTree(string? EndDateP)
-            {
+        {
 
-                var AllTasks = _projectPhasesTasksservice.GetAllNewProjectPhasesTasks(EndDateP ?? "", 0).Result.GroupBy(x => x.ProjectTypeId).ToList();
-                return Ok(AllTasks );
+            var AllTasks = _projectPhasesTasksservice.GetAllNewProjectPhasesTasks(EndDateP ?? "", 0).Result.GroupBy(x => x.ProjectTypeId).ToList();
+            return Ok(AllTasks );
 
-
-            }
+        }
         [HttpGet("GetAllNewProjectPhasesTasksTreed")]
         public IActionResult GetAllNewProjectPhasesTasksTreed(string? EndDateP)
-            {
-            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+        {
+        HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
             var AllTasks = _projectPhasesTasksservice.GetAllNewProjectPhasesTasksd(EndDateP ?? "", _globalshared.BranchId_G, _globalshared.Lang_G).ToList();
 
-                return Ok(AllTasks );
+            return Ok(AllTasks );
 
-
-            }
+        }
         [HttpGet("GetAllNewProjectPhasesTasksByUserId")]
         public IActionResult GetAllNewProjectPhasesTasksByUserId(string? EndDateP, int UserId2)
-            {
-                var AllTasks = _projectPhasesTasksservice.GetAllNewProjectPhasesTasksByUserId(EndDateP ?? "", 0, UserId2).Result.ToList();
-                return Ok(AllTasks );
-            }
+        {
+            var AllTasks = _projectPhasesTasksservice.GetAllNewProjectPhasesTasksByUserId(EndDateP ?? "", 0, UserId2).Result.ToList();
+            return Ok(AllTasks );
+        }
         [HttpGet("GetAllLateProjectPhasesTasks")]
         public IActionResult GetAllLateProjectPhasesTasks(string? EndDateP)
-            {
-                var AllTasks = _projectPhasesTasksservice.GetAllLateProjectPhasesTasks(EndDateP ?? "", 0).Result.ToList();
-                return Ok(AllTasks );
-            }
+        {
+            var AllTasks = _projectPhasesTasksservice.GetAllLateProjectPhasesTasks(EndDateP ?? "", 0).Result.ToList();
+            return Ok(AllTasks );
+        }
         [HttpGet("GetAllLateProjectPhasesTasksd")]
         public IActionResult GetAllLateProjectPhasesTasksd(string? EndDateP)
-            {
+        {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
             var AllTasks = _projectPhasesTasksservice.GetAllLateProjectPhasesTasksd(EndDateP ?? "", _globalshared.BranchId_G, _globalshared.Lang_G).ToList();
-                return Ok(AllTasks );
-            }
+            return Ok(AllTasks );
+        }
         [HttpGet("GetAllLateProjectPhasesTasksbyUserId2")]
         public IActionResult GetAllLateProjectPhasesTasksbyUserId2(string? EndDateP, int UserId2)
-            {
-                var AllTasks = _projectPhasesTasksservice.GetAllLateProjectPhasesTasksbyUserId(EndDateP ?? "", 0, UserId2).Result.ToList();
-                return Ok(AllTasks );
-            }
+        {
+            var AllTasks = _projectPhasesTasksservice.GetAllLateProjectPhasesTasksbyUserId(EndDateP ?? "", 0, UserId2).Result.ToList();
+            return Ok(AllTasks );
+        }
         [HttpGet("GetAllProjectPhasesTasks2")]
         public IActionResult GetAllProjectPhasesTasks2(string? SearchText)
-            {
+        {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
             var AllTasks = _projectPhasesTasksservice.GetAllProjectPhasesTasks2(SearchText ?? "", 0, _globalshared.Lang_G).Result.ToList();
-                return Ok(AllTasks );
+            return Ok(AllTasks );
 
 
-            }
+        }
         [HttpGet("GetProjectPhasesTasks2")]
         public IActionResult GetProjectPhasesTasks2(int? ProjectId)
         {
@@ -754,17 +626,7 @@ namespace TaamerProject.API.Controllers
         public IActionResult GetInProgressProjectPhasesTasks_Branches(string? SearchText)
             {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //5le balk mst5dmnha f home btgeb l tasks l f dashboard
-            //-------------------------------------------------------
 
-            //var userBranchs = _branchesService.GetAllBranchesByUserId(_globalshared.Lang_G, _globalshared.UserId_G);
-            //var someProjectPhasesTasks = _projectPhasesTasksservice.GetInProgressProjectPhasesTasks_Branches(0, _globalshared.Lang_G);
-            //foreach (var userBranch in userBranchs)
-            //{
-            //    var AllTasks = _projectPhasesTasksservice.GetInProgressProjectPhasesTasks_Branches(userBranch._globalshared.BranchId_G, _globalshared.Lang_G).ToList();
-            //    var Tasks = someProjectPhasesTasks.Union(AllTasks);
-            //    someProjectPhasesTasks = Tasks.ToList();
-            //}
             var someProjectPhasesTasks = _projectPhasesTasksservice.GetInProgressProjectPhasesTasks_Branches(_globalshared.BranchId_G, _globalshared.Lang_G).Result.ToList();
 
             return Ok(someProjectPhasesTasks);
@@ -900,14 +762,11 @@ namespace TaamerProject.API.Controllers
             }
         [HttpGet("GetTasksSearchByUserId")]
         public IActionResult GetTasksSearchByUserId(int UserId, int Status)
-            {
+        {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             return Ok(_projectPhasesTasksservice.GetTasksByUserId(_globalshared.UserId_G, Status, _globalshared.BranchId_G) );
-            }
-        //public IActionResult GetTasksSearchByUserId(int? _globalshared.UserId_G, string SearchText )
-        //{
-        //    return Ok(_projectPhasesTasksservice.GetTasksByUserId(_globalshared.UserId_G,0 SearchText ?? "", _globalshared.BranchId_G) );
-        //}
+        }
+
         [HttpGet("GetTasksByDate")]
         public IActionResult GetTasksByDate(string StartDate, string EndDate)
             {
@@ -1623,38 +1482,22 @@ namespace TaamerProject.API.Controllers
             }
         [HttpGet("GetAllTasksByProjectIdW")]
         public IActionResult GetAllTasksByProjectIdW()
-            {
+        {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var someTask = _projectPhasesTasksservice.GetAllTasksByProjectIdW(_globalshared.BranchId_G).Result.ToList();
 
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someTask),
-            //    ContentType = "application/json"
-            //};
-            //return result;
             return Ok(someTask);
 
         }
         [HttpGet("GetAllTasksByProjectIdW_whithWotkOrder")]
         public IActionResult GetAllTasksByProjectIdW_whithWotkOrder()
-            {
+        {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-                var wo = _workOrdersService.GetALlWorkOrderReport(_globalshared.Lang_G, _globalshared.BranchId_G).Result.Where(s => s.ProjectId != null);
+            var wo = _workOrdersService.GetALlWorkOrderReport(_globalshared.Lang_G, _globalshared.BranchId_G).Result.Where(s => s.ProjectId != null);
             var someTask = _projectPhasesTasksservice.GetAllTasksByProjectIdW(_globalshared.BranchId_G).Result.Union(wo).ToList();
 
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someTask.Union(wo)),
-            //    ContentType = "application/json"
-            //};
-            //return result;
             return Ok(someTask);
-            }
+        }
         [HttpGet("GetAllTasksBySubPhase")]
         public IActionResult GetAllTasksBySubPhase(int SubPhaseId)
             {
@@ -1704,29 +1547,7 @@ namespace TaamerProject.API.Controllers
             var result = _projectPhasesTasksservice.UpdateprojectphaseRequirment(projectphaseid, projectgaolid, _globalshared.UserId_G, _globalshared.BranchId_G);
                 return Ok(result );
             }
-        //public IActionResult ExportReport()
-        //{
-        //    ReportDocument rd = new ReportDocument();
-        //    rd.Load(Path.Combine("C:/Users/saber.mahmoud/source/Bayanatech.Business/Bayanateck.TameerPro.DataModel/Reports/TasksReport.rpt"));
-        //    var list = _projectPhasesTasksservice.GetTasksByUserId(2);
-        //    if (list != null)
-        //    {
-        //        rd.SetDataSource(list);
-        //    }
-        //    Response.Buffer = false;
-        //    Response.ClearContent();
-        //    Response.ClearHeaders();
-        //    try
-        //    {
-        //        Stream stream = rd.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
-        //        stream.Seek(0, SeekOrigin.Begin);
-        //        return File(stream, "application/pdf", "Tasks_list.pdf");
-        //    }
-        //    catch
-        //    {
-        //        throw;
-        //    }
-        //}
+        
 
         [HttpGet("getreport")]
         public IActionResult getreport(ProjectPhasesTasksVM Search)
@@ -1759,7 +1580,7 @@ namespace TaamerProject.API.Controllers
             }
         [HttpPost("getreportNew")]
         public IActionResult getreportNew(PerformanceReportVM Search)
-            {
+        {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
             var AllUserBranch = 0;
@@ -1768,83 +1589,19 @@ namespace TaamerProject.API.Controllers
 
 
             if (Search.BranchId == null)
-                {
-                    Search.BranchId = 0;
-                }
-                if (Search.UserId == null)
-                {
-                    Search.UserId = 0;
-                }
-                var FullReport = _projectPhasesTasksservice.getempdataNew_Proc(Search, _globalshared.Lang_G, Con, AllUserBranch).Result;
-                return Ok(FullReport );
+            {
+                Search.BranchId = 0;
             }
+            if (Search.UserId == null)
+            {
+                Search.UserId = 0;
+            }
+            var FullReport = _projectPhasesTasksservice.getempdataNew_Proc(Search, _globalshared.Lang_G, Con, AllUserBranch).Result;
+            return Ok(FullReport );
+        }
 
 
-        //public IActionResult PrintAllEmpTasksRpt(ProjectPhasesTasksVM Search)
-        //{
-        //HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-        //int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G);
-        //    var username = "";
-        //    int datetype = 0;
-        //    if (Search.UserId != null && Search.UserId != 0)
-        //    {
-        //        username = _usersservice.GetUserById((int)Search.UserId, _globalshared.Lang_G).FullName;
-        //    }
-        //    if (Search.ProTypeName != null && Search.ProTypeName != "")
-        //    {
-        //        datetype = int.Parse(Search.ProTypeName);
-        //    }
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { _globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        //    //var Users = _usersservice.GetAllUsers();
-        //    //List<RptAllEmpPerformance> allEmpPerformances = new List<RptAllEmpPerformance>();
-        //    //if (Search.UserId == null || Search.UserId == 0)
-        //    //{
-        //    //    foreach (var usr in Users)
-        //    //    {
-        //    //        Search.UserId = usr.UserId;
-        //    //        RptAllEmpPerformance rptAll = new RptAllEmpPerformance();
-        //    //        rptAll = _projectPhasesTasksservice.getempdata(Search, _globalshared.Lang_G, Con);
-        //    //        allEmpPerformances.Add(rptAll);
-
-        //    //    }
-        //    //}
-        //    //else
-        //    //{
-        //    //    RptAllEmpPerformance rptAll1 = new RptAllEmpPerformance();
-        //    //    rptAll1 = _projectPhasesTasksservice.getempdata(Search, _globalshared.Lang_G, Con);
-        //    //    allEmpPerformances.Add(rptAll1);
-
-        //    //}
-
-        //    if (Search._globalshared.BranchId_G == null)
-        //    {
-        //        Search._globalshared.BranchId_G = 0;
-        //    }
-        //    if (Search.UserId == null)
-        //    {
-        //        Search.UserId = 0;
-        //    }
-        //    var FullReport = _projectPhasesTasksservice.getempdataNew(Search, _globalshared.Lang_G, Con, _globalshared.BranchId_G);
-
-        //    ReportPDF = ProjectsReports.PrintAllEmpPerformancrRpt(FullReport, infoDoneTasksReport, Search.StartDate, Search.EndDate, username, datetype, (int)Search.TimeType);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
+        
         [HttpGet("GetAllProjectPhasesTasks_Costs")]
         public IActionResult GetAllProjectPhasesTasks_Costs(int? UserId, string? DateFrom, string? DateTo, int? BranchId, [FromQuery] List<int> BranchesList)
         {

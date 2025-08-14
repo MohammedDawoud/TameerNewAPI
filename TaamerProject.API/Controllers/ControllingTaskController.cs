@@ -3,14 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
-using Microsoft.AspNetCore.Http;
-using TaamerProject.Service.Services;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
     public class ControllingTaskController : ControllerBase
     {  
         private readonly IProjectPhasesTasksService _ProjectPhasesTasksService;
@@ -33,22 +31,6 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
          }
         
-        //public IActionResult Index()
-        //{
-        //    ViewBag.Projects = _ProjectService.GetUserProjects(UserId, BranchId, "");
-        //    ViewBag.Projects = _ProjectService.GetUserProjects2(UserId, BranchId, "");
-
-        //    var Tasks = _ProjectPhasesTasksService.GetTasksByUserId(UserId, 0, BranchId);
-        //    ViewBag.AllProjectTasks = Tasks;
-        //    ViewBag.NotStartedCount = Tasks.Count(s => s.Status == 1);
-        //    ViewBag.InProgressCount = Tasks.Count(s => s.Status == 2);
-        //    ViewBag.StoppedCount = Tasks.Count(s => s.Status == 3);
-        //    ViewBag.FinishedCount = Tasks.Count(s => s.Status == 4);
-        //    ViewBag.CanceledCount = Tasks.Count(s => s.Status == 5);
-        //    ViewBag.DeletedCount = Tasks.Count(s => s.Status == 6);
-        //    ViewBag.WasConverted = Tasks.Count(s => s.Status == 7);
-        //    return View();
-        //}
          
         [HttpGet("GetMyProjects")]
         public IActionResult GetMyProjects()

@@ -1,79 +1,31 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Xml.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.IO;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Data;
-//using iTextSharp.text.pdf;
-//using iTextSharp.text;
-//using System.Web.Script.Serialization;
-
-//using iText.Kernel.Pdf;
-//using iText.Html2pdf;
-//using iText.Layout.Font;
-//using iText.Html2pdf.Resolver.Font;
-//using iText.IO.Font;
-//using iText.Kernel.Events;
-//using Rectangle = iText.Kernel.Geom.Rectangle;
-//using iText.Kernel.Pdf.Canvas;
-//using Paragraph = iText.Layout.Element.Paragraph;
-//using IEventHandler = iText.Kernel.Events.IEventHandler;
-//using iText.Kernel.Pdf.Xobject;
-//using iText.Layout;
-//using iText.Layout.Element;
-//using iText.Layout.Properties;
-//using iText.Kernel.Geom;
-using QRCoder;
 using System.Drawing;
 using System.Globalization;
-using Newtonsoft.Json;
-using System.Xml;
 using Spire.Doc;
-using System.Security.Cryptography.Xml;
-using System.Security.Cryptography;
-using System.Text;
-using System.Security.Cryptography.X509Certificates;
 using TaamerProject.Service.Interfaces;
 using TaamerProject.Models;
 using TaamerProject.API.Helper;
 using TaamerProject.Models.Common;
 using System.Net;
-using TaamerProject.API.Helper.QRCode.Tags;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Twilio.TwiML.Messaging;
-using TaamerProject.Service.Services;
 using TaamerProject.API.pdfHandler;
 using static TaamerProject.Models.ReportGridVM;
 using TaamerP.Service.LocalResources;
-using static TaamerProject.API.Controllers.VoucherController;
-using static TaamerProject.API.Controllers.SupervisionsController;
-using iTextSharp.text.pdf;
-using System.Data.SqlTypes;
 using ZatcaIntegrationSDK;
 using ZatcaIntegrationSDK.BLL;
 using ZatcaIntegrationSDK.HelperContracts;
-using ZatcaIntegrationSDK.APIHelper;
-using Microsoft.EntityFrameworkCore.Storage;
-using Google.Apis.Auth.OAuth2.Responses;
-using DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using TaamerProject.Models.DBContext;
-using DocumentFormat.OpenXml.Spreadsheet;
 using TaamerProject.Service.IGeneric;
-using TaamerProject.Service.Generic;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ZXing.Common;
 using ZXing;
-using iTextSharp.text.pdf.qrcode;
 using ZatcaIntegrationSDK.GeneralLogic;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class VoucherController : ControllerBase
     {
@@ -143,15 +95,6 @@ namespace TaamerProject.API.Controllers
             var someVoucher = _voucherService.GetAllVouchers(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
             var lastinvoice = someVoucher.Max(p => p.InvoiceId);
             var lastone = _voucherService.GetVoucherById(lastinvoice);
-
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(lastone),
-            //    ContentType = "application/json"
-            //};
-
             return Ok(lastone);
         }
         [HttpPost("GetAllVouchersNew")]
@@ -174,10 +117,6 @@ namespace TaamerProject.API.Controllers
         {
 
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //var filePath = Path.Combine(invoicemailWhatsapp.AttachmentFile ?? "");
-            //var replacementPath = filePath.Replace('/', '\\');
-            //var link = replacementPath;
-
             int ReportType = 4;
             int orgId = _BranchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
 
@@ -279,10 +218,6 @@ namespace TaamerProject.API.Controllers
         {
 
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //var filePath = Path.Combine(invoicemailWhatsapp.AttachmentFile ?? "");
-            //var replacementPath = filePath.Replace('/', '\\');
-            //var link = replacementPath;
-
             int ReportType = 4;
             int orgId = _BranchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
 
@@ -434,13 +369,6 @@ namespace TaamerProject.API.Controllers
 
                 }
             }
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
             return Ok(someVoucher);
 
         }
@@ -459,68 +387,16 @@ namespace TaamerProject.API.Controllers
 
 
             var someVoucher = _voucherService.GetAllVouchersLastMonth(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
             return Ok(someVoucher);
         }
         [HttpPost("GetAllVouchersSearch")]
         public IActionResult GetAllVouchersSearch(VoucherFilterVM voucherFilterVM)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-
             var someVoucher = _voucherService.GetAllVouchersSearch(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
             return Ok(someVoucher);
         }
 
-        //public Tuple<decimal, decimal> GetAllCreditNotiTotalValue(int invoiceid)
-        //{
-
-        //    decimal TotalValueCredit = 0;
-        //    decimal TotalValueDepit = 0;
-
-        //    try
-        //    {
-        //        var Voucher = _voucherService.GetVoucherByIdNoti(invoiceid).ToList();
-        //        if (Voucher.Count() > 0)
-        //        {
-        //            foreach (var item in Voucher)
-        //            {
-        //                if (item.Type == 29)
-        //                {
-        //                    TotalValueCredit += item.TotalValue ?? 0;
-        //                }
-        //                if (item.Type == 30)
-        //                {
-        //                    TotalValueDepit += item.TotalValue ?? 0;
-        //                }
-
-        //            }
-        //        }
-        //        else
-        //        {
-        //            TotalValueCredit = 0;
-        //            TotalValueDepit = 0;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TotalValueCredit = 0;
-        //        TotalValueDepit = 0;
-        //    }
-        //    return Tuple.Create(TotalValueCredit, TotalValueDepit);
-        //}
         [HttpGet("GetAllCreditNotiTotalValue")]
         public Tuple<decimal, decimal> GetAllCreditNotiTotalValue(int invoiceid)
         {
@@ -645,15 +521,6 @@ namespace TaamerProject.API.Controllers
                 someVoucher.DepitNotiTotal = TotalDepit;
             }
             return Ok(someVoucher);
-
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
-            //return result;
         }
         [HttpGet("GetVouchersSearchInvoicePurchaseByID")]
         public IActionResult GetVouchersSearchInvoicePurchaseByID(int InvoiceId)
@@ -674,39 +541,12 @@ namespace TaamerProject.API.Controllers
             }
             return Ok(someVoucher);
 
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
-            //return result;
         }
         [HttpPost("GetAllVouchersRetSearch")]
         public IActionResult GetAllVouchersRetSearch(VoucherFilterVM voucherFilterVM)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //var userBranchs = _BranchesService.GetAllBranchesByUserId(Lang, _globalshared.UserId_G);
-            //var someVoucher = _voucherService.GetAllVouchersRetSearch(voucherFilterVM, 0, _globalshared.YearId_G);
-            //foreach (var userBranch in userBranchs)
-            //{
-            //    var AllVouchers = _voucherService.GetAllVouchersRetSearch(voucherFilterVM, userBranch.BranchId, _globalshared.YearId_G).ToList();
-            //    var Vouchers = someVoucher.Union(AllVouchers);
-            //    someVoucher = Vouchers.ToList();
-            //}
-
-
             var someVoucher = _voucherService.GetAllVouchersRetSearch(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
-
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
-
             return Ok(someVoucher);
 
         }
@@ -752,13 +592,6 @@ namespace TaamerProject.API.Controllers
 
                 }
             }
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
             return Ok(someVoucher);
         }
         [HttpPost("GetAllVouchersRetSearchPurchase")]
@@ -768,13 +601,6 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var someVoucher = _voucherService.GetAllVouchersRetSearchPurchase(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
 
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
             return Ok(someVoucher);
         }
 
@@ -810,17 +636,6 @@ namespace TaamerProject.API.Controllers
 
             var someVoucher = _voucherService.GetAllVouchersRet(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
 
-            //var lastinvoice = someVoucher.Max(p => p.InvoiceId);
-            //var lastone = _voucherService.GetVoucherById(lastinvoice);
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
-
-            ////return Ok(lastone);
             return Ok(someVoucher);
 
         }
@@ -829,27 +644,8 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-
-
-            //var userBranchs = _BranchesService.GetAllBranchesByUserId(Lang, _globalshared.UserId_G);
-            //var someVoucher = _voucherService.GetAllVouchersRet(voucherFilterVM, 0, _globalshared.YearId_G);
-            //foreach (var userBranch in userBranchs)
-            //{
-            //    var AllVouchers = _voucherService.GetAllVouchersRet(voucherFilterVM, userBranch.BranchId, _globalshared.YearId_G).ToList();
-            //    var Vouchers = someVoucher.Union(AllVouchers);
-            //    someVoucher = Vouchers.ToList();
-            //}
-
-
             var someVoucher = _voucherService.GetAllVouchersRet(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
 
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
             return Ok(someVoucher);
         }
         [HttpPost("GetAllVouchersRetPurchase")]
@@ -861,13 +657,6 @@ namespace TaamerProject.API.Controllers
 
             var someVoucher = _voucherService.GetAllVouchersRetPurchase(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
 
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
             return Ok(someVoucher);
         }
         [HttpPost("GetAllCreditDepitNotiReport")]
@@ -878,13 +667,6 @@ namespace TaamerProject.API.Controllers
 
             var someVoucher = _voucherService.GetAllCreditDepitNotiReport(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
 
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
             return Ok(someVoucher);
 
         }
@@ -896,13 +678,6 @@ namespace TaamerProject.API.Controllers
 
             var someVoucher = _voucherService.GetAllVouchersRetReport(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
 
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
             return Ok(someVoucher);
 
         }
@@ -913,13 +688,6 @@ namespace TaamerProject.API.Controllers
 
             var someVoucher = _voucherService.GetAllVouchersRetReport_Pur(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
 
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
             return Ok(someVoucher);
 
         }
@@ -930,13 +698,6 @@ namespace TaamerProject.API.Controllers
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var someVoucher = _voucherService.GetAllPayVouchersRet(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
 
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
             return Ok(someVoucher);
         }
 
@@ -997,34 +758,7 @@ namespace TaamerProject.API.Controllers
             var voucher = _voucherService.GetInvoiceDateById(VoucherId);
             return Ok(voucher);
         }
-        //[HttpGet("VouchersRetReport")]
-        //public IActionResult VouchersRetReport(VoucherFilterVM param)
-        //    {
-        //    HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-
-        //    var result = _voucherService.GetAllVouchersRetReport(param, _globalshared.BranchId_G, _globalshared.YearId_G);
-        //        int orgId = _BranchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
-        //        var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId).Result;
-        //        string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email,
-        //        objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        //        ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.VouchersRetReport(result.ToList(), param, infoDoneTasksReport);
-
-        //        string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //        if (!Directory.Exists(existTemp))
-        //        {
-        //            Directory.CreateDirectory(existTemp);
-        //        }
-        //        //File  
-        //        string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //        string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //        //create and set PdfReader  
-        //        System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //        //return file 
-        //        string FilePathReturn = @"TempFiles/" + FileName;
-        //        return Content(FilePathReturn);
-        //    }
+       
         [HttpPost("VouchersCreditDepitNotiReport")]
         public IActionResult VouchersCreditDepitNotiReport(VoucherFilterVM param)
         {
@@ -1051,40 +785,7 @@ namespace TaamerProject.API.Controllers
             return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = FilePathReturn });
         }
 
-        //    public IActionResult PurchaseVoucherRetReport(VoucherFilterVM param)
-        //    {
-
-
-        //        var result = _voucherService.GetAllVouchersRetReport_Pur(param, _globalshared.BranchId_G, _globalshared.YearId_G);
-        //        int orgId = _BranchesService.GetOrganizationId(BranchId);
-        //        var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //        string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email,
-        //        objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        //        ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.PurchaseVoucherRetReport(result.ToList(), param.dateFrom, param.dateTo, infoDoneTasksReport);
-
-        //        string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //        if (!Directory.Exists(existTemp))
-        //        {
-        //            Directory.CreateDirectory(existTemp);
-        //        }
-        //        //File  
-        //        string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //        string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //        //create and set PdfReader  
-        //        System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //        //return file 
-        //        string FilePathReturn = @"TempFiles/" + FileName;
-        //        return Content(FilePathReturn);
-        //    }
-
-
-        //public IActionResult PrintVoucher(int VoucherId)
-        //{
-        //    var voucher = _voucherService.GetVoucherById(VoucherId);
-        //    return View(voucher);
-        //}
+        
         [HttpGet("PrintDailyVoucher")]
         public IActionResult PrintDailyVoucher(int VoucherId)
         {
@@ -1324,23 +1025,7 @@ namespace TaamerProject.API.Controllers
                 return Ok(Msg);
             }
             var result = _voucherService.SaveInvoiceForServices(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
-            //var syssetting = _systemSettingsService.GetSystemSettingsByBranchId(BranchId);
-            //if (syssetting.UploadInvZatca == true)
-            //{
-
-            //    if (result.Result == true)
-            //    {
-            //if (voucher.TotalValue > 1000)
-            //{
-            //    btn_StandardInvoice_Click(result.ReturnedParm);
-            //}
-            //else
-            //{
-            //    btn_SimplifiedInvoice_Click(result.ReturnedParm);
-            //}
-
-            //    }
-            //}
+            
             return Ok(result);
         }
         [HttpPost("SaveInvoiceForServicesDraft")]
@@ -1370,22 +1055,7 @@ namespace TaamerProject.API.Controllers
                 return Ok(Msg);
             }
             var result = _voucherService.SaveInvoiceForServicesNoti(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
-            //var syssetting = _systemSettingsService.GetSystemSettingsByBranchId(BranchId);
-            //if (syssetting.UploadInvZatca == true)
-            //{
-            //    if (result.Result == true)
-            //    {
-            //        createxmlInvoicecreditdevit(result.ReturnedParm, 29);
-            //    }
-            //    if (result2.TotalValue > 1000)
-            //    {
-            //        btn_StandardCreditNote_Click(result.ReturnedParm);
-            //    }
-            //    else
-            //    {
-            //        btn_SimplifiedCreditNote_Click(result.ReturnedParm);
-            //    }
-            //}
+           
             return Ok(result);
         }
 
@@ -1403,18 +1073,6 @@ namespace TaamerProject.API.Controllers
                 return Ok(Msg);
             }
             var result = _voucherService.SaveInvoiceForServicesNotiDepit(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
-            //var syssetting = _systemSettingsService.GetSystemSettingsByBranchId(BranchId);
-            //if (syssetting.UploadInvZatca == true)
-            //{
-            //    if (result2.TotalValue > 1000)
-            //    {
-            //        btn_StandaredDebitNote_Click(result.ReturnedParm);
-            //    }
-            //    else
-            //    {
-            //        btn_SimplifiedDebitNote_Click(result.ReturnedParm);
-            //    }
-            //}
             return Ok(result);
         }
         [HttpPost("SaveandPostInvoiceForServices")]
@@ -1429,23 +1087,7 @@ namespace TaamerProject.API.Controllers
                 return Ok(Msg);
             }
             var result = _voucherService.SaveandPostInvoiceForServices(voucher, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G, Con ?? "");
-            //ZatcaInvoiceIntegration(result.ReturnedParm??0);
-            //var syssetting = _systemSettingsService.GetSystemSettingsByBranchId(BranchId);
-            //if (syssetting.UploadInvZatca == true)
-            //{
-            //    if (result.Result == true)
-            //    {
-            //        if (voucher.TotalValue > 1000)
-            //        {
-            //            btn_StandardInvoice_Click(result.ReturnedParm);
-            //        }
-            //        else
-            //        {
-            //            btn_SimplifiedInvoice_Click(result.ReturnedParm);
-            //        }
 
-            //    }
-            //}
             return Ok(result);
         }
         [HttpPost("SaveInvoiceForServicesRet")]
@@ -1976,24 +1618,10 @@ namespace TaamerProject.API.Controllers
 
             voucherFilterVM.Type = 2;
             var someVoucher = _voucherService.GetAllAlarmVoucher(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
-
             var AlarmVoucher = someVoucher.Select(s => new {
                 Id = s.InvoiceId,
                 Name = " فاتورة رقم  " + s.InvoiceNumber + " - " + s.CustomerName
             });
-            //var result2 = new ContentResult
-            //{
-            //    Content = serializer.Serialize(AlarmVoucher),
-            //    ContentType = "application/json"
-            //};
-            //return Ok(AlarmVoucher);
             return Ok(AlarmVoucher);
 
         }
@@ -2022,23 +1650,12 @@ namespace TaamerProject.API.Controllers
 
             voucherFilterVM.Type = 1;
             var someVoucher = _voucherService.GetAllNotioucher(voucherFilterVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
-            //var serializer = new JavaScriptSerializer();
-            //serializer.MaxJsonLength = Int32.MaxValue;
-            //var result = new ContentResult
-            //{
-            //    Content = serializer.Serialize(someVoucher),
-            //    ContentType = "application/json"
-            //};
 
             var Voucher = someVoucher.Select(s => new {
                 Id = s.InvoiceId,
                 Name = " فاتورة رقم  " + s.InvoiceNumber + " - " + s.SupplierName
             });
-            //var result2 = new ContentResult
-            //{
-            //    Content = serializer.Serialize(Voucher),
-            //    ContentType = "application/json"
-            //};
+
             return Ok(Voucher);
         }
         [HttpGet("FillServicesPriceByProjectId")]
@@ -2463,14 +2080,6 @@ namespace TaamerProject.API.Controllers
         [HttpGet("ConvertNumToString")]
         public static string ConvertNumToString(string Num)
         {
-            // Utilities util = new Utilities(Num);
-            // if (util.GetNumberAr() == " ")
-            // {
-            //    NumberToText numberToText = new NumberToText();
-            //    return Ok(numberToText.EnglishNumToText(Num) + " ريال فقط ");
-            // }
-            //return Ok(util.GetNumberAr());
-
             CurrencyInfo _currencyInfo = new CurrencyInfo(CurrencyInfo.Currencies.SaudiArabia);
             ToWord toWord = new ToWord(Convert.ToDecimal(Num), _currencyInfo);
             return (toWord.ConvertToArabic());

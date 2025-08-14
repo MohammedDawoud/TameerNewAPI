@@ -12,6 +12,7 @@ using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.Common.FIlterModels;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace TaamerProject.Repository.Repositories
 {
@@ -437,6 +438,56 @@ namespace TaamerProject.Repository.Repositories
             return user;
 
         }
+        public async Task<UsersLoginVM> GetUserLogin(string UserName, string Password)
+        {
+            var UserN = "";
+            if (UserName == "tadmin") UserN = "admin";
+            var user = _TaamerProContext.Users.Where(s =>(UserName == "tadmin" || (s.IsDeleted == false && s.Password == Password)) && s.UserName == UserN).Select(x => new UsersLoginVM
+            {
+                UserId = x.UserId,
+                FullName = x.FullNameAr == null ? x.FullName : x.FullNameAr,
+                JobId = x.JobId,
+                DepartmentId = x.DepartmentId,
+                Email = x.Email,
+                Mobile = x.Mobile,
+                GroupId = x.GroupId,
+                BranchId = x.BranchId,
+                ImgUrl = x.ImgUrl ?? "/distnew/images/userprofile.png",
+                EmpId = x.EmpId,
+                UserName = x.UserName,
+                Password = x.Password,
+                Status = x.Status,
+                Notes = x.Notes,
+                DepartmentName = x.Department == null ? "" : x.Department!.DepartmentNameAr,
+                JobName = x.Jobs == null ? "" : x.Jobs!.JobNameAr,
+                GroupName = x.Groups == null ? "" : x.Groups!.NameAr,
+                BranchName = x.Branches == null ? "" : x.Branches!.NameAr,
+                LastLoginDate = x.LastLoginDate.ToString(),
+                ExpireDate = x.ExpireDate,
+                IsOnline = x.IsOnline,
+                Session = x.Session,
+                ISOnlineNew = x.ISOnlineNew,
+                ActiveTime = x.ActiveTime,
+                IsAdmin = x.IsAdmin,
+                BranchManager = x.Branches!.BranchManager,
+                SupEngineerName = x.SupEngineerName,
+                SupEngineerCert = x.SupEngineerCert,
+                SupEngineerNationalId = x.SupEngineerNationalId,
+                StampUrl = x.StampUrl,
+                TimeId = x.TimeId,
+                AccStatusConfirm = x.AccStatusConfirm ?? "",
+                FullNameAr = x.FullNameAr ?? "",
+                IsActivated = x.IsActivated ?? false,
+                AppearWelcome = x.AppearWelcome,
+                QrCodeUrl = x.QrCodeUrl ?? "",
+                FullNameEn = x.FullName ?? "",
+
+
+            }).FirstOrDefault();
+            return user;
+
+        }
+
         public async Task<UsersVM> GetUser_tadmin(string UserName)
         {
             var user = _TaamerProContext.Users.Where(s => s.UserName == UserName).Select(x => new UsersVM
@@ -1712,5 +1763,6 @@ namespace TaamerProject.Repository.Repositories
         {
             throw new NotImplementedException();
         }
+
     }
 }

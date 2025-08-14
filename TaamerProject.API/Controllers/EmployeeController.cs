@@ -1,24 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TaamerProject.API.Helper;
 using TaamerProject.Service.Interfaces;
 using TaamerProject.Models;
 using System.Net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using TaamerProject.Service.Services;
 using System.Globalization;
-using DocumentFormat.OpenXml.Office2010.Ink;
-using static TaamerProject.API.Controllers.EmployeeController;
 using System.Text;
-using DocumentFormat.OpenXml.EMMA;
 using TaamerProject.Models.Common;
-using Microsoft.Graph.Models;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class EmployeeController : ControllerBase
     {
@@ -126,39 +120,7 @@ namespace TaamerProject.API.Controllers
         public IActionResult SaveEmployee([FromForm]Employees emp,IFormFile? UploadedEmployeeImage)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-
-            //HttpPostedFileBase file = Request.Files["UploadedImage"];
-            //    if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
-            //    {
-            //        if (Request.Files["UploadedImage"].ContentLength > 0)
-            //        {
-            //            string fileName = System.IO.Path.GetFileName(GenerateRandomNo() + Request.Files["UploadedImage"].FileName);
-
-            //            string fileLocation = Server.MapPath("~/Uploads/Employees/") + fileName;
-            //            try
-            //            {
-            //                if (System.IO.File.Exists(fileLocation))
-            //                {
-            //                    System.IO.File.Delete(fileLocation);
-            //                }
-            //                Request.Files["UploadedImage"].SaveAs(fileLocation);
-            //                emp.PhotoUrl = "/Uploads/Employees/" + fileName;
-            //            }
-            //            catch
-            //            {
-            //                var massage = "";
-            //                if (Lang == "rtl")
-            //                {
-            //                    massage = "فشل في رفع الصورة";
-            //                }
-            //                else
-            //                {
-            //                    massage = "Failed To Upload Image";
-            //                }
-            //                return Ok(new GeneralMessage { Result = false, Message = massage }, OkRequestBehavior.AllowGet);
-            //            }
-            //        }
-            //    }
+            
 
             if (UploadedEmployeeImage != null)
             {
@@ -363,10 +325,7 @@ namespace TaamerProject.API.Controllers
             public int LocationId { get; set; }
             public List<int>? EmpList { get; set; }
         }
-        //public IActionResult Changecompanyresponsive(int EmpId)
-        //{
-        //    return Ok(_employesService.Changecompanyresponsive(EmpId, _globalshared.UserId_G, Lang, _globalshared.BranchId_G), OkRequestBehavior.AllowGet);
-        //}
+
 
         [HttpPost("DeleteEmployee")]
         public IActionResult DeleteEmployee(int EmployeeId)
@@ -648,32 +607,7 @@ namespace TaamerProject.API.Controllers
             return Ok(_employesService.FillSelectEmployeeWorkers(_globalshared.Lang_G, _globalshared.BranchId_G));
             }
 
-        //الموظفين
-        //public IActionResult PrintEmployeeReport(EmployeesVM EmployeesSearch)
-        //{
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
 
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    List<EmployeesVM> Employees = _employesService.SearchEmployees(EmployeesSearch, UsersData.Lang, _globalshared.BranchId_G).ToList();
-        //    ReportPDF = humanResourcesReports.PrintEmployeeReport(Employees, infoDoneTasksReport);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
 
         [HttpPost("PrintEmployeesSalaryReport2")]
         public IActionResult PrintEmployeesSalaryReport2([FromBody]EmployeesVM SalarySearch)
@@ -859,15 +793,6 @@ namespace TaamerProject.API.Controllers
 
                 salaryRptVM_New.MonthName = (SalarySearch.MonthNo == null || SalarySearch.MonthNo == 0) ? "" : getmnth((int)SalarySearch.MonthNo);
 
-                //string Date = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                //ViewData["Date"] = Date;
-
-                //var objOrganization2 = _organizationsservice.GetBranchOrganizationDataInvoice(orgId);
-                //if (objOrganization2 != null)
-                //    ViewData["Org_VD"] = objOrganization2;
-                //else
-                //    ViewData["Org_VD"] = null;
-
 
             }
 
@@ -877,161 +802,6 @@ namespace TaamerProject.API.Controllers
 
 
         }
-
-
-
-        //public IActionResult PrintEmployeesSalaryReport(EmployeesVM SalarySearch)
-        //{
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    var Emps = _employesService.GetAllEmployeesSearch(SalarySearch, UsersData.Lang, _globalshared.UserId_G, _globalshared.BranchId_G, _Con);
-
-        //    if (SalarySearch.IsAllBranch.Value == false && SalarySearch.BranchId.Value >= 0)
-        //    {
-        //        var rptSource = Emps.Where(e => e.BranchId == SalarySearch.BranchId.Value).Select(s => new EmployeesSalaryRptVM
-        //        {
-        //            EmployeeNameAr = s.EmployeeNameAr ?? "",
-        //            Salary = s.Salary.ToString() ?? "0",
-
-        //            CommunicationAllawance = s.CommunicationAllawance.HasValue ? s.CommunicationAllawance.Value.ToString() : "0",
-        //            ProfessionAllawance = s.ProfessionAllawance.HasValue ? s.ProfessionAllawance.Value.ToString() : "0",
-        //            TransportationAllawance = s.TransportationAllawance.HasValue ? s.TransportationAllawance.Value.ToString() : "0",
-        //            HousingAllowance = s.HousingAllowance.HasValue ? s.HousingAllowance.Value.ToString() : "0",
-
-        //            MonthlyAllowances = s.MonthlyAllowances.ToString() ?? "0",
-        //            AddAllowances = s.ExtraAllowances.ToString() ?? "0",
-        //            TotalLoans = s.TotalLoans.ToString() ?? "0",
-        //            Bonus = s.Bonus.ToString() ?? "0",
-        //            TotalyDays = s.TotalDayAbs.ToString() ?? "0",
-        //            TotalDiscounts = s.TotalDiscounts.ToString() ?? "0",
-        //            TotalRewards = s.TotalRewards.ToString() ?? "0",
-        //            //TotalViolations = s.TotalViolations.ToString() ?? "0",
-        //            TotalySalaries = s.TotalySalaries.ToString() ?? "0",
-        //        }).ToList();
-
-        //        //rptSource.Add(totalRow);
-        //        //ReportPDF = humanResourcesReports.PrintEmployeesSalaryReports(rptSource, infoDoneTasksReport, SalarySearch.BranchName, string.IsNullOrEmpty(SalarySearch.MonthName) ? "" : SalarySearch.MonthName);
-
-
-
-        //        ViewData["rptSource"] = rptSource;
-
-        //        if (SalarySearch.BranchId != null)
-        //        {
-        //            ViewData["BranchName"] = SalarySearch.BranchName;
-        //        }
-        //        else
-        //        {
-        //            ViewData["BranchName"] = "";
-
-        //        }
-        //        ViewData["MonthName"] = string.IsNullOrEmpty(SalarySearch.MonthName) ? "" : SalarySearch.MonthName;
-
-        //        string Date = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-        //        ViewData["Date"] = Date;
-
-        //        var objOrganization2 = _organizationsservice.GetBranchOrganizationDataInvoice(orgId);
-        //        if (objOrganization2 != null)
-        //            ViewData["Org_VD"] = objOrganization2;
-        //        else
-        //            ViewData["Org_VD"] = null;
-
-
-        //    }
-        //    else
-        //    {
-        //        var rptSource = Emps.Select(s => new EmployeesSalaryRptVM
-        //        {
-        //            EmployeeNameAr = s.EmployeeNameAr ?? "",
-        //            Salary = s.Salary.ToString() ?? "0",
-
-        //            CommunicationAllawance = s.CommunicationAllawance.HasValue ? s.CommunicationAllawance.Value.ToString() : "0",
-        //            ProfessionAllawance = s.ProfessionAllawance.HasValue ? s.ProfessionAllawance.Value.ToString() : "0",
-        //            TransportationAllawance = s.TransportationAllawance.HasValue ? s.TransportationAllawance.Value.ToString() : "0",
-        //            HousingAllowance = s.HousingAllowance.HasValue ? s.HousingAllowance.Value.ToString() : "0",
-
-        //            MonthlyAllowances = s.MonthlyAllowances.ToString() ?? "0",
-        //            AddAllowances = s.ExtraAllowances.ToString() ?? "0",
-        //            TotalLoans = s.TotalLoans.ToString() ?? "0",
-        //            Bonus = s.Bonus.ToString() ?? "0",
-        //            TotalyDays = s.TotalDayAbs.ToString() ?? "0",
-        //            TotalDiscounts = s.TotalDiscounts.ToString() ?? "0",
-        //            TotalRewards = s.TotalRewards.ToString() ?? "0",
-        //            //TotalViolations = s.TotalViolations.ToString() ?? "0",
-        //            TotalySalaries = s.TotalySalaries.ToString() ?? "0",
-        //        }).ToList();
-
-        //        //rptSource.Add(totalRow);
-
-        //        ViewData["rptSource"] = rptSource;
-        //        if (SalarySearch.BranchId != null)
-        //        {
-        //            ViewData["BranchName"] = SalarySearch.BranchName;
-        //        }
-        //        else
-        //        {
-        //            ViewData["BranchName"] = "";
-
-        //        }
-
-        //        ViewData["MonthName"] = string.IsNullOrEmpty(SalarySearch.MonthName) ? "" : SalarySearch.MonthName;
-
-        //        string Date = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-        //        ViewData["Date"] = Date;
-
-        //        var objOrganization2 = _organizationsservice.GetBranchOrganizationDataInvoice(orgId);
-        //        if (objOrganization2 != null)
-        //            ViewData["Org_VD"] = objOrganization2;
-        //        else
-        //            ViewData["Org_VD"] = null;
-
-
-        //    }
-
-        //    return PartialView("_PayRollMarches");
-
-        //}
-
-
-
-        //public IActionResult PrintEmployeeIdentityReports(int EmpId)
-        //{
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    EmployeesVM emp = _employesService.GetEmployeeById(EmpId, "");
-        //    var empVacations = _vacationService.GetAllVacations(EmpId, "").ToList();
-        //    var Allowances = _allowanceService.GetAllAllowances(EmpId, "").ToList();
-        //    var discounts = _discountRewardService.GetAllDiscountRewards(EmpId, "").Where(x => x.Type == 1).ToList();
-        //    var loans = _loanService.GetAllLoansDataModel(EmpId).Where(x => x.Status == 2).ToList();
-        //    var rewards = _discountRewardService.GetAllDiscountRewards(EmpId, "").Where(x => x.Type == 2).ToList();
-
-        //    var cityList = _cityService.GetAllCities("").ToList();
-        //    var cityPassList = _cityPassService.GetAllCities("").ToList();
-        //    ReportPDF = humanResourcesReports.PrintEmployeeIdentityReports(emp, empVacations, Allowances, loans, discounts, rewards,cityList, cityPassList,
-        //       this.ActiveDataSource, _Con, Lang, infoDoneTasksReport);
-
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-
 
         [HttpGet("PrintEmployeeIdentityReports")]
 
@@ -1201,32 +971,7 @@ namespace TaamerProject.API.Controllers
 
                 return Ok(employeeReport);
 
-            //ViewData["bankname"] = bankname;
-            //ViewData["emp"] = emp;
-            //ViewData["empVacations"] = empVacations;
-            //ViewData["Allowances"] = Allowances;
-            //ViewData["loans"] = loans;
-            //ViewData["discounts"] = discounts;
-            //ViewData["rewards"] = rewards;
-            //ViewData["cityList"] = cityList;
-            //ViewData["cityPassList"] = cityPassList;
-
-            //ViewData["datasource"] = this.ActiveDataSource;
-            //ViewData["con"] = _Con;
-            //ViewData["Lang"] = Lang;
-
-
-            //string Date = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-            //ViewData["Date"] = Date;
-
-            //var objOrganization2 = _organizationsservice.GetBranchOrganizationDataInvoice(orgId);
-            //if (objOrganization2 != null)
-            //    ViewData["Org_VD"] = objOrganization2;
-            //else
-            //    ViewData["Org_VD"] = null;
-
-
-            //return PartialView("_EmpDetails");
+           
         }
 
 

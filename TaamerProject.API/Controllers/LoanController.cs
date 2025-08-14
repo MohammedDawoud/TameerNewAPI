@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Net.Mail;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
-using TaamerProject.Models.Common;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class LoanController : ControllerBase
     {
@@ -113,12 +109,8 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            //var url = Server.MapPath("~/Email/MailStamp.html");
             var url = Path.Combine("/Email/MailStamp.html");
-
-            //var file = Server.MapPath("~/dist/assets/images/logo.png");
             var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G);
-            //var file = Server.MapPath("~") + org.LogoUrl;
             var file = Path.Combine(org.Result?.LogoUrl??"");
 
             var result = _loanservice.SaveLoan(loan, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.Lang_G, url, file);
@@ -131,12 +123,8 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            //var url = Server.MapPath("~/Email/MailStamp.html");
             var url = Path.Combine("/Email/MailStamp.html");
-
-            //var file = Server.MapPath("~/dist/assets/images/logo.png");
             var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G);
-            //var file = Server.MapPath("~") + org.LogoUrl;
             var file = Path.Combine(org.Result?.LogoUrl ?? "");
             var result = _loanservice.SaveLoan_Management(loan, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.Lang_G, url, file);
             
@@ -164,12 +152,8 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            //var url = Server.MapPath("~/Email/MailStamp.html");
             var url = Path.Combine("/Email/MailStamp.html");
-
-            //var file = Server.MapPath("~/dist/assets/images/logo.png");
             var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G);
-            //var file = Server.MapPath("~") + org.LogoUrl;
             var file = Path.Combine(org.Result?.LogoUrl ?? "");
 
             var result = _loanservice.SaveLoanWorkers(loan, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.Lang_G, url, file);
@@ -199,14 +183,9 @@ namespace TaamerProject.API.Controllers
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
 
-            //var url = Server.MapPath("/Email/MailStamp.html");
             var url = Path.GetFullPath("Email/MailStamp.html");
-
-            // var file = Server.MapPath("~/dist/assets/images/logo.png");
             var org = _organizationsservice.GetOrganizationDataLogin(_globalshared.Lang_G);
-            //var file = Server.MapPath("~") + org.LogoUrl;
             var file = Path.GetFullPath(org.Result.LogoUrl.TrimStart('/'));
-
             var result = _loanservice.UpdateStatus(ImprestId, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.Lang_G, Type, _globalshared.YearId_G, url, file,Reason??"");
             return Ok(result);
         }

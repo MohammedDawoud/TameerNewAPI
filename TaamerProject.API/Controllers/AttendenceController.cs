@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Data;
@@ -10,17 +9,14 @@ using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Repository.Interfaces;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Services;
 using BioMetrixCore;
-using Microsoft.AspNetCore.Http.HttpResults;
-using DocumentFormat.OpenXml.Bibliography;
 
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class AttendenceController : ControllerBase
     {
@@ -211,73 +207,7 @@ namespace TaamerProject.API.Controllers
             }
 
         }
-        //[HttpGet("GetEmpAttendenceDevice")]
-        //public IActionResult GetEmpAttendenceDevice(List<Thing> things)
-        //{
-        //    HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-        //    var t = things;
-        //    int iMachineNumber = -1;
-
-        //    string ipAddress = t.Select(x => x.tbxDeviceIP).FirstOrDefault().Trim();
-
-        //    string port = t.Select(x => x.tbxPort).FirstOrDefault().Trim();
-        //    MachineNumber = t.Select(x => x.tbxMachineNumber).FirstOrDefault().Trim();
-        //    string branchid = t.Select(x => x.tbxBranchId).FirstOrDefault().Trim();
-        //    string id = t.Select(x => x.tbxAttendenceDeviceId).FirstOrDefault().Trim();
-
-        //    var result = _attendencedeviceservice.GetAllAttendenceDevicesByID(_globalshared.Lang_G, Convert.ToInt32(branchid), Convert.ToInt32(id)).Result.ToList();
-
-        //    try
-        //    {
-        //        if(true)// (IsDeviceConnected)
-        //        {
-        //            //IsDeviceConnected = false;
-        //            // this.Cursor = Cursors.Default;
-        //            return Ok(new { Result = false, Message = "Resources.MD_ConnectDisconnect" });
-        //        }
-
-
-        //        if (ipAddress == string.Empty || port == string.Empty)
-        //            throw new Exception("The Device IP Address and Port is mandotory !!");
-
-        //        int portNumber = 4370;
-        //        if (!int.TryParse(port, out portNumber))
-        //            throw new Exception("Not a valid port number");
-
-        //        bool isValidIpA = UniversalStatic.ValidateIP(ipAddress);
-        //        if (!isValidIpA)
-        //            throw new Exception("The Device IP is invalid !!");
-
-        //        isValidIpA = UniversalStatic.PingTheDevice(ipAddress);
-        //        if (!isValidIpA)
-        //            throw new Exception("The device at " + ipAddress + ":" + port + " did not respond!!");
-
-        //        try
-        //        {
-        //            objZkeeper = new ZkemClient(RaiseDeviceEvent);
-        //            IsDeviceConnected = objZkeeper.Connect_Net(ipAddress, portNumber);
-
-
-        //        }
-        //        catch
-        //        {
-
-        //        }
-        //        if (IsDeviceConnected)
-        //        {
-
-        //            return Ok(new { Result = true, Message = "Resources.MD_ConnectSuccessfully" });
-
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Ok(new { Result = false, Message = "Resources.MD_ConnectFailed" });
-
-        //    }
-        //    return Ok(new { Result = true, Message = "Resources.MD_ConnectSuccessfully" });
-
-        //}
+       
         [HttpPost("DownloadFingerPrint")]
         public IActionResult DownloadFingerPrint()
         {
@@ -354,11 +284,6 @@ namespace TaamerProject.API.Controllers
 
                         count++;
                     }
-
-                    //axCZKEM1.EnableDevice(axCZKEM1.MachineNumber, true);
-
-                    //axCZKEM1.RefreshData(axCZKEM1.MachineNumber);
-
 
                 }
 
@@ -586,61 +511,7 @@ namespace TaamerProject.API.Controllers
             var result = _attendenceservice.GetAttendanceData_Application(FromDate, ToDate, Shift, BranchId, _globalshared.Lang_G, Con, _globalshared.YearId_G).Result.Where(x => x.FromApplication == "1");
             return Ok(result);
         }
-        //[HttpGet]
-        //public FileResult PDFDownloadEmployeeAttanceToday(string TodayDate, int branchId, string branch = "", bool? All = false)
-        //{
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_FiscalyearsService.GetYearID(Convert.ToInt32(FiscalId)));
-        //    byte[] pdfByte = { 0 };
-
-        //    int orgId = _BranchesService.GetOrganizationId(BranchId);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-
-
-
-        //    string[] infoEmployeeAbsensceReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, "الموظفين الغائبين اليوم", objOrganization.LogoUrl, branch };
-        //    string[] columnEmployeeAbsensce = { "إسم الموظف", "رقم البصمة", "التاريخ", "اليوم", "الفرع" };
-
-        //    int Shft = 0;
-
-        //    List<LateVM> DataEmployeeAbsensce = All == true ? _attendenceservice.GetLateDataToday(TodayDate, Shft, BranchId, Lang, Con, YearNEW).ToList() :
-        //                                                             _attendenceservice.GetLateDataToday(TodayDate, Shft, branchId, Lang, Con, YearNEW).ToList();
-
-        //    DataTable listDataAbouutToExpire = ToDataTable(DataEmployeeAbsensce);
-
-        //    pdfByte = pdfClass.DencesEmployeeAbsensce(TodayDate, infoEmployeeAbsensceReport, columnEmployeeAbsensce, listDataAbouutToExpire);
-        //    return File(pdfByte, "application/pdf");
-
-        //}
-
-        //[HttpGet]
-        //public FileResult PDFDownloadEmployeeAttanceLateToday(string TodayDate, int branchId, string branch = "", bool? All = false)
-        //{
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_FiscalyearsService.GetYearID(Convert.ToInt32(FiscalId)));
-        //    byte[] pdfByte = { 0 };
-
-        //    int orgId = _BranchesService.GetOrganizationId(BranchId);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-
-
-
-        //    string[] infoEmployeeLateTodayReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, "الموظفين الغائبين اليوم", objOrganization.LogoUrl, branch };
-        //    string[] columnEmployeeLateToday = { "إسم الموظف", "رقم البصمة", "التاريخ", "حضور فترة اولى", "زمن التأخير", "حضور فترة ثانية", "زمن التأخير " };
-
-        //    int Shft = 0;
-
-        //    List<LateVM> DataEmployeeLateToday = All == true ? _attendenceservice.GetLateDataToday(TodayDate, Shft, BranchId, Lang, Con, YearNEW).ToList() :
-        //                                                             _attendenceservice.GetLateDataToday(TodayDate, Shft, branchId, Lang, Con, YearNEW).ToList();
-
-        //    DataTable listDataLateToday = ToDataTable(DataEmployeeLateToday);
-
-        //    pdfByte = pdfClass.DencesEmployeeLate(TodayDate, infoEmployeeLateTodayReport, columnEmployeeLateToday, listDataLateToday);
-        //    return File(pdfByte, "application/pdf");
-
-        //}
+        
         [HttpGet("ToDataTable")]
 
         public DataTable ToDataTable<T>(List<T> items)
@@ -666,203 +537,7 @@ namespace TaamerProject.API.Controllers
 
             return dataTable;
         }
-        ////الموظفون المتاخرون
-        //public IActionResult printLateMonthEmps(int EmpId, int BranchId, string From, string To, int SH)
-        //{
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_FiscalyearsService.GetYearID(Convert.ToInt32(FiscalId)));
-        //    int orgId = _BranchesService.GetOrganizationId(BranchId);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    List<LateVM> Employees = _attendenceservice.GetLateData(From, To, EmpId, SH, BranchId, Lang, Con, YearNEW).ToList();
-        //    ReportPDF = humanResourcesReports.printLateMonthEmps(Employees, From, To, infoDoneTasksReport);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-        ////الموظفون الغائبون
-        //public IActionResult printAbsenceMonthEmps(string FromDate, string ToDate, int EmpId, int BranchId)
-        //{
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_FiscalyearsService.GetYearID(Convert.ToInt32(FiscalId)));
-        //    int orgId = _BranchesService.GetOrganizationId(BranchId);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    List<AbsenceVM> Employees = _attendenceservice.GetAbsenceData(FromDate, ToDate, EmpId, BranchId, Lang, Con, YearNEW).ToList();
-        //    ReportPDF = humanResourcesReports.printAbsenceMonthEmps(Employees, FromDate, ToDate, infoDoneTasksReport);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-        ////الموظفون الغائبون اليوم
-        //public IActionResult printAbsenceTodayEmps(string TodayDate)
-        //{
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_FiscalyearsService.GetYearID(Convert.ToInt32(FiscalId)));
-        //    int orgId = _BranchesService.GetOrganizationId(BranchId);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    List<AbsenceVM> Employees = _attendenceservice.GetAbsenceDataToday(TodayDate, BranchId, Lang, Con, YearNEW).ToList();
-        //    ReportPDF = humanResourcesReports.printAbsenceEmpsToDay(Employees, infoDoneTasksReport);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-        ////المتاخرون اليوم
-        //public IActionResult printEmpsLateToday(string TodayDate)
-        //{
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_FiscalyearsService.GetYearID(Convert.ToInt32(FiscalId)));
-        //    int orgId = _BranchesService.GetOrganizationId(BranchId);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    List<LateVM> Employees = _attendenceservice.GetLateDataToday(TodayDate, 0, BranchId, Lang, Con, YearNEW).ToList();
-        //    ReportPDF = humanResourcesReports.printEmpsLateToday(Employees, infoDoneTasksReport);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-        //// الخروج المبكر
-        //public IActionResult printEmpsEarlyDeparture(int EmpId, int BranchId, string From, string To, int SH)
-        //{
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_FiscalyearsService.GetYearID(Convert.ToInt32(FiscalId)));
-        //    int orgId = _BranchesService.GetOrganizationId(BranchId);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    List<LateVM> Employees = _attendenceservice.GetEarlyDepartureData(From, To, EmpId, SH, BranchId, Lang, Con, YearNEW).ToList();
-        //    ReportPDF = humanResourcesReports.printEmpsEarlyDeparture(Employees, From, To, infoDoneTasksReport);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-        //// لم يسجلوا خروج
-        //public IActionResult printEmpsNotLoggedOut(string FromDate, string ToDate, int BranchId)
-        //{
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_FiscalyearsService.GetYearID(Convert.ToInt32(FiscalId)));
-        //    int orgId = _BranchesService.GetOrganizationId(BranchId);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    List<NotLoggedOutVM> Employees = _attendenceservice.GetNotLoggedOutData(FromDate, ToDate, BranchId, Lang, Con, YearNEW).ToList();
-        //    ReportPDF = humanResourcesReports.printEmpsNotLoggedOut(Employees, FromDate, ToDate, infoDoneTasksReport);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-        //// حضور وانصراف الموظفين
-        //public IActionResult printAttendanceData(string FromDate, string ToDate, int Shift, int BranchId)
-        //{
-        //    var FiscalId = Request.Cookies["ActiveYear"].Value;
-        //    var YearNEW = Convert.ToInt32(_FiscalyearsService.GetYearID(Convert.ToInt32(FiscalId)));
-        //    int orgId = _BranchesService.GetOrganizationId(BranchId);
-
-        //    var objOrganization = _organizationsservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    List<LateVM> Employees = _attendenceservice.GetAttendanceData(FromDate, ToDate, Shift, BranchId, Lang, Con, YearNEW).ToList();
-        //    ReportPDF = humanResourcesReports.printAttendanceData(Employees, FromDate, ToDate, infoDoneTasksReport);
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-
+        
         [HttpPost("Adddtatmanually")]
         public IActionResult Adddtatmanually()
         {
@@ -962,26 +637,6 @@ namespace TaamerProject.API.Controllers
             return Ok(totals);
 
         }
-
-        //[HttpPost("IsDeviceConnected")]
-        //public bool IsDeviceConnected
-        //{
-        //    get { return isDeviceConnected; }
-        //    set
-        //    {
-        //        isDeviceConnected = value;
-        //        if (isDeviceConnected)
-        //        {
-
-        //        }
-        //        else
-        //        {
-
-        //        }
-        //    }
-        //}
-
- 
 
 
     }

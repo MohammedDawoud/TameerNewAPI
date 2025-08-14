@@ -43,6 +43,8 @@ namespace TaamerProject.Service.Interfaces
         GeneralMessage ChangeUserStamp(Users users, int UserId, int BranchId);
         bool ValidateUserCofidential(string UserName, string Password, string activationCode);
         Task<UsersVM> GetUser(string username);
+        Task<UsersLoginVM> GetUserLogin(string username,string password);
+
         Task<UsersVM> GetUser_tadmin(string username);
 
         GeneralMessage SaveUserPrivilegesUsers(int AssignedUserId, List<int> Privs, int UserId, int BranchId, string Con);

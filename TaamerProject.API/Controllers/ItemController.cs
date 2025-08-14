@@ -1,21 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaamerProject.API.Helper;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
-using System.Net.Mail;
 using System.Net;
-using TaamerProject.Service.Services;
-using Google.Apis.Drive.v3.Data;
 
 namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class ItemController : ControllerBase
     {
@@ -100,55 +95,7 @@ namespace TaamerProject.API.Controllers
         public IActionResult SaveItem2(Item item)
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-
-            //string path = Path.Combine("/Uploads/Items/");
-            //string fileName = ""; string fname = ""; string fnamepath = "";
-
-            //foreach (IFormFile postedFile in postedFiles_LiscenceImage)
-            //{
-            //    fname = postedFile.FileName;
-            //    fileName = System.IO.Path.GetFileName(GenerateRandomNo() + fname);
-            //    fnamepath = Path.Combine(path, fileName);
-
-            //    try
-            //    {
-            //        using (System.IO.FileStream stream = new System.IO.FileStream(fnamepath, System.IO.FileMode.Create))
-            //        {
-            //            postedFile.CopyTo(stream);
-            //            string atturl = Path.Combine(path, fname);
-            //            item.LiscenceFileUrl = "/Uploads/Items/" + fileName;
-            //        }
-            //    }
-            //    catch (Exception)
-            //    {
-            //        var massege = "فشل في رفع الملفات";
-            //        return Ok(new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = massege });
-            //    }
-            //}
-
-            //fileName = ""; fname = ""; fnamepath = "";
-
-            //foreach (IFormFile postedFile in postedFiles_InsuranceImage)
-            //{
-            //    fname = postedFile.FileName;
-            //    fileName = System.IO.Path.GetFileName(GenerateRandomNo() + fname);
-            //    fnamepath = Path.Combine(path, fileName);
-
-            //    try
-            //    {
-            //        using (System.IO.FileStream stream = new System.IO.FileStream(fnamepath, System.IO.FileMode.Create))
-            //        {
-            //            postedFile.CopyTo(stream);
-            //            string atturl = Path.Combine(path, fname);
-            //            item.InsuranceFileUrl = "/Uploads/Items/" + fileName;
-            //        }
-            //    }
-            //    catch (Exception)
-            //    {
-            //        var massege = "فشل في رفع الملفات";
-            //        return Ok(new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = massege });
-            //    }
-            //}
+           
             var result = _itemservice.SaveItem(item, _globalshared.UserId_G, _globalshared.BranchId_G);
             return Ok(result);
         }

@@ -29,7 +29,7 @@ namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class ContractController : ControllerBase
     {
@@ -99,48 +99,14 @@ namespace TaamerProject.API.Controllers
             _hostingEnvironment = webHostEnvironment;
 
         }
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
 
-        //public IActionResult SubIndex(int CustomerId, int ProjectId, int ContractType)
-        //{
-        //    ViewData["CustomerId"] = CustomerId;
-        //    ViewData["ProjectId"] = ProjectId;
-        //    ViewData["ContractType"] = ContractType;
-        //    return View();
-        //}
-
-        //public IActionResult ContractN()
-        //{
-        //    return View();
-        //}
-        //public IActionResult ContractNCustomer()
-        //{
-        //    return View();
-        //}
-        //public IActionResult FinDetailsofCustomer()
-        //{
-        //    return View();
-        //}
         [HttpGet("GetAllContracts")]
         public IActionResult GetAllContracts()
             {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //var userBranchs = _branchesService.GetAllBranchesByUserId(_globalshared.Lang_G, UserId);
-            //var someContracts = _contractservice.GetAllContracts_B(0, UsersData.YearId_G);
-            //foreach (var userBranch in userBranchs)
-            //{
-
-            //    var AllContracts = _contractservice.GetAllContracts_B(userBranch.BranchId, UsersData.YearId_G).ToList();
-            //    var Contracts = someContracts.Union(AllContracts);
-            //    someContracts = Contracts.ToList();
-            //}
             var someContracts = _contractservice.GetAllContracts_B(_globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
 
                 return Ok(someContracts);
-                //return Ok(_contractservice.GetAllContracts());
             }
         [HttpGet("GetAllContractsNotPaid")]
         public IActionResult GetAllContractsNotPaid(bool FirstLoad)
@@ -166,7 +132,6 @@ namespace TaamerProject.API.Controllers
                     return Ok(list);
                 }
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-                //var someContracts = _contractservice.GetAllContracts_B(BranchId, _globalshared.YearId_G).ToList().Where(s => s.TotalRemainingPayment > 0);
                 VoucherFilterVM voucherFilterVM = new VoucherFilterVM();
                 voucherFilterVM.Type = 2;
                 voucherFilterVM.CustomerId = null;
@@ -266,23 +231,12 @@ namespace TaamerProject.API.Controllers
 
         [HttpPost("GetAllContractsBySearch")]
         public IActionResult GetAllContractsBySearch(ContractsVM contractsVM)
-            {
-                //var userBranchs = _branchesService.GetAllBranchesByUserId(_globalshared.Lang_G, UserId);
-                //var someContracts = _contractservice.GetAllContractsBySearch(contractsVM, 0, UsersData.YearId_G);
-                //foreach (var userBranch in userBranchs)
-                //{
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var someContracts = _contractservice.GetAllContractsBySearch(contractsVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
 
-                //    var AllContracts = _contractservice.GetAllContractsBySearch(contractsVM, userBranch.BranchId, UsersData.YearId_G).ToList();
-                //    var Contracts = someContracts.Union(AllContracts);
-                //    someContracts = Contracts.ToList();
-                //}
-                
-                HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-                var someContracts = _contractservice.GetAllContractsBySearch(contractsVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
-
-                return Ok(someContracts);
-                //return Ok(_contractservice.GetAllContracts());
-            }
+            return Ok(someContracts);
+        }
 
     [HttpPost("GetAllContractsBySearchCustomer")]
     public IActionResult GetAllContractsBySearchCustomer(ContractsVM contractsVM)
@@ -290,7 +244,6 @@ namespace TaamerProject.API.Controllers
             List<ContractsVM> list = new List<ContractsVM>();
                 
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //var someContracts = _contractservice.GetAllContractsBySearchCustomer(contractsVM, BranchId, _globalshared.YearId_G).ToList();
 
             VoucherFilterVM voucherFilterVM = new VoucherFilterVM();
             voucherFilterVM.Type = 2;
@@ -425,20 +378,9 @@ namespace TaamerProject.API.Controllers
                 }
                 
                 HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-                //var userBranchs = _branchesService.GetAllBranchesByUserId(_globalshared.Lang_G, UserId);
-                //var someContracts = _contractservice.GetAllContractsBySearch(contractsVM, 0, UsersData.YearId_G);
-                //foreach (var userBranch in userBranchs)
-                //{
-
-                //    var AllContracts = _contractservice.GetAllContractsBySearch(contractsVM, userBranch.BranchId, UsersData.YearId_G).ToList();
-                //    var Contracts = someContracts.Union(AllContracts);
-                //    someContracts = Contracts.ToList();
-                //}
                 var someContracts = _contractservice.GetAllContractsBySearch(contractsVM, _globalshared.BranchId_G, _globalshared.YearId_G).Result.ToList();
 
                 return someContracts;
-                //return Ok(someContracts);
-                //return Ok(_contractservice.GetAllContracts());
             }
 
 
@@ -614,18 +556,6 @@ namespace TaamerProject.API.Controllers
                 customerPayments.IsPaid = true;
 
                 var result = _customerPaymentsservice.SaveCustomerPayment(customerPayments, _globalshared.UserId_G, _globalshared.BranchId_G);
-                //if (_globalshared.Lang_G == "ltr" &&result.StatusCode == HttpStatusCode.BadRequest && result.ReasonPhrase == "فشل في الحفظ , لايمكنك تعديل دفعه تم دفعها من قبل")
-                //{
-                //    result.ReasonPhrase = "Failed to save. You cannot edit a payment that has already been paid.";
-                //}
-                //else if (_globalshared.Lang_G == "ltr" &&result.StatusCode == HttpStatusCode.BadRequest && result.ReasonPhrase == "فشل في الحفظ")
-                //{
-                //    result.ReasonPhrase = "Saved Falied";
-                //}
-                //else if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.OK)
-                //{
-                //    result.ReasonPhrase = "Saved Successfully";
-                //}
                 return Ok(result);
             }
         [HttpGet("FillContractSelect")]
@@ -858,14 +788,6 @@ namespace TaamerProject.API.Controllers
                     string contanme = "Contract_" + CustContract.ProjectNo;
 
                     var Emp = _employeeService.GetEmployeeById(CustContract.OrgEmpId.Value, _globalshared.Lang_G).Result;
-                    //var Service = _servicesPriceService.GetAllServicesPrice().Where(x => x.ServicesId == CustContract.ServiceId.Value).FirstOrDefault();
-                    //string serviceDetails = "";
-                    //var ServiceDetObjs = _servicesPriceService.GetServicesPriceByParentId(Service.ServicesId);
-                    //foreach (var item in ServiceDetObjs)
-                    //{
-                    //    serviceDetails = serviceDetails + (item.ServicesName) + "\r\n";
-                    //}
-
                     fileLocation = Path.Combine("Uploads/Drafts/")
                                + contanme + ".docx";
 
@@ -1090,36 +1012,6 @@ namespace TaamerProject.API.Controllers
                             body.ChildObjects.Remove(paragraph);
                         }
                         ///////////////////////
-
-
-                        //payments
-                        //Save Word
-                        //Section section2 = doc.AddSection();
-
-                        //var payment = _customerPaymentservice.GetAllCustomerPayments(Convert.ToInt32(ContractId));
-                        //if (payment.Count() > 0)
-                        //{
-                        //    Spire.Doc.Table table2 = section2.AddTable(true);
-                        //    var countp = payment.Count();
-                        //    table2.ResetCells(1, 2);
-                        //    // table.AddRow(false, 2);
-                        //    //table2.Rows[0].Cells[0].Width = table2.Rows[0].Cells[1].Width = 60F;
-
-                        //    table2.TableFormat.Bidi = true;
-                        //    table2[0, 0].AddParagraph().AppendText("المبلغ");
-                        //    string text = "تاريخ الدفعة";
-                        //    table2[0, 1].AddParagraph().AppendText(text);
-
-                        //    int i = 1;
-                        //    foreach (var p in payment)
-                        //    {
-
-                        //        table2.AddRow(true, 2);
-                        //        table2[i, 0].AddParagraph().AppendText(p.TotalAmount.ToString());
-                        //        table2[i, 1].AddParagraph().AppendText(p.PaymentDate.ToString());
-                        //        i++;
-                        //    }
-                        //}
 
                         Spire.Doc.Table table = section2.AddTable(true);
 
@@ -1693,417 +1585,7 @@ namespace TaamerProject.API.Controllers
 
                 //return new GeneralMessage { Result = true, Message = "" };
             }
-
-
-
-        //public GeneralMessage UploadFile_DraftN(int ContractId)
-        //{
-        //    List<string> fileUrls = new List<string>();
-
-        //    var pathh = "";
-        //    string path = Server.MapPath("~/Reports/Contract/");
-        //    if (!Directory.Exists(path))
-        //    {
-        //        Directory.CreateDirectory(path);
-        //    }
-        //    string fileName = "Contract1_Draft1.docx";
-        //    pathh = path + fileName;
-
-        //    // var pathh = "";
-        //    int? custid = 0;
-        //    var massage = "";
-        //    string fileLocation = "";
-        //    string fileDir = "";
-        //    string fileNamed;
-        //    string filDown;
-        //    String URII;
-        //    try
-        //    {
-        //        var CustContract = _contractservice.GetAllContracts().Where(w => w.ContractId == ContractId).FirstOrDefault();
-        //        custid = CustContract.CustomerId;
-        //        var customerData = _customerservice.GetCustomersByCustomerId(custid, Lang);
-        //        var branchObj = _branchservice.GetBranchById(CustContract.BranchId);
-        //        int branchdata = branchObj.OrganizationId;
-        //        var OrgData = _organizationservice.GetBranchOrganizationData(branchdata);
-        //        string BranchId = Convert.ToString(branchObj.BranchId);
-        //        string CustomerId = Convert.ToString(CustContract.CustomerId);
-        //        string ProjectId = Convert.ToString(CustContract.ProjectId);
-        //        string contanme = "Contract_"+ CustContract.ProjectNo;
-
-        //        var Emp = _employeeService.GetEmployeeById(CustContract.OrgEmpId.Value, Lang);
-        //        var Service = _servicesPriceService.GetAllServicesPrice().Where(x => x.ServicesId == CustContract.ServiceId.Value).FirstOrDefault();
-        //        string serviceDetails = "";
-        //        var ServiceDetObjs = _servicesPriceService.GetServicesPriceByParentId(Service.ServicesId);
-        //        foreach (var item in ServiceDetObjs)
-        //        {
-        //            serviceDetails = item.ServicesName + "\n" + serviceDetails;
-        //        }
-
-        //        string IsContains = CustContract.TaxType == 3 ? "شامل" : "غير شامل";
-        //        var ContractDetails = _contractDetailsService.GetAllEmpConDetailsByContractId(ContractId);
-        //        string ContractDetailsStr = "";
-        //        if (ContractDetails.Count() > 0)
-        //        {
-        //            ContractDetailsStr = "بنود العقد:";
-        //            foreach (var item in ContractDetails)
-        //            {
-        //                ContractDetailsStr = ContractDetailsStr + "\n" + string.Format("{ 0}- {1}", item.SerialId, item.Clause);
-        //            }
-        //        }
-
-        //        fileLocation = Server.MapPath("~/Uploads/Drafts/")
-        //                   + contanme + ".docx";
-
-        //        fileDir = Server.MapPath("~/Uploads/Drafts/");
-        //        filDown = "Uploads/Drafts/";
-
-        //        if (System.IO.Directory.Exists(fileDir))
-        //        {
-        //            if (System.IO.File.Exists(fileLocation))
-        //            {
-        //                System.IO.File.Delete(fileLocation);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            System.IO.Directory.CreateDirectory(fileDir);
-        //            if (System.IO.File.Exists(fileLocation))
-        //            {
-        //                System.IO.File.Delete(fileLocation);
-        //            }
-        //        }
-
-
-        //        fileNamed = contanme + ".docx";
-        //        string sourcePath = path;
-        //        string targetPath = fileDir;
-
-        //        // Use Path class to manipulate file and directory paths.
-        //        string sourceFile = System.IO.Path.Combine(sourcePath, fileName);
-        //        string destFile = System.IO.Path.Combine(targetPath, fileNamed);
-
-
-        //        // To copy a file to another location and
-        //        // overwrite the destination file if it already exists.
-        //        if (System.IO.File.Exists(destFile))
-        //        {
-        //            System.IO.File.Delete(destFile);
-        //        }
-        //        System.IO.File.Copy(sourceFile, destFile, true);
-
-        //        /////////////////////////////Create Document///////////////////////////////
-        //        using (WordprocessingDocument document = WordprocessingDocument.Open(destFile, true))
-        //        {
-        //            string docText = null;
-        //            using (StreamReader sr = new StreamReader(document.MainDocumentPart.GetStream()))
-        //            {
-        //                docText = sr.ReadToEnd();
-        //            }
-
-        //            #region Replace
-
-        //            string dayname = GetDayName((DateTime.ParseExact(CustContract.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture)));
-        //            string CustomerNationalData = "";
-        //            if (customerData.CustomerTypeId == 1)
-        //            {
-        //                CustomerNationalData = string.Format("بطاقة الهوية: {0}", customerData.CustomerNationalId);
-        //            }
-        //            else if (customerData.CustomerTypeId == 2)
-        //            {
-        //                CustomerNationalData = string.Format("سجل تجاري: {0}", customerData.CommercialRegister);
-        //            }
-
-        //            Regex regexText = new Regex("ContNo");
-        //            docText = regexText.Replace(docText, CustContract.ContractNo);
-
-        //            regexText = new Regex("Hijri");
-        //            docText = regexText.Replace(docText, CustContract.HijriDate);
-
-        //            regexText = new Regex("Miladi");
-        //            docText = regexText.Replace(docText, CustContract.Date);
-
-        //            regexText = new Regex("Day");
-        //            docText = regexText.Replace(docText, dayname);
-
-        //            regexText = new Regex("CustNationalData");
-        //            docText = regexText.Replace(docText, CustomerNationalData);
-
-        //            regexText = new Regex("CustName");
-        //            docText = regexText.Replace(docText, customerData.CustomerName);
-
-        //            regexText = new Regex("CompName");
-        //            docText = regexText.Replace(docText, OrgData.NameAr);
-
-        //            regexText = new Regex("TotalTxt");
-        //            docText = regexText.Replace(docText, CustContract.ValueText);
-
-        //            regexText = new Regex("TaxValue");
-        //            docText = regexText.Replace(docText, CustContract.TaxesValue.HasValue ? CustContract.TaxesValue.Value.ToString() : "");
-
-        //            regexText = new Regex("ServiceName");
-        //            docText = regexText.Replace(docText, Service.Name);
-
-
-        //            //New
-
-        //            regexText = new Regex("ServiceDetails");
-        //            docText = regexText.Replace(docText, serviceDetails);
-
-        //            regexText = new Regex("ContractValue");
-        //            docText = regexText.Replace(docText, CustContract.TotalValue.ToString());
-
-        //            regexText = new Regex("OrgEmpName");
-        //            docText = regexText.Replace(docText, Emp.EmployeeNameAr);
-
-        //            regexText = new Regex("OrgEmpJob");
-        //            docText = regexText.Replace(docText, Emp.JobName);
-
-        //            regexText = new Regex("EmpNationalId");
-        //            docText = regexText.Replace(docText, Emp.NationalId);
-
-        //            regexText = new Regex("ContractDetails");
-        //            docText = regexText.Replace(docText, ContractDetailsStr);
-
-        //            regexText = new Regex("ProjectNo");
-        //            docText = regexText.Replace(docText, CustContract.ProjectNo);
-
-        //            regexText = new Regex("IsContain");
-        //            docText = regexText.Replace(docText, IsContains);
-
-        //            using (StreamWriter sw = new StreamWriter(document.MainDocumentPart.GetStream(FileMode.Create)))
-        //            {
-        //                sw.Write(docText);
-        //            }
-
-        //            #endregion
-
-        //            /////////////////////////Create Tables///////////////////////
-        //            ///
-        //            // Use the file name and path passed in as an argument 
-        //            // to open an existing Word 2007 document.
-
-
-        //            // Create an empty table.
-        //            DocumentFormat.OpenXml.Wordprocessing.Table table = new DocumentFormat.OpenXml.Wordprocessing.Table();
-
-        //            // Create a TableProperties object and specify its border information.
-        //            TableProperties tblProp = new TableProperties();
-
-        //            // Create a row.
-        //            DocumentFormat.OpenXml.Wordprocessing.TableRow tr = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-        //            // Create a cell.
-        //            DocumentFormat.OpenXml.Wordprocessing.TableCell tc1 = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
-        //            DocumentFormat.OpenXml.Wordprocessing.TableCell tc2 = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
-
-        //            var payment = _customerPaymentservice.GetAllCustomerPayments(Convert.ToInt32(ContractId));
-        //            if (payment.Count() > 0)
-        //            {
-        //               tblProp = new TableProperties(
-        //               new TableBorders(
-        //                   new TopBorder()
-        //                   {
-        //                       Val = new EnumValue<BorderValues>(BorderValues.Single),
-        //                       Size = 10
-        //                   },
-        //                   new BottomBorder()
-        //                   {
-        //                       Val = new EnumValue<BorderValues>(BorderValues.Single),
-        //                       Size = 10
-        //                   },
-        //                   new LeftBorder()
-        //                   {
-        //                       Val = new EnumValue<BorderValues>(BorderValues.Single),
-        //                       Size = 10
-        //                   },
-        //                   new RightBorder()
-        //                   {
-        //                       Val = new EnumValue<BorderValues>(BorderValues.Single),
-        //                       Size = 24
-        //                   },
-        //                   new InsideHorizontalBorder()
-        //                   {
-        //                       Val =
-        //                       new EnumValue<BorderValues>(BorderValues.Single),
-        //                       Size = 10
-        //                   },
-        //                   new InsideVerticalBorder()
-        //                   {
-        //                       Val = new EnumValue<BorderValues>(BorderValues.Single),
-        //                       Size = 10
-        //                   }
-        //                ), new TableJustification() { Val = TableRowAlignmentValues.Center }
-        //                ,new RightToLeftText() { Val = new OnOffValue(true) }, 
-        //               new BiDiVisual() { Val = new EnumValue<OnOffOnlyValues> { Value = OnOffOnlyValues.On } }
-        //           );
-
-        //                // Append the TableProperties object to the empty table.
-        //                table.AppendChild<TableProperties>(tblProp);
-
-        //                // Create a row.
-        //                tr = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-
-        //                // Create a cell.
-        //               tc1 = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
-
-        //                // Specify the width property of the table cell.
-        //                tc1.Append(new TableCellProperties(
-        //                    new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "4400" }));
-
-        //                // Specify the table cell content.
-        //                tc1.Append(new Paragraph(new Run(new Text("المبلغ"))));
-
-        //                // Append the table cell to the table row.
-        //                tr.Append(tc1);
-
-        //                // Create a second table cell by copying the OuterXml value of the first table cell.
-        //                tc2 = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
-
-        //                tc2.Append(new Paragraph(new Run(new Text("تاريخ الدفعة"))));
-        //                // Append the table cell to the table row.
-        //                tr.Append(tc2);
-
-        //                // Append the table row to the table.
-        //                table.Append(tr);
-
-        //                foreach (var p in payment)
-        //                {
-        //                    tr = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-        //                    DocumentFormat.OpenXml.Wordprocessing.TableCell tc3_1 = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
-        //                    tc3_1.Append(new Paragraph(new Run(new Text(p.TotalAmount.ToString()))));
-        //                    tr.Append(tc3_1);
-
-        //                    DocumentFormat.OpenXml.Wordprocessing.TableCell tc4_1 = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
-        //                    tc4_1.Append(new Paragraph(new Run(new Text(p.PaymentDate.ToString()))));
-        //                    tr.Append(tc4_1);
-
-        //                    table.Append(tr);
-        //                }
-
-
-        //                // Append the table to the document.
-        //                document.MainDocumentPart.Document.Body.Append(table);
-        //            }
-
-
-        //            /////////////////////////التوقيع///////////////////////////
-        //            table = new DocumentFormat.OpenXml.Wordprocessing.Table();
-        //            tblProp = new TableProperties(
-        //                new TableBorders(
-        //                    new TopBorder()
-        //                    {
-        //                        Val = new EnumValue<BorderValues>(BorderValues.None),
-        //                    },
-        //                    new BottomBorder()
-        //                    {
-        //                        Val = new EnumValue<BorderValues>(BorderValues.None),
-        //                    },
-        //                    new LeftBorder()
-        //                    {
-        //                        Val = new EnumValue<BorderValues>(BorderValues.None),
-        //                    },
-        //                    new RightBorder()
-        //                    {
-        //                        Val = new EnumValue<BorderValues>(BorderValues.None),
-        //                    },
-        //                    new InsideHorizontalBorder()
-        //                    {
-        //                        Val = new EnumValue<BorderValues>(BorderValues.None),
-        //                    },
-        //                    new InsideVerticalBorder()
-        //                    {
-        //                        Val = new EnumValue<BorderValues>(BorderValues.None),
-        //                    }
-        //                ), new TableJustification() { Val = TableRowAlignmentValues.Center }
-        //                , new RightToLeftText() { Val = new OnOffValue(true) }
-        //                , new BiDiVisual() { Val = new EnumValue<OnOffOnlyValues> { Value = OnOffOnlyValues.On }}
-        //            ) ;
-
-        //            table.AppendChild<TableProperties>(tblProp);
-        //            tr = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-        //            tc1 = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
-        //            tc1.Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "4400" }));
-        //            tc1.Append(new Paragraph(new Run(new Text("الطرف الأول"))));
-
-        //            tr.Append(tc1);
-
-        //            tc2 = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
-        //            tc2.Append(new Paragraph(new Run(new Text("الطرف الثاني"))));
-        //            tr.Append(tc2);
-        //            table.Append(tr);
-
-
-        //            tr = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-        //            DocumentFormat.OpenXml.Wordprocessing.TableCell tc3 = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
-        //            tc3.Append(new Paragraph(new Run(new Text(string.Format("الاسم: {0}", OrgData.NameAr)))));
-        //            tr.Append(tc3);
-
-        //            DocumentFormat.OpenXml.Wordprocessing.TableCell tc4 = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
-        //            tc4.Append(new Paragraph(new Run(new Text(string.Format("الاسم: {0}", customerData.CustomerName)))));
-        //            tr.Append(tc4);
-        //            table.Append(tr);
-
-
-        //            tr = new DocumentFormat.OpenXml.Wordprocessing.TableRow();
-        //            DocumentFormat.OpenXml.Wordprocessing.TableCell tc5 = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
-        //            tc5.Append(new Paragraph(new Run(new Text("التوقيع:......................"))));
-        //            tr.Append(tc5);
-
-        //            DocumentFormat.OpenXml.Wordprocessing.TableCell tc6 = new DocumentFormat.OpenXml.Wordprocessing.TableCell();
-        //            tc6.Append(new Paragraph(new Run(new Text("التوقيع:......................"))));
-        //            tr.Append(tc6);
-
-        //            // Append the table row to the table.
-        //            table.Append(tr);
-
-        //            // Append the table to the document.
-        //            document.MainDocumentPart.Document.Body.Append(table);
-        //        }
-
-        //        //doc.SaveToFile(destFile, FileFormat.Docx);
-        //        fileUrls.Add(destFile);
-        //        TempData["Linkurl"] = destFile;
-
-        //        var UrlS = Request.Url.AbsoluteUri;
-
-        //        StringBuilder sb = new StringBuilder(UrlS);
-
-        //        sb.Replace("Contract", filDown);
-        //        sb.Replace("UploadFile", fileNamed);
-        //        URII = sb.ToString();
-        //        TempData["Linkurl"] = URII;
-
-
-        //        URII = URII.Replace("//SaveUploads/Drafts", "") + fileNamed;
-
-        //        //Save as a draft
-        //        int projectType = _projectService.GetTypeOfProjct(CustContract.ProjectId.Value);
-        //        Draft draft = new Draft() { DraftUrl = URII, Name = fileNamed, ProjectTypeId = projectType };
-        //        _draftService.SaveDraft(draft, UserId, this.BranchId);
-        //        _draftDetailsService.SaveDraftDetails(new DraftDetails()
-        //        {
-        //            DraftId = draft.DraftId,
-        //            ProjectId = CustContract.ProjectId.Value
-        //        }, UserId, this.BranchId);
-
-        //    }
-
-        //    catch (Exception ex)
-        //    {
-
-        //        if (_globalshared.Lang_G == "rtl")
-        //        {
-        //            massage = "فشل في تحميل العقد";
-        //        }
-        //        else
-        //        {
-        //            massage = "Failed To Download Contract Files";
-        //        }
-        //        return new GeneralMessage { Result = false, Message = massage };
-        //    }
-
-
-        //    return new GeneralMessage { Result = true, Message = "" };
-        //}
+   
         [HttpGet("Issuing_invoice")]
         public IActionResult Issuing_invoice(Invoices voucher)
             {
@@ -2172,38 +1654,7 @@ namespace TaamerProject.API.Controllers
             var generatevalue = new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = NewValue };
             return Ok(generatevalue);
         }
-        //التفاصيل المالية للعملاء
-        //public IActionResult PrintVoucher(string CustomerId,string FromDate,string ToDate, int Zerocheck)
-        //{
-        //    int? CustId = string.IsNullOrEmpty(CustomerId) ? (int?)null : Convert.ToInt32(CustomerId);
-
-        //    //List<AccountVM> ContractsVM2 = _accountsService.GetCustomerFinancialDetailsNew(CustId, FromDate, ToDate, Zerocheck, BranchId, Lang, UsersData.YearId_G, Con).ToList();
-        //    List<AccountVM> ContractsVM = _accountsService.GetCustomerFinancialDetailsByFilter(CustId, FromDate, ToDate, BranchId, Lang, UsersData.YearId_G, Zerocheck).ToList();
-
-        //    int orgId = _branchservice.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.DetailsOfCustomersFinNew(ContractsVM, infoDoneTasksReport);//الارصده
-
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //}
-
-
+       
 
         [HttpPost("PrintVoucher")]
         public IActionResult PrintVoucher([FromForm]string? CustomerId, [FromForm] string? FromDate, [FromForm] string? ToDate, [FromForm] int? Zerocheck)
@@ -2386,97 +1837,6 @@ namespace TaamerProject.API.Controllers
                 return Ok(result);
             }
 
-
-
-
-
-        //[HttpGet]
-        //public IActionResult GetReportGrid(string FromDate, string ToDate, string[] Sortedlist,int Type)
-        //{
-
-
-        //    // return Ok(+_Voucherservice.GetAllJournalsByInvID(invId, BranchId, UsersData.YearId_G));
-
-        //    // var transactions = _Voucherservice.GetAllJournalsByInvID(invId, BranchId, UsersData.YearId_G)ك
-        //    // var transactions = _TransactionsService.GetAllTransSearch(AccountId, FromDate, ToDate, CostCenterId, BranchId, UsersData.YearId_G).ToList();
-        //    ContractsVM contracts = new ContractsVM();
-        //    contracts.dateFrom = FromDate;
-        //    contracts.dateTo = ToDate;
-        //    //if((FromDate != null || FromDate !="") && (ToDate != null || ToDate != ""))
-        //    //{
-        //    //    contracts.IsSearch = true;
-        //    //    contracts.IsChecked = true;
-        //    //}
-
-
-
-
-        //    var someContracts = GetAllContractsBySearchlist(contracts).ToList();
-
-        //    if(Type==1)
-        //    {
-        //        someContracts = someContracts.Where(k => k.TotalRemainingPayment > 0).ToList();
-        //    }
-        //    else
-        //    {
-
-        //    }
-
-        //    ///var someContracts = _contractservice.GetAllContractsBySearch(contracts, BranchId, UsersData.YearId_G).ToList();
-
-        //    string s = Sortedlist[0];
-        //    string[] values = s.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        //    List<string> vale = new List<string>();
-        //    List<ContractsVM> _ContractsVM = new List<ContractsVM>();
-        //    foreach (var item in values)
-        //    {
-        //        string Intitem = string.Empty;
-        //        for (int i = 0; i < item.Length; i++)
-        //        {
-        //            if (Char.IsDigit(item[i]))
-        //                Intitem += item[i];
-        //        }
-        //        vale.Add(Intitem);
-        //    }
-        //    int GridLength = 0;
-        //    if (someContracts.Count() > 100)
-        //    {
-        //        GridLength = 100;
-        //    }
-        //    else
-        //    {
-        //        GridLength = someContracts.Count();
-        //    }
-        //    ////for (int i = 0; i < GridLength; i++)
-        //    ////{
-        //    ////    _ContractsVM.Add(someContracts.Where(d => d.ContractNo == Convert.ToString(vale[i])).FirstOrDefault());
-        //    ////}
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-
-        //    ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.Contract(someContracts, FromDate, ToDate, infoDoneTasksReport);
-
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-
-        //}
-
-
-
         [HttpPost("GetReportGrid")]
         public IActionResult GetReportGrid([FromForm] string? FromDate, [FromForm] string? ToDate, [FromForm] string[] Sortedlist, [FromForm] int Type, [FromForm] int? ManagerId)
         {
@@ -2522,34 +1882,7 @@ namespace TaamerProject.API.Controllers
             {
 
             }
-            //string s = Sortedlist[0];
-            //if(s==null)
-            //{
-            //    return Ok(_contractReportVM);
-            //}
-            //string[] values = s.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            //List<string> vale = new List<string>();
-            //List<ContractsVM> _ContractsVM = new List<ContractsVM>();
-            //foreach (var item in values)
-            //{
-            //    string Intitem = string.Empty;
-            //    for (int i = 0; i < item.Length; i++)
-            //    {
-            //        if (Char.IsDigit(item[i]))
-            //            Intitem += item[i];
-            //    }
-            //    vale.Add(Intitem);
-            //}
-            //int GridLength = 0;
-            ////if (someContracts.Count() > 100)
-            ////{
-            ////    GridLength = 100;
-            ////}
-            ////else
-            ////{
-            ////    GridLength = someContracts.Count();
-            ////}
-            //GridLength = someContracts.Count();
+            
             int orgId = _branchesService.GetOrganizationId(_globalshared.BranchId_G).Result;
             var objOrganization = _organizationservice.GetBranchOrganizationData(orgId).Result;
             string[] infoDoneTasksReport = { _globalshared.Lang_G == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
@@ -2607,8 +1940,6 @@ namespace TaamerProject.API.Controllers
 
 
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-            //var someContracts = _contractservice.GetAllContractsBySearchCustomer(contracts, BranchId, _globalshared.YearId_G).ToList();
-            //var someContracts = GetAllContractsBySearch(contracts);
 
             if (reportParameterscontract.Type == 1 && reportParameterscontract.CustomerId == null && contracts.IsSearch == false)
             {
@@ -2729,92 +2060,7 @@ namespace TaamerProject.API.Controllers
 
         }
 
-        //[HttpGet]
-        //public IActionResult printnewcontract(int ContractId)
-        //{
-
-        //    var contract = _contractservice.GetContractbyid(ContractId).FirstOrDefault();
-        //    var contractphases = _ContractStage.GetAllphasesByContractId(ContractId).ToList();
-        //    var customer = _customerservice.GetCustomersByCustId(contract.CustomerId).FirstOrDefault();
-        //    var Emp = _employeeService.GetEmployeeById((int)contract.OrgEmpId,Lang);
-        //    var project = _projectService.GetProjectById(_globalshared.Lang_G, (int)contract.ProjectId);
-
-        //    int orgId = _branchesService.GetOrganizationId(BranchId);
-        //    var objOrganization = _organizationservice.GetBranchOrganizationData(orgId);
-        //    string[] infoDoneTasksReport = { Lang == "en" ? objOrganization.NameEn : objOrganization.NameAr, objOrganization.LogoUrl, objOrganization.Address, objOrganization.Email, objOrganization.Fax, objOrganization.Mobile, objOrganization.IsFooter, objOrganization.WebSite, objOrganization.TaxCode };
-        //    if(contract.Type == 3) { 
-        //    ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.newcontract1(contract, contractphases, customer, Emp, project, infoDoneTasksReport);
-
-        //    string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //    if (!Directory.Exists(existTemp))
-        //    {
-        //        Directory.CreateDirectory(existTemp);
-        //    }
-        //    //File  
-        //    string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //    string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //    //create and set PdfReader  
-        //    System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //    //return file 
-        //    string FilePathReturn = @"TempFiles/" + FileName;
-        //    return Content(FilePathReturn);
-        //    }
-        //    else if (contract.Type == 5)
-        //    {
-
-        //        ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.newcontract2(contract, contractphases, customer, Emp, project, infoDoneTasksReport);
-
-        //        string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //        if (!Directory.Exists(existTemp))
-        //        {
-        //            Directory.CreateDirectory(existTemp);
-        //        }
-        //        //File  
-        //        string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //        string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //        //create and set PdfReader  
-        //        System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //        //return file 
-        //        string FilePathReturn = @"TempFiles/" + FileName;
-        //        return Content(FilePathReturn);
-
-        //    }
-
-        //    else if (contract.Type == 4)
-        //    {
-
-        //        ReportPDF = Bayanatech.TameerUI.pdfHandler.ReportsOf7sabat.newcontract3(contract, contractphases, customer, Emp, project, infoDoneTasksReport);
-
-        //        string existTemp = HttpContext.Server.MapPath(@"~\TempFiles\");
-
-        //        if (!Directory.Exists(existTemp))
-        //        {
-        //            Directory.CreateDirectory(existTemp);
-        //        }
-        //        //File  
-        //        string FileName = "PDFFile_" + DateTime.Now.Ticks.ToString() + ".pdf";
-        //        string FilePath = HttpContext.Server.MapPath(@"~\TempFiles\") + FileName;
-
-        //        //create and set PdfReader  
-        //        System.IO.File.WriteAllBytes(FilePath, ReportPDF);
-        //        //return file 
-        //        string FilePathReturn = @"TempFiles/" + FileName;
-        //        return Content(FilePathReturn);
-
-        //    }
-        //    else
-        //    {
-        //        return Content("");
-        //    }
-
-        //}
-
-
-
+      
         public class Contract_PDF
         {
             public ContractsVM? contract { get; set; }
@@ -2910,21 +2156,6 @@ namespace TaamerProject.API.Controllers
 
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
             var result = _contractservice.EditContractService(contract, _globalshared.UserId_G, _globalshared.BranchId_G, _globalshared.YearId_G);
-            //if (result.StatusCode == HttpStatusCode.OK)
-            //{
-            //    if (contract.ContractId != 0)
-            //    {
-            //        var result2 = UploadFile_Draft(contract.ContractId);
-            //        if (result2.StatusCode == HttpStatusCode.OK)
-            //        {
-            //            result.ReasonPhrase = "تم الحفظ";
-            //        }
-            //        else
-            //        {
-            //            result.ReasonPhrase = "تم الحفظ ولكن فشل في تحميل العقد";
-            //        }
-            //    }
-            //}
             return Ok(result);
 
         }

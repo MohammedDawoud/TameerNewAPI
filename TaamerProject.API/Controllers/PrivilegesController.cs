@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
-using System.Text.RegularExpressions;
 using TaamerProject.API.Helper;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
@@ -12,7 +8,7 @@ namespace TaamerProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Microsoft.AspNetCore.Authorization.Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "Require2FA")]
 
     public class PrivilegesController : ControllerBase
     {
@@ -29,21 +25,6 @@ namespace TaamerProject.API.Controllers
         public IActionResult GetPrivilegesTree()
         {
             HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
-
-            //var lang = "ar";
-            //if (lang != null)
-            //{
-            //    var cultureInfo = new CultureInfo(lang);
-            //    //Thread.CurrentThread.CurrentUICulture = cultureInfo;
-            //    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(cultureInfo.Name);
-
-            //    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cultureInfo.Name);
-            //    //var providerResultCulture = new ProviderCultureResult(cultureInfo.Name);
-
-
-            //}
-
-
 
             var priv = Privileges.PrivilegesList;
             if (priv != null && priv.Count() > 0)
