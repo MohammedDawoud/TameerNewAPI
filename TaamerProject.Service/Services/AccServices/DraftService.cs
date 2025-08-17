@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
@@ -101,16 +95,6 @@ namespace TaamerProject.Service.Services
                             DraftUpdated.UpdateUser = UserId;
                             DraftUpdated.UpdateDate = DateTime.Now;
                         }
-                        //if (draft.DraftDetails != null || draft.DraftDetails.Count() > 0)
-                        //{
-                        //    if (DraftUpdated.DraftDetails != null || DraftUpdated.DraftDetails.Count() > 0)
-                        //        _DraftDetailsRepository.RemoveRange(DraftUpdated.DraftDetails.ToList());
-
-                        //    foreach (var item in draft.DraftDetails)
-                        //    {
-                        //        _DraftDetailsRepository.Add(item);
-                        //    }
-                        //}
                     }
 
                     _TaamerProContext.SaveChanges();
@@ -184,26 +168,6 @@ namespace TaamerProject.Service.Services
             var drafts = GetAllDrafts().Result.Where(x => x.DraftName == DraftName).ToList();
             var draftProTyp = drafts.Select(x => x.ProjectTypeId);
 
-            //Draft? draft = _TaamerProContext.Draft.Where(s => s.DraftId == draftId).FirstOrDefault();
-            //if (draft != null)
-            //{
-            //    var draftDetails = _DraftDetailsRepository.GetAllDraftDetailsByDraftId(draft.DraftId).Result.ToList();
-            //    var projIds = draftDetails.Select(x => x.ProjectId).ToList();
-
-            //    var projects = _TaamerProContext.Project.Where(x => x.IsDeleted == false && x.Status == 0 &&
-            //    x.ProjectTypeId == draft.ProjectTypeId && x.ContractId != null &&
-            //    !projIds.Contains(x.ProjectId)).Select(x => new DraftDetailsVM
-            //    {
-            //        ProjectNo = x.ProjectNo,
-            //        DraftId = draft.DraftId,
-            //        DraftName = draft.Name,
-            //        ProjectId = x.ProjectId,
-            //        DraftDetailId = 0
-            //    }).ToList();
-            //    var final = draftDetails.Union(projects);
-            //    return final;
-            //}
-
 
             var projTypes = _TaamerProContext.ProjectType.Where(x => !x.IsDeleted && !draftProTyp.Contains(x.TypeId))
                 .Select(s =>
@@ -219,12 +183,6 @@ namespace TaamerProject.Service.Services
             var final = drafts.Union(projTypes);
             return final.ToList();
         }
-        //public IEnumerable<DepartmentVM> GetAllDeptsByBranchId(int branchId)
-        //{
-        //    var departments = _DepartmentRepository.GetAllDeptsByBranchId(branchId).ToList();
-        //    return departments;
-        //}
-      
 
     }
 }

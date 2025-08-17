@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Models.DBContext;
@@ -42,15 +37,6 @@ namespace TaamerProject.Service.Services
             try
             {
                 var codeExist = _TaamerProContext.AllowanceType.Where(s => s.IsDeleted == false && s.AllowanceTypeId != allowanceType.AllowanceTypeId && s.Code == allowanceType.Code).FirstOrDefault();
-                // if (codeExist != null)
-                //{
-                //    //-----------------------------------------------------------------------------------------------------------------
-                //    string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                //    string ActionNote = "فشل في حفظ البدل";
-                //    SaveAction("SaveAllowanceType", "AllowanceTypeService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
-                //    //-----------------------------------------------------------------------------------------------------------------
-                //    return new GeneralMessage { Result = false, Message = Resources.TheCodeAlreadyExists };
-                //}
 
                 if (allowanceType.AllowanceTypeId == 0)
                 {

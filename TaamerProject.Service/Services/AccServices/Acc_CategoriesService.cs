@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using System.Net;
 using TaamerProject.Models;
-using TaamerProject.Models.Common.FIlterModels;
 using TaamerProject.Models.Common;
 using TaamerProject.Service.Interfaces;
 using TaamerProject.Repository.Interfaces;
 using TaamerProject.Models.DBContext;
-using TaamerProject.Service.Generic;
 using TaamerProject.Service.IGeneric;
-using Twilio.Base;
 using TaamerP.Service.LocalResources;
 
 namespace TaamerProject.Service.Services

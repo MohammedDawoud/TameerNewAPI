@@ -1,22 +1,7 @@
-﻿//using Azure.Core.Pipeline;
-//using iTextSharp.text.pdf;
-//using iTextSharp.tool.xml;
-//using iTextSharp.tool.xml.html;
-//using iTextSharp.tool.xml.parser;
-//using iTextSharp.tool.xml.pipeline.css;
-//using iTextSharp.tool.xml.pipeline.end;
-//using iTextSharp.tool.xml.pipeline.html;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices.JavaScript;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
@@ -24,7 +9,6 @@ using TaamerProject.Repository.Interfaces;
 using TaamerProject.Service.IGeneric;
 using TaamerProject.Service.Interfaces;
 using TaamerP.Service.LocalResources;
-using Twilio.TwiML.Messaging;
 
 namespace TaamerProject.Service.Services
 {
@@ -292,40 +276,6 @@ namespace TaamerProject.Service.Services
                         mail.Subject = CustomerMail.MailSubject;
                         mail.Body = CustomerMail.MailText;
 
-
-
-                        //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-                        //byte[]? bytesArray = null;
-                        //using (var ms = new MemoryStream())
-                        //{
-                        //    var document = new iTextSharp.text.Document();
-                        //    PdfWriter writer = PdfWriter.GetInstance(document, ms);
-                        //    document.Open();
-                        //    using (var strReader = new StringReader(body))
-                        //    {
-                        //        //Set factories
-                        //        HtmlPipelineContext htmlContext = new HtmlPipelineContext(null);
-                        //        htmlContext.SetTagFactory(Tags.GetHtmlTagProcessorFactory());
-                        //        //Set css
-                        //        ICSSResolver cssResolver = XMLWorkerHelper.GetInstance().GetDefaultCssResolver(false);
-                        //        string contentRootPath1 = Path.Combine("distnew/css/PrintConfig.css");
-                        //        //string contentRootPath1 = "";
-
-                        //        cssResolver.AddCssFile(contentRootPath1, true);
-
-                        //        //Export
-                        //        IPipeline pipeline = new CssResolverPipeline(cssResolver, new HtmlPipeline(htmlContext, new PdfWriterPipeline(document, writer)));
-                        //        var worker = new XMLWorker(pipeline, true);
-                        //        var xmlParse = new XMLParser(true, worker);
-                        //        xmlParse.Parse(strReader);
-                        //        xmlParse.Flush();
-                        //    }
-                        //    document.Close();
-                        //    bytesArray = ms.ToArray();
-                        //}
-
-                        //mail.IsBodyHtml = true;
-                        //mail.Attachments.Add(new System.Net.Mail.Attachment(new MemoryStream(bytesArray), "Test.pdf"));
 
                         try
                         {

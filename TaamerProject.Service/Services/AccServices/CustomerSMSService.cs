@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Globalization;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
 using TaamerProject.Repository.Interfaces;
-using TaamerProject.Repository.Repositories;
 using TaamerProject.Service.IGeneric;
 using TaamerProject.Service.Interfaces;
 using TaamerP.Service.LocalResources;
@@ -156,31 +151,6 @@ namespace TaamerProject.Service.Services
                             //-----------------------------------------------------------------------------------------------------------------
                             return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = result.ReasonPhrase };
                             //String url = "https://api.txtlocal.com/send/?apikey=" + apiKey + "&numbers=" + numbers + "&message=" + message + "&sender=" + sender;
-                            ////refer to parameters to complete correct url string
-
-                            //StreamWriter myWriter = null;
-                            //HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create(url);
-
-                            //objRequest.Method = "POST";
-                            //objRequest.ContentLength = Encoding.UTF8.GetByteCount(url);
-                            //objRequest.ContentType = "application/x-www-form-urlencoded";
-
-                            //myWriter = new StreamWriter(objRequest.GetRequestStream());
-                            //myWriter.Write(url);
-
-
-
-
-                            //HttpWebResponse objResponse = (HttpWebResponse)objRequest.GetResponse();
-                            //using (StreamReader sr = new StreamReader(objResponse.GetResponseStream()))
-                            //{
-                            //    result = sr.ReadToEnd();
-                            //    // Close and clean up the StreamReader
-                            //    sr.Close();
-                            //}
-                            //return result;
-                            // TwilioClient.Init(Environment.GetEnvironmentVariable("TWILIO_ACCOUNT_SID"), Environment.GetEnvironmentVariable("TWILIO_AUTH_TOKEN"));
-                            // MessageResource.Create(to: new PhoneNumber("+0201008479533"), from: new PhoneNumber("+0201008479533"), body: "This message is just to test TameerPro SMS Messaging Service");
                         }
                         else
                         {
@@ -305,22 +275,6 @@ namespace TaamerProject.Service.Services
 
                             return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase =Resources.messaging_service_settings };
                         }
-
-                        ///////////////////////////////////////////////
-
-                        //var CustomerSMSObj = new CustomerSMS();
-                        //CustomerSMSObj.CustomerId = CustomersmsId;
-                        //CustomerSMSObj.SenderUser = UserId;
-                        //CustomerSMSObj.SMSSubject = customerSMS.SMSSubject;
-                        //CustomerSMSObj.SMSText = customerSMS.SMSText;
-                        //CustomerSMSObj.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-                        //CustomerSMSObj.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar")); ;
-                        //CustomerSMSObj.AddUser = UserId;
-                        //CustomerSMSObj.BranchId = BranchId;
-                        //CustomerSMSObj.AddDate = DateTime.Now;
-                        //_CustomerSMSRepository.Add(CustomerSMSObj);
-
-                        //_uow.SaveChanges();
 
                         if (result.StatusCode==HttpStatusCode.OK)
                         {
@@ -647,31 +601,7 @@ namespace TaamerProject.Service.Services
                         //-----------------------------------------------------------------------------------------------------------------
                         return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = result.ReasonPhrase };
                         //String url = "https://api.txtlocal.com/send/?apikey=" + apiKey + "&numbers=" + numbers + "&message=" + message + "&sender=" + sender;
-                        ////refer to parameters to complete correct url string
 
-                        //StreamWriter myWriter = null;
-                        //HttpWebRequest objRequest = (HttpWebRequest)WebRequest.Create(url);
-
-                        //objRequest.Method = "POST";
-                        //objRequest.ContentLength = Encoding.UTF8.GetByteCount(url);
-                        //objRequest.ContentType = "application/x-www-form-urlencoded";
-
-                        //myWriter = new StreamWriter(objRequest.GetRequestStream());
-                        //myWriter.Write(url);
-
-
-
-
-                        //HttpWebResponse objResponse = (HttpWebResponse)objRequest.GetResponse();
-                        //using (StreamReader sr = new StreamReader(objResponse.GetResponseStream()))
-                        //{
-                        //    result = sr.ReadToEnd();
-                        //    // Close and clean up the StreamReader
-                        //    sr.Close();
-                        //}
-                        //return result;
-                        // TwilioClient.Init(Environment.GetEnvironmentVariable("TWILIO_ACCOUNT_SID"), Environment.GetEnvironmentVariable("TWILIO_AUTH_TOKEN"));
-                        // MessageResource.Create(to: new PhoneNumber("+0201008479533"), from: new PhoneNumber("+0201008479533"), body: "This message is just to test TameerPro SMS Messaging Service");
                     }
                     else
                     {
@@ -709,67 +639,6 @@ namespace TaamerProject.Service.Services
            
         }
 
-        //private bool SendMail(CustomerSMS customerSMS, int BranchId, int UserId)
-        //{
-        //    try
-        //    {
-        //        DateTime date = new DateTime();
-        //        var DateOfComplaint = customerSMS.AddDate.Value.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-
-
-        //        string textBody = " <div>"+ customerSMS.SMSText +" in"+ DateOfComplaint + "</div>" ;
-        //        textBody = textBody + "<br/>";
-        //        textBody = textBody + "تم ارسال هذه الرسالة بشكل آلي، الرجاء عدم الرد عليها";
-        //        textBody = textBody + "<br/>";
-        //        textBody = textBody + "-----------------------------------";
-        //        textBody = textBody + "<br/>";
-        //        textBody = textBody + "Disclaimer: This message and its attachment, if any, are confidential and may contain legally privileged information. If you are not the intended recipient, please contact the sender immediately and delete this message and its attachment, if any, from your system. You should not copy this message or disclose its contents to any other person or use it for any purpose. Statements and opinions expressed in this e-mail are those of the sender, and do not necessarily reflect those of bayanatech for IT services accepts no liability for damage caused by any virus transmitted by this email";
-        //        textBody = textBody + "<br/>";
-        //        textBody = textBody + "هذه الرسالة و مرفقاتها (إن وجدت) تمثل وثيقة سرية قد تحتوي على معلومات تتمتع بحماية وحصانة قانونية. إذا لم تكن الشخص المعني بهذه الرسالة يجب عليك تنبيه المُرسل بخطأ وصولها إليك، و حذف الرسالة و مرفقاتها (إن وجدت) من الحاسب الآلي الخاص بك. ولا يجوز لك نسخ هذه الرسالة أو مرفقاتها (إن وجدت) أو أي جزئ منها، أو البوح بمحتوياتها لأي شخص أو استعمالها لأي غرض. علماً بأن الإفادات و الآراء التي تحويها هذه الرسالة تعبر فقط عميل برنامج تعمير السحابي ،  و ليس بالضرورة رأي مؤسسة بياناتك لتقنية المعلومات ، ولا تتحمل مؤسسة بياناتك لتقنية المعلومات أي مسئولية عن الأضرار الناتجة عن أي فيروسات قد يحملها هذا البريد";
-        //        textBody = textBody + "<br/>";
-
-        //        var mail = new MailMessage();
-        //        //var loginInfo = new NetworkCredential(_EmailSettingRepository.GetEmailSetting(branch).SenderEmail, _EmailSettingRepository.GetEmailSetting(branch).Password);
-        //        var loginInfo = new NetworkCredential("support@bayanatech.com.sa", "noreply-tameer2030");
-
-        //        //mail.From = new MailAddress(_EmailSettingRepository.GetEmailSetting(branch).SenderEmail);
-        //        mail.From = new MailAddress("support@bayanatech.com.sa");
-        //        //mail.From = new MailAddress("support@bayanatech.com.sa");
-        //        //mail.To.Add(new MailAddress(_UsersRepository.GetById(ProjectPhasesTasks.UserId).Email));
-        //        mail.To.Add(new MailAddress("info@bayanatech.com.sa"));
-
-        //        mail.Subject = customerSMS.SMSSubject;
-        //        try
-        //        {
-        //            mail.Body = textBody;// "لديك مهمه جديدة : " + ProjectPhasesTasks.DescriptionAr + ":" + ProjectPhasesTasks.Notes + " علي مشروع رقم " + ProjectPhasesTasks.Project.ProjectNo + " للعميل " + ProjectPhasesTasks.Project.customer.CustomerNameAr;
-        //            mail.IsBodyHtml = true;
-        //        }
-        //        catch (Exception)
-        //        {
-        //            mail.Body = "Wrong message";
-        //        }
-
-
-
-        //        var smtpClient = new SmtpClient("mail.bayanatech.com.sa", 587);
-        //        //smtpClient.Timeout = 100000;
-        //        //var smtpClient= new SmtpClient("smtp.gmail.com", 587);
-        //        //var smtpClient = new SmtpClient(_EmailSettingRepository.GetEmailSetting(branch).Host, Convert.ToInt32(_EmailSettingRepository.GetEmailSetting(branch).Port));//("smtp.gmail.com", 587);
-        //        //smtpClient.EnableSsl = true;
-        //        //smtpClient.Credentials = loginInfo;
-        //        //smtpClient.Send(mail);
-        //        //var smtpClient = new SmtpClient(_EmailSettingRepository.GetEmailSetting(branch).Host);
-        //        smtpClient.EnableSsl = true;
-        //        smtpClient.UseDefaultCredentials = false;
-        //        smtpClient.Credentials = loginInfo;
-        //        smtpClient.Send(mail);
-        //        return true;
-        //    }
-        //    catch (Exception wx)
-        //    {
-        //        var w = wx.Message;
-        //        return false;
-        //    }
-        //}
+       
     }
 }
