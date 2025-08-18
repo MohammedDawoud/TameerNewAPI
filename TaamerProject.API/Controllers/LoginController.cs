@@ -23,6 +23,7 @@ using Microsoft.EntityFrameworkCore;
 using TaamerProject.Models.DBContext;
 using OtpNet;
 using TaamerProject.Service.Services;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace TaamerProject.API.Controllers
 {
@@ -947,24 +948,22 @@ namespace TaamerProject.API.Controllers
             var qrCodeUrl = $"otpauth://totp/YourApp:{user.Email}?secret={key}&issuer=YourApp&digits=6";
             return Ok(new { key, qrCodeUrl });
         }
-        [HttpPost("verify-2fa")] //2
+        [HttpPost("Verify2FA")] //2
         public async Task<IActionResult> Verify2FA([FromBody] Verify2FARequest request)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var isValid = await _userManager.VerifyTwoFactorTokenAsync(
-                user, TokenOptions.DefaultAuthenticatorProvider, request.Code);
 
-            if (!isValid)
-                return BadRequest("Invalid code");
-
-            user.TwoFactorEnabled = true;
-            await _userManager.UpdateAsync(user);
-
-            return Ok("2FA enabled");
+            var secretKey = Base32Encoding.ToBytes(request.secretKeyBase32);
+            var totp = new Totp(secretKey);
+            var check= totp.VerifyTotp(request.Code, out _, new VerificationWindow(2, 2));
+            if(check)
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "2FA enabled" });
+            else
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "Invalid code" });
         }
 
         public class Verify2FARequest
         {
+            public string secretKeyBase32 { get; set; }
             public string Code { get; set; }
         }
 
