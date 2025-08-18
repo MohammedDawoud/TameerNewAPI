@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Globalization;
-using System.Linq;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Models.DBContext;
@@ -13,12 +8,6 @@ using TaamerProject.Service.IGeneric;
 using System.Net;
 using TaamerProject.Service.Interfaces;
 using TaamerP.Service.LocalResources;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Diagnostics;
-using System.ComponentModel;
-using System.Security.Cryptography;
-using System.Drawing;
-using Microsoft.Graph.Models;
 
 namespace TaamerProject.Service.Services
 {
@@ -486,17 +475,6 @@ namespace TaamerProject.Service.Services
 
                 var Emp = _TaamerProContext.Employees.Where(x=>x.EmployeeId==attendence.EmpId).FirstOrDefault();
 
-                //if (!string.IsNullOrEmpty(Emp.EndWorkDate) || (string.IsNullOrEmpty(Emp.WorkStartDate) ||
-                //    (!string.IsNullOrEmpty(Emp.WorkStartDate) && DateTime.ParseExact(Emp.WorkStartDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > attenDate)))
-                //{
-                //    //-----------------------------------------------------------------------------------------------------------------
-                //    string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                //    string ActionNote = "فشل في حفظ الحضور";
-                //    //SaveAction("SaveAttendence_FromDevice", "AttendenceService", 1, "حساب الموظف موقوف", "", "", ActionDate, UserId, BranchId, ActionNote, 0);
-                //    //-----------------------------------------------------------------------------------------------------------------
-                //    return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.employeesAccountIsSuspended };
-                //}
-
                 int AttTimeId = Emp.DawamId ?? 0;
 
                 int BeforeLogin = (Emp.EarlyLogin ?? 0) * -1;
@@ -519,175 +497,7 @@ namespace TaamerProject.Service.Services
 
                 AttTimeDetailsVM AttTimeDetail = _AttTimeDetailsRepository.GetAllAttTimeDetails("", Emp.DawamId.Value).Result.Where(x => x.Day == ((((int)attenDate.DayOfWeek + 1) % 7) + 1)).FirstOrDefault();
 
-                //        DateTime FirstInHour, FirstOutHour, SecondInHour, SecondOutHour;
-                //        int Shift = 0;
-                //        FirstInHour = FirstOutHour = SecondInHour = SecondOutHour = DateTime.MinValue;
-                //        DateTime IdealTime;
-                //        int TimeDefference;
-
-                //        DateTime attHour = attendence.CheckTime;
-
-                //        DateTime Today = attenDate;
-                //        if (AttTimeDetail._1StFromHour.HasValue)
-                //        {
-                //            FirstInHour = attenDate;
-                //            FirstInHour = FirstInHour.AddHours(AttTimeDetail._1StFromHour.Value.Hour);
-                //            FirstInHour = FirstInHour.AddMinutes(AttTimeDetail._1StFromHour.Value.Minute);
-
-                //            FirstInHour = FirstInHour.AddMinutes(earlylogin);
-                //        }
-                //        if (AttTimeDetail._1StToHour.HasValue)
-                //        {
-                //            FirstOutHour = attenDate;
-                //            FirstOutHour = FirstOutHour.AddHours(AttTimeDetail._1StToHour.Value.Hour);
-                //            FirstOutHour = FirstOutHour.AddMinutes(AttTimeDetail._1StToHour.Value.Minute);
-
-                //            FirstOutHour = FirstOutHour.AddMinutes(LogoutDuration);
-                //        }
-
-                //        if (AttTimeDetail._2ndFromHour.HasValue)
-                //        {
-                //            SecondInHour = attenDate;
-                //            SecondInHour = SecondInHour.AddHours(AttTimeDetail._2ndFromHour.Value.Hour);
-                //            SecondInHour = SecondInHour.AddMinutes(AttTimeDetail._2ndFromHour.Value.Minute);
-                //            SecondInHour = SecondInHour.AddMinutes(earlylogin);
-                //        }
-                //        if (AttTimeDetail._2ndToHour.HasValue)
-                //        {
-                //            SecondOutHour = attenDate;
-                //            SecondOutHour = SecondOutHour.AddHours(AttTimeDetail._2ndToHour.Value.Hour);
-                //            SecondOutHour = SecondOutHour.AddMinutes(AttTimeDetail._2ndToHour.Value.Minute);
-
-                //            SecondOutHour = SecondOutHour.AddMinutes(LogoutDuration);
-                //        }
-
-                //        bool flag = false;
-
-                //        //FirstIn : 9:00 - :20 , FirstOut: (17:00 - :20) --> (17:00 + :60) , 
-                //        //secondIn: (20:00 - :20), secondOut: (23:00 - :20) --> (23:00 + 60)
-
-                //        //att  : 8:45 am --> 16:40
-                //        if (FirstInHour != DateTime.MinValue && attHour >= FirstInHour && attHour < FirstOutHour && FirstOutHour != DateTime.MinValue)
-                //        {
-                //            flag = true;
-                //            attendence.Type = 1;
-                //            Shift = 1;
-
-                //            attendence.CheckIn = attendence.CheckTime.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture);
-
-                //            IdealTime = new DateTime(attendence.CheckTime.Year, attendence.CheckTime.Month, attendence.CheckTime.Day, AttTimeDetail._1StFromHour.Value.Hour, AttTimeDetail._1StFromHour.Value.Minute, 0);
-                //            TimeDefference = (int)(attendence.CheckTime.AddMinutes(TimeDurationLate).Subtract(IdealTime).TotalSeconds / 60);
-                //            TimeDefference = (TimeDefference >= TimeDurationLate && TimeDefference < 0) ? TimeDefference = 0 : TimeDefference;
-                //            attendence.MoveTime = TimeDefference;
-
-                //        }
-                //        // 16:40 -->  18  = (16:40 + ((+20) + 60))
-                //        if (attHour >= FirstOutHour && FirstOutHour != DateTime.MinValue && attHour < FirstOutHour.AddMinutes((LogoutDuration * -1) + AfterLogoutDuration))
-                //        {
-                //            flag = true;
-                //            attendence.Type = 2;
-                //            attendence.CheckOut = attenDate;
-                //            IdealTime = new DateTime(attendence.CheckTime.Year, attendence.CheckTime.Month, attendence.CheckTime.Day, AttTimeDetail._1StToHour.Value.Hour, AttTimeDetail._1StToHour.Value.Minute, 0);
-                //            TimeDefference = (int)(IdealTime.Subtract(attendence.CheckTime).TotalSeconds / 60);
-                //            attendence.MoveTime = TimeDefference;
-
-                //            Shift = 1;
-                //        }
-
-
-                //        //att:   (19: 40) --> 22:40
-                //        if (SecondInHour != DateTime.MinValue && attHour >= SecondInHour && attHour < SecondOutHour && SecondOutHour != DateTime.MinValue)
-                //        {
-                //            flag = true;
-                //            attendence.Type = 1;
-                //            attendence.CheckIn = attendence.CheckTime.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture);
-                //            IdealTime = new DateTime(attendence.CheckTime.Year, attendence.CheckTime.Month, attendence.CheckTime.Day, AttTimeDetail._2ndFromHour.Value.Hour, AttTimeDetail._2ndFromHour.Value.Minute, 0);
-                //            TimeDefference = (int)(attendence.CheckTime.AddMinutes(TimeDurationLate).Subtract(IdealTime).TotalSeconds / 60);
-                //            TimeDefference = (TimeDefference >= TimeDurationLate && TimeDefference < 0) ? TimeDefference = 0 : TimeDefference;
-                //            attendence.MoveTime = TimeDefference;
-                //            Shift = 2;
-                //        }
-                //        //att 22:40 --> 22:40 + ( +20 + 60) -- > 24
-                //        if (attHour >= SecondOutHour && SecondOutHour != DateTime.MinValue && attHour <= SecondOutHour.AddMinutes((LogoutDuration * -1) + AfterLogoutDuration))
-                //        {
-                //            flag = true;
-                //            attendence.Type = 2;
-                //            attendence.CheckOut = attenDate;
-
-                //            IdealTime = new DateTime(attendence.CheckTime.Year, attendence.CheckTime.Month, attendence.CheckTime.Day, AttTimeDetail._2ndToHour.Value.Hour, AttTimeDetail._2ndToHour.Value.Minute, 0);
-                //            TimeDefference = (int)(IdealTime.Subtract(attendence.CheckTime).TotalSeconds / 60);
-                //            attendence.MoveTime = TimeDefference;
-
-                //            Shift = 2;
-                //        }
-                //        if (flag)
-                //        {
-                //            attendence.EmpId = Emp.EmployeeId;
-                //            attendence.ShiftTime = Shift;
-                //            attendence.Source = attendence.Source == 0 ? 2 : attendence.Source;
-                //            attendence.CheckType = attendence.Type == 1 ? "دخول" : "خروج";
-                //            attendence.Hint = "تسجيل حركة من الساعة";
-
-                //            attendence.WorkCode = "0";
-                //            attendence.BranchId = BranchId;
-                //            attendence.AddUser = UserId;
-                //            attendence.AddDate = DateTime.Now;
-
-
-                //            attInsert.CheckType = attendence.CheckType;
-                //            attInsert.CheckTime = attendence.CheckTime;
-                //            attInsert.Day = attendence.Day;
-                //            attInsert.CheckOut = attendence.CheckOut;
-
-                //            attInsert.CheckIn = attendence.CheckIn;
-                //            attInsert.AttendenceDate = attendence.AttendenceDate;
-                //            attInsert.AttendenceHijriDate = attendence.AttendenceHijriDate;
-                //            attInsert.BranchId = attendence.BranchId;
-                //            attInsert.EmpId = attendence.EmpId;
-                //            attInsert.Hint = attendence.Hint;
-                //            attInsert.MoveTime = attendence.MoveTime;
-                //            attInsert.RealEmpId = attendence.EmpId;
-                //            attInsert.ShiftTime = attendence.ShiftTime;
-                //            attInsert.Source = attendence.Source;
-                //            attInsert.Type = attendence.Type;
-                //            attInsert.AddUser = attendence.AddUser;
-                //            attInsert.WorkCode = attendence.WorkCode;
-                //            attInsert.AddDate = DateTime.Now;
-                //            attInsert.AddUser = 1;
-
-                //            _TaamerProContext.Attendence.Add(attInsert);
-                //            _TaamerProContext.SaveChanges();
-
-
-                //            //-----------------------------------------------------------------------------------------------------------------
-                //            string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                //            string ActionNote = "حفظ الحضور";
-                //            //SaveAction("SaveAttendence_FromDevice", "AttendenceService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
-                //            //-----------------------------------------------------------------------------------------------------------------
-                //            return new GeneralMessage {StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
-                //        }
-                //        else
-                //        {
-                //            //-----------------------------------------------------------------------------------------------------------------
-                //            string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                //            string ActionNote = "فشل في حفظ الحضور";
-                //            //SaveAction("SaveAttendence_FromDevice", "AttendenceService", 1, "لا يمكن تسجيل الحضور أو الإنصراف في غير الأوقات المحددة", "", "", ActionDate, UserId, BranchId, ActionNote, 0);
-                //            //-----------------------------------------------------------------------------------------------------------------
-                //            return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.AttendanceDepartureRecordedSpecifiedTimes };
-
-                //        }
-                //    }
-                //    catch (Exception ex)
-                //    {
-
-                //        //-----------------------------------------------------------------------------------------------------------------
-                //        string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                //        string ActionNote = "فشل في حفظ الحضور";
-                //        //SaveAction("SaveAttendence_FromDevice", "AttendenceService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
-                //        //-----------------------------------------------------------------------------------------------------------------
-                //        return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
-                //    }
-                //}
+               
 
                 DateTime FirstInHour, FirstOutHour, SecondInHour, SecondOutHour;
                 int Shift = 0;
@@ -2064,39 +1874,6 @@ namespace TaamerProject.Service.Services
             DateTime firstDayOfWeek = today.AddDays(daysUntilSaturday);
         return firstDayOfWeek;
         }
-
-        //public GeneralMessage SENDWhatsap()
-        //{
-        //    try {
-
-        //        const string accountSid = "ACa2eb8d5c59a2cc60a34bce09d07fef6d";
-        //        const string authToken = "18bd89112be090950b7c3cda4ced041a";
-        //        TwilioClient.Init(accountSid, authToken);
-        //        //ServicePointManager.Expect100Continue = true;
-        //        //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-        //        ServicePointManager.Expect100Continue = true;
-        //        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-        //        //var message = MessageResource.Create(to: new Twilio.Types.PhoneNumber("whatsapp:+20-11-4428-9894"), from: new Twilio.Types.PhoneNumber("whatsapp:+1-415-523-8886"), body: "Good morning Mr Shegaley");
-        //        //Console.WriteLine(message.Sid);
-
-        //        //string From = "8104032389";
-        //        ////  var link = "https://web.whatsapp.com/send?phone=" + model.Mobile_NO + "&amp;forceIntent=true&amp;load=loadInIOSExternalSafari";
-        //        //WhatsApp wa = new WhatsApp(From, "01144289894", "Ehab");
-        //        System.Diagnostics.Process.Start("http://api.whatsapp.com/send?phone=+201144289894&text=anymsg");
-
-        //        //wa.OnConnectSuccess += () =>
-        //        //{
-        //        //    wa.OnLoginSuccess += (mobileNo, Data) =>
-        //        //    {
-        //        //        wa.SendMessage("01151429120", "Hello");
-        //        //    };
-        //        //};
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //    }
-        //    return new GeneralMessage { Result = true, Message = Resources.request_sent_successfully };
-        //}
+        
     }
 }

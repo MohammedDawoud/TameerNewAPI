@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaamerProject.Models;
+﻿using TaamerProject.Models;
 using TaamerProject.Models.DBContext;
 using TaamerProject.Repository.Interfaces;
 using TaamerProject.Service.IGeneric;
