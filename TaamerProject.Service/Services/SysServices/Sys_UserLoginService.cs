@@ -16,6 +16,7 @@ using System.Net;
 using TaamerProject.Service.IGeneric;
 using TaamerP.Service.LocalResources;
 using Dropbox.Api.TeamLog;
+using System.Security.Cryptography;
 
 namespace TaamerProject.Service.Services
 {
@@ -52,7 +53,19 @@ namespace TaamerProject.Service.Services
                 if (UserLogin.UserLoginId == 0)
                 {
 
+                    var MatchedUserEmail = _TaamerProContext.Sys_UserLogin.Where(s => s.IsDeleted == false && s.Type == UserLogin.Type && s.Email == UserLogin.Email && s.UserLoginId != UserLogin.UserLoginId);
+                    if (MatchedUserEmail.Count() != 0)
+                    {
+                        //-----------------------------------------------------------------------------------------------------------------
+                        string ActionDatea = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                        string ActionNotea = "فشل في حفظ مستخدم عميل أو مقاول";
+                        _SystemAction.SaveAction("SaveUserLogin", "Sys_UserLoginService", 1, Resources.changeemail, "", "", ActionDatea, UserId, BranchId, ActionNotea, 0);
+                        //-----------------------------------------------------------------------------------------------------------------
+                        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.changeemail };
+                    }
 
+
+                    UserLogin.Password = EncryptValue(UserLogin.Password);
                     UserLogin.AddUser = UserId;
                     UserLogin.AddDate = DateTime.Now;
                     _TaamerProContext.Sys_UserLogin.Add(UserLogin);
@@ -165,6 +178,21 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
 
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = " فشل في تغيير حالة مستخدم عميل أو مقاول  " };
+            }
+        }
+        private string EncryptValue(string value)
+        {
+            string hash = "f0xle@rn";
+            byte[] data = Encoding.UTF8.GetBytes(value);
+            using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
+            {
+                byte[] keys = md5.ComputeHash(Encoding.UTF8.GetBytes(hash));
+                using (TripleDESCryptoServiceProvider tripDesc = new TripleDESCryptoServiceProvider() { Key = keys, Mode = CipherMode.ECB, Padding = PaddingMode.PKCS7 })
+                {
+                    ICryptoTransform cryptoTransform = tripDesc.CreateEncryptor();
+                    byte[] result = cryptoTransform.TransformFinalBlock(data, 0, data.Length);
+                    return Convert.ToBase64String(result, 0, result.Length);
+                }
             }
         }
 

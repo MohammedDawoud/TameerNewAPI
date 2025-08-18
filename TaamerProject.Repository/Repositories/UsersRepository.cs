@@ -481,7 +481,8 @@ namespace TaamerProject.Repository.Repositories
                 AppearWelcome = x.AppearWelcome,
                 QrCodeUrl = x.QrCodeUrl ?? "",
                 FullNameEn = x.FullName ?? "",
-
+                AuthenticatorSecret = x.AuthenticatorSecret ?? "",
+                Is2FAEnabled = x.Is2FAEnabled ?? false,
 
             }).FirstOrDefault();
             return user;
