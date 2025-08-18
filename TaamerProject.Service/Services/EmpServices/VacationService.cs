@@ -1180,7 +1180,7 @@ namespace TaamerProject.Service.Services
             return body;
         }
 
-        public GeneralMessage UpdateVacation(int vacationId, int UserId, int BranchId, string Lang,int Type, string Con, string Url, string ImgUrl,string? reason)
+        public GeneralMessage UpdateVacation(int vacationId, int UserId, int BranchId, string Lang, int Type, string Con, string Url, string ImgUrl, string? reason)
         {
             try
             {
@@ -1190,7 +1190,7 @@ namespace TaamerProject.Service.Services
                 //var VactionType = _vacationTypeRepository.GetById(VacationUpdated.VacationTypeId);
                 VacationType? VactionType = _TaamerProContext.VacationType.Where(s => s.VacationTypeId == VacationUpdated.VacationTypeId).FirstOrDefault();
 
-               // var emp = _EmployeesRepository.GetById(VacationUpdated.EmployeeId);
+                // var emp = _EmployeesRepository.GetById(VacationUpdated.EmployeeId);
                 Employees? emp = _TaamerProContext.Employees.Where(s => s.EmployeeId == VacationUpdated.EmployeeId).FirstOrDefault();
 
 
@@ -1202,7 +1202,7 @@ namespace TaamerProject.Service.Services
                 string endDate = Utilities.ConvertDateCalendar(new DateTime(DateTime.Now.Year, 12, 31), "Gregorian", "en-US");
 
 
-              
+
                 if (emp != null && Type == 2)
                 {
                     //Stop tasks untile come back
@@ -1214,7 +1214,7 @@ namespace TaamerProject.Service.Services
                         var PhasesTask = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false /*&& (s.Project.StopProjectType != 1) */&& s.IsMerig == -1 && s.Type == 3 && s.UserId == emp.UserId && (s.Status == 2)).ToList(); //running  
                         if ((PhasesTask != null || PhasesTask.Count > 0)) // && Type == 2
                         {
-                            
+
                             PhasesTask = PhasesTask.Where(s => s.Project?.StopProjectType != 1).ToList();
                             //var PhasesTask = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.IsMerig == -1 && s.Type == 3 && s.UserId == emp.UserId && (s.Status == 2)).ToList(); //running 
 
@@ -1241,9 +1241,19 @@ namespace TaamerProject.Service.Services
                     if (!(bool)VacationUpdated.IsDiscount && emp.VacationEndCount != null) //الخصم من الرصيد 
                     {
                         //if (VacationUpdated.DiscountAmount != null || vactionNetDays > emp.VacationEndCount)//الخصم من الرصيد < أيام الإجازة 
-                        if (vactionNetDays > emp.VacationEndCount && (VacationUpdated.DiscountAmount != null && VacationUpdated.DiscountAmount > 0 ))//الخصم من الرصيد < أيام الإجازة 
+                        if (vactionNetDays > emp.VacationEndCount && (VacationUpdated.DiscountAmount != null && VacationUpdated.DiscountAmount > 0))//الخصم من الرصيد < أيام الإجازة 
                         {
-                            VacationUpdated.DiscountAmount = (vactionNetDays - emp.VacationEndCount) * (emp.Salary / 30);
+                            if (VacationUpdated.IsDiscount == true && VacationUpdated.DiscountAmount == 0)
+                            {
+                                VacationUpdated.DiscountAmount = 0;
+
+                            }
+                            else
+                            {
+
+
+                                VacationUpdated.DiscountAmount = (vactionNetDays - emp.VacationEndCount) * (emp.Salary / 30);
+                            }
                             emp.VacationEndCount = 0;
                         }
                         else  //الخصم من الرصيد إختياري و يكفي أيام الإجازة 
@@ -1260,13 +1270,20 @@ namespace TaamerProject.Service.Services
                                 _SystemAction.SaveAction("UpdateVacation", "VacationService", 2, "الموظف ليس لديه رصيد إجازات كافي", "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
                                 //-----------------------------------------------------------------------------------------------------------------
 
-                                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase ="الموظف ليس لديه رصيد إجازات كافي" };
+                                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "الموظف ليس لديه رصيد إجازات كافي" };
                             }
                         }
                     }
                     else //الخصم من المرتب إختياري 
                     {
-                        VacationUpdated.DiscountAmount = vactionNetDays * (emp.Salary / 30);
+                        if (VacationUpdated.IsDiscount == true && VacationUpdated.DiscountAmount == 0)
+                        {
+                            VacationUpdated.DiscountAmount = 0;
+                        }
+                        else
+                        {
+                            VacationUpdated.DiscountAmount = vactionNetDays * (emp.Salary / 30);
+                        }
                         VacationUpdated.IsDiscount = true;
                     }
                 }
@@ -1302,20 +1319,21 @@ namespace TaamerProject.Service.Services
                        (Type == 2 ? "إشعار بالموافقة على الإجازة" :
                         Type == 3 ? "إشعار بالرفض على الإجازة" : Type == 4 || Type == 5 ? "إشعار بتحديث حالة طلب الإجازة" : "")
                         : (Type == 2 ? "Notice of vacation acceptance" :
-                          Type == 3 ? "Notice of vacation rejection" : Type == 4 || Type == 5 ? "Notice of vacation status modification" : "" );
+                          Type == 3 ? "Notice of vacation rejection" : Type == 4 || Type == 5 ? "Notice of vacation status modification" : "");
 
                     string NotStr = string.Format("الإجازة الخاصة بالموظف {0} من تاريخ {1} إلى تاريخ {2}", emp.EmployeeNameAr, VacationUpdated.StartDate, VacationUpdated.EndDate);
                     NotStr = NotStr + " " + (Type == 2 ? "تم الموافقة عليها" :
                                 Type == 3 ? "تم رفضها" :
                                 Type == 4 || Type == 5 ? "أصبحت تحت الطلب" : "أصبحت تحت الطلب");
-                    
+
                     //Notification
                     int ResponSibleUser = VacationUpdated.UserId.HasValue ? VacationUpdated.UserId.Value : VacationUpdated.AddUser.Value;
                     var directmanager = _TaamerProContext.Employees.Where(x => x.EmployeeId == emp.DirectManager).FirstOrDefault();
 
                     try
-                    { 
-                        if(Type==2 || Type == 3) {
+                    {
+                        if (Type == 2 || Type == 3)
+                        {
 
                             string DepartmentNameAr = "";
                             Department? DepName = _TaamerProContext.Department.Where(s => s.DepartmentId == emp.DepartmentId).FirstOrDefault();
@@ -1351,19 +1369,24 @@ namespace TaamerProject.Service.Services
                             List<int> recept = new List<int>();
                             var code = Type == 2 ? Models.Enums.NotificationCode.HR_LeaveAccepted : Models.Enums.NotificationCode.HR_LeaveRejected;
                             var config = _employeesService.GetNotificationRecipients(code, VacationUpdated.EmployeeId);
-                          
-                                if (config.Description != null && config.Description != "")
-                                    Subject = config.Description;
 
-                                if(config.Users!=null && config.Users.Count() > 0)
+                            if (config.Description != null && config.Description != "")
+                                Subject = config.Description;
+
+                            if (config.Users != null && config.Users.Count() > 0)
                             {
                                 recept = config.Users;
                             }
                             else
                             {
                                 recept.Add(emp.UserId.Value);
-                                if(directmanager.UserId.Value >0)
-                                recept.Add(directmanager.UserId.Value);
+                                if (directmanager.UserId.Value > 0)
+                                    recept.Add(directmanager.UserId.Value);
+
+                            }
+                            if ((emp.UserId == null || emp.UserId == 0) && config.mail != null && config.mail != "")
+                            {
+                                _customerMailService.SendMail_SysNotification((int)emp.BranchId, 0, 0, Subject, htmlBody, true, emp.Email);
 
                             }
                             foreach (var usr in recept.Distinct())
@@ -1372,7 +1395,7 @@ namespace TaamerProject.Service.Services
 
 
                                 var UserNotification = new Notification();
-                                UserNotification.ReceiveUserId =usr;
+                                UserNotification.ReceiveUserId = usr;
                                 UserNotification.Name = Subject;
                                 UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
                                 UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
@@ -1388,19 +1411,19 @@ namespace TaamerProject.Service.Services
                                 UserNotification.AddDate = DateTime.Now;
                                 _TaamerProContext.Notification.Add(UserNotification);
                                 _TaamerProContext.SaveChanges();
-                              
+
 
                                 _notificationService.sendmobilenotification(usr, Subject, NotStr);
 
-                                
-                                    _customerMailService.SendMail_SysNotification((int)emp.BranchId, usr, usr, Subject, htmlBody, true);
-                                
+
+                                _customerMailService.SendMail_SysNotification((int)emp.BranchId, usr, usr, Subject, htmlBody, true);
+
                                 Users? userObj = _TaamerProContext.Users.Where(s => s.UserId == usr).FirstOrDefault();
 
                                 var res = _userNotificationPrivilegesService.SendSMS(userObj.Mobile, NotStr, UserId, BranchId);
                                 //}
                             }
-                    }
+                        }
                     }
                     catch
                     {
@@ -1415,7 +1438,7 @@ namespace TaamerProject.Service.Services
                 var massage = "";
                 //if (Lang == "rtl")
                 //{
-                    massage = (Type==2)? Resources.MP_VacationAccept : Resources.General_SavedSuccessfully;
+                massage = (Type == 2) ? Resources.MP_VacationAccept : Resources.General_SavedSuccessfully;
                 //}
                 //else
                 //{
@@ -1429,7 +1452,7 @@ namespace TaamerProject.Service.Services
                 _SystemAction.SaveAction("UpdateVacation", "VacationService", 2, massage, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
                 //-----------------------------------------------------------------------------------------------------------------
 
-                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase =massage };
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = massage };
             }
             catch (Exception ex)
             {
@@ -1439,8 +1462,8 @@ namespace TaamerProject.Service.Services
                 _SystemAction.SaveAction("UpdateVacation", "VacationService", 2, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
                 //-----------------------------------------------------------------------------------------------------------------
 
-                return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
-                }
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+            }
         }
         public GeneralMessage UpdateDecisionType_V(int vacationId, int UserId, int BranchId, string Lang, int DecisionType)
         {
