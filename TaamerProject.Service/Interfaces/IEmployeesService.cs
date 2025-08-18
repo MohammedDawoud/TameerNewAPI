@@ -73,6 +73,6 @@ namespace TaamerProject.Service.Interfaces
         Task<IEnumerable<EmployeesVM>> GetEmployeeWithoutContract(int? DepartmectId, string lang, string? Searchtext);
         GeneralMessage DeleteQuacontractDetails(int EmployeeId);
         GeneralMessage RemoveEmployee(int EmpId, int UserId, int BranchId);
-        (List<int> Users, string Description) GetNotificationRecipients(NotificationCode code, int? EmpId); 
+        (List<int> Users, string Description, string mail) GetNotificationRecipients(NotificationCode code, int? EmpId);
     }
 }

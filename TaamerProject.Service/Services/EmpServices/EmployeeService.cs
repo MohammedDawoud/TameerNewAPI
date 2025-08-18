@@ -2835,40 +2835,44 @@ namespace TaamerProject.Service.Services
 
 
 
-        public (List<int> Users, string Description) GetNotificationRecipients(NotificationCode code, int? EmpId )
+        public (List<int> Users, string Description, string mail) GetNotificationRecipients(NotificationCode code, int? EmpId)
         {
             var usersnote = new List<int>();
-
+            string Email = "";
             var config = _TaamerProContext.NotificationConfigurations
                 .Include(x => x.NotificationConfigurationsAssines)
                 .FirstOrDefault(x => x.ConfigurationId == (int)code);
 
-            if (config == null)
-                return (usersnote, ""); // default empty if config is null
+            // الوصف الافتراضي إذا لم يوجد
+            string description = string.IsNullOrWhiteSpace(config?.Description)
+                                 ? "تم إرسال إشعار جديد."
+                                 : config.Description;
 
-            string description =  string.IsNullOrEmpty(config.Description) ?"" : config.Description;
-
-            
-
-            var to = (Beneficiary_type)(config.To ?? 0);
+            var to = (Beneficiary_type)(config?.To ?? 0);
 
             switch (to)
             {
                 case Beneficiary_type.مستخدمين:
-                    if (config.NotificationConfigurationsAssines != null)
-                        usersnote.AddRange((List<int>)config.NotificationConfigurationsAssines.Select(x => x.UserId));
+                    if (config?.NotificationConfigurationsAssines != null)
+                    {
+                        usersnote.AddRange(
+                            config.NotificationConfigurationsAssines
+                            .Where(x => x.UserId.HasValue && x.UserId.Value > 0)
+                            .Select(x => x.UserId.Value)
+                        );
+                    }
                     break;
 
-                
                 case Beneficiary_type.المدير_المباشر:
                     if (EmpId.HasValue)
                     {
-                        var emp3 = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
-                        if (emp3?.DirectManager != null)
+                        var emp = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
+                        if (emp?.DirectManager != null)
                         {
                             var mgrUserId = _TaamerProContext.Employees
-                                .Where(e => e.EmployeeId == emp3.DirectManager && e.UserId.HasValue)
-                                .Select(e => e.UserId.Value).FirstOrDefault();
+                                .Where(e => e.EmployeeId == emp.DirectManager && e.UserId.HasValue)
+                                .Select(e => e.UserId.Value)
+                                .FirstOrDefault();
                             if (mgrUserId > 0)
                                 usersnote.Add(mgrUserId);
                         }
@@ -2878,47 +2882,90 @@ namespace TaamerProject.Service.Services
                 case Beneficiary_type.المدير_المباشر_و_الموظف:
                     if (EmpId.HasValue)
                     {
-                        var emp2 = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
-                        if (emp2.UserId.HasValue)
-                            usersnote.Add(emp2.UserId.Value);
-                        if (emp2?.DirectManager != null)
+                        var emp = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
+                        if (emp != null)
                         {
-                            var mgrUserId = _TaamerProContext.Employees
-                                .Where(e => e.EmployeeId == emp2.DirectManager && e.UserId.HasValue)
-                                .Select(e => e.UserId.Value).FirstOrDefault();
-                            if (mgrUserId > 0)
-                                usersnote.Add(mgrUserId);
+                            if (emp.UserId.HasValue && emp.UserId.Value > 0)
+                            {
+                                usersnote.Add(emp.UserId.Value);
+                            }
+                            else
+                            {
+                                Email = emp.Email;
+                            }
+
+                            if (emp.DirectManager != null)
+                            {
+                                var mgrUserId = _TaamerProContext.Employees
+                                    .Where(e => e.EmployeeId == emp.DirectManager && e.UserId.HasValue)
+                                    .Select(e => e.UserId.Value)
+                                    .FirstOrDefault();
+                                if (mgrUserId > 0)
+                                    usersnote.Add(mgrUserId);
+                            }
                         }
                     }
                     break;
 
                 case Beneficiary_type.الموظف_و_المدير_المباشر_و_المحاسب:
-                    
                     if (EmpId.HasValue)
                     {
-                        var emp1 = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
-                        if (emp1.UserId.HasValue)
-                            usersnote.Add(emp1.UserId.Value);
-                        if (emp1?.DirectManager != null)
+                        var emp = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
+                        if (emp != null)
                         {
-                            var mgrUserId = _TaamerProContext.Employees
-                                .Where(e => e.EmployeeId == emp1.DirectManager && e.UserId.HasValue)
-                                .Select(e => e.UserId.Value).FirstOrDefault();
-                            if (mgrUserId > 0)
-                                usersnote.Add(mgrUserId);
+                            if (emp.UserId.HasValue && emp.UserId.Value > 0)
+                            {
+                                usersnote.Add(emp.UserId.Value);
+                            }
+                            else
+                            {
+                                Email = emp.Email;
+                            }
+
+                            if (emp.DirectManager != null)
+                            {
+                                var mgrUserId = _TaamerProContext.Employees
+                                    .Where(e => e.EmployeeId == emp.DirectManager && e.UserId.HasValue)
+                                    .Select(e => e.UserId.Value)
+                                    .FirstOrDefault();
+                                if (mgrUserId > 0)
+                                    usersnote.Add(mgrUserId);
+                            }
+
+
                         }
                     }
                     break;
 
                 case Beneficiary_type.الموظف:
-                    var emp = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
-                    if (emp.UserId.HasValue)
-                        usersnote.Add(emp.UserId.Value);
+                    if (EmpId.HasValue)
+                    {
+                        var emp = _TaamerProContext.Employees.FirstOrDefault(e => e.EmployeeId == EmpId.Value);
+                        if (emp?.UserId.HasValue == true && emp.UserId.Value > 0)
+                        {
+                            usersnote.Add(emp.UserId.Value);
+                        }
+                        else
+                        {
+                            Email = emp.Email;
+                        }
+                    }
                     break;
-
             }
 
-            return (usersnote.Distinct().ToList(), description);
+            // إزالة القيم المكررة والأصفار
+            usersnote = usersnote
+                .Where(id => id > 0)
+                .Distinct()
+                .ToList();
+
+            // إذا لم يوجد أي مستخدم، عيّن مستخدم افتراضي (مثلاً المستخدم رقم 1)
+            if (!usersnote.Any())
+            {
+                usersnote.Add(1); // default fallback user
+            }
+
+            return (usersnote, description, Email);
         }
 
         //public (List<int> Users, string Description) GetNotificationRecipients(NotificationCode code, int? EmpId, int? UserId)
