@@ -1,13 +1,7 @@
-﻿using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
@@ -723,16 +717,8 @@ namespace TaamerProject.Service.Services
                             {
 
 
-                                //var JournalExist = _TaamerProContext.Journals.Where(s => s.IsDeleted == false && s.JournalNo == transactiondelet.JournalNo && s.YearMalia == yearid && s.VoucherType == 31 && s.BranchId == BranchId).FirstOrDefault();
                                 var invoiceupdate = _TaamerProContext.Invoices.Where(x=>x.InvoiceId==transactiondelet.InvoiceId).FirstOrDefault();
-                                //if(JournalExist!=null)
-                                //{
-                                //    _TaamerProContext.Journals.Remove(JournalExist);
-                                //}
-                                //if (transactiondelet != null)
-                                //{
-                                //    _TaamerProContext.Transactions.Remove(transactiondelet);
-                                //}
+
                                 List<Transactions> transupdate = new List<Transactions>();
 
                                 if (account.OpenAccDepit != 0 && account.OpenAccDepit != null)
@@ -1643,8 +1629,6 @@ namespace TaamerProject.Service.Services
 
         public string GetAccCodeFormID(int AccID, string lang, int BranchId)
         {
-            //var Branch = _BranchesRepository.GetById(BranchId);
-            //var Accounts = _accountsRepository.GetAllAccounts("", lang, BranchId).Where(t => t.IsMain == false ).FirstOrDefault().Code;
             var Accounts = _TaamerProContext.Accounts.Where(x=>x.AccountId==AccID).FirstOrDefault().Code;
             return Accounts;
         }
@@ -1782,20 +1766,6 @@ namespace TaamerProject.Service.Services
                     acc.AddDate = DateTime.Now;
                 }
                 _TaamerProContext.Accounts.AddRange(TransferBranchAccs);
-                _TaamerProContext.SaveChanges();
-
-                //// update parentId
-                //foreach (var item in TransferBranchAccs)
-                //{
-                //    if (item.ParentId == null)
-                //    {
-                //        item.ParentId = null;
-                //    }
-                //    else
-                //    {
-                //        item.ParentId = TransferBranchAccs.Where(s => s.IsDeleted == false && s.BranchId == ToBranchId && s.TransferedAccId == item.ParentId).First().AccountId;
-                //    }
-                //}
                 _TaamerProContext.SaveChanges();
                 return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
             }
@@ -2055,26 +2025,6 @@ namespace TaamerProject.Service.Services
 
         public async Task<IEnumerable<IncomeStatmentVM>> GetAllIncomeStatmentDGVNew(string FromDate, string ToDate, int CCID, int BranchId, string lang, string Con, int? yearid, int ZeroCheck, string LVL)
         {
-            //var year = _fiscalyearsRepository.GetCurrentYear();
-
-            //var Branch = _BranchesRepository.GetById(BranchId);
-            //if (Branch == null || Branch.TaxsAccId == null)
-            //{
-            //    return new List<IncomeStatmentVM>();
-            //}
-            //else if (Branch == null || Branch.SuspendedFundAccId == null)
-            //{
-            //    return new List<IncomeStatmentVM>();
-            //}
-            ////else if (Branch == null || Branch.PurchaseReturnApprovAccId == null)
-            ////{
-            ////    return new List<IncomeStatmentVM>();
-            ////}
-            //else if (Branch == null || Branch.PurchaseReturnDiscAccId == null)
-            //{
-            //    return new List<IncomeStatmentVM>();
-            //}
-
             if (yearid != null)
             {
                 return await _accountsRepository.GetALLIncomeStatmentDGVNew(FromDate, ToDate, CCID, yearid ?? default(int), lang, Con, ZeroCheck, LVL);
@@ -2086,9 +2036,7 @@ namespace TaamerProject.Service.Services
 
         public async Task<IEnumerable<GeneralBudgetVM>> GetGeneralBudgetAMRDGV(string FromDate, string ToDate, string LVL, int CCID, int BranchId, string lang, string Con, int? yearid, int ZeroCheck)
         {
-            //  return _accountsRepository.GetGeneralBudgetAMRDGV(FromDate, ToDate, LVL,CCID, Con);
 
-            //var year = _fiscalyearsRepository.GetCurrentYear();
             if (yearid != null)
             {
                 return await _accountsRepository.GetGeneralBudgetAMRDGV(FromDate, ToDate, LVL, CCID, yearid ?? default(int), BranchId, lang, Con, ZeroCheck);
@@ -2109,9 +2057,6 @@ namespace TaamerProject.Service.Services
         }
         public async Task<IEnumerable<GeneralmanagerRevVM>> GetGeneralManagerRevenueAMRDGV(int? ManagerId, string FromDate, string ToDate, int BranchId, string Con, int? yearid)
         {
-            //  return _accountsRepository.GetGeneralBudgetAMRDGV(FromDate, ToDate, LVL,CCID, Con);
-
-            //var year = _fiscalyearsRepository.GetCurrentYear();
 
             var Branch = _BranchesRepository.GetById(BranchId);
             if (Branch == null || Branch.TaxsAccId == null)
@@ -2256,21 +2201,6 @@ namespace TaamerProject.Service.Services
         {
             return await _accountsRepository.GetNewCodeByParentId(ParentId, Type);
         }
-
-       
-
-        //public IEnumerable<InvoicesVM> GetAllVouchers(VoucherFilterVM voucherFilterVM, int BranchId)
-        //{
-        //    var year = _fiscalyearsRepository.GetCurrentYear();
-        //    if (year != null)
-        //    {
-        //        if (voucherFilterVM.IsSearch)
-        //        {
-        //            return _accountsRepository.GetAllVouchersBySearch(voucherFilterVM, year.YearId, BranchId);
-        //        }
-        //        return _accountsRepository.GetAllVouchers(voucherFilterVM, year.YearId, BranchId);
-        //    }
-        //    return new List<InvoicesVM>();
-        //}
+    
     }
 }

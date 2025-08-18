@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;

@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Models.DBContext;
 using TaamerProject.Repository.Interfaces;
 using TaamerProject.Service.IGeneric;
-using TaamerProject.Repository.Repositories;
 using System.Net;
 using TaamerProject.Service.Interfaces;
 using TaamerP.Service.LocalResources;
@@ -75,15 +68,9 @@ namespace TaamerProject.Service.Services
                     allowance.AddUser = UserId;
                     allowance.AddDate = DateTime.Now;
 
-                    //if (!allowance.IsFixed)
-                    //{
-                    //    var date = DateTime.ParseExact(allowance.Date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                    //    allowance.Month = date.Month;
-                    //}
                     _TaamerProContext.Allowance.Add(allowance);
                     _TaamerProContext.SaveChanges();
 
-                    // UpdatePayrollWithAllowances(allowance.EmployeeId.Value, UserId, BranchId, Lang);
 
                     //-----------------------------------------------------------------------------------------------------------------
                     string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
@@ -225,9 +212,6 @@ namespace TaamerProject.Service.Services
                 }
 
                     }
-                //var result1 = SaveAllowance(salaryParts.Communication, UserId, BranchId, Lang);
-                //var result2 = SaveAllowance(salaryParts.Profession, UserId, BranchId, Lang);
-                //var result3 = SaveAllowance(salaryParts.Transportation, UserId, BranchId, Lang);
                 var result4 = SaveAllowance(salaryParts.HousingAllowance, UserId, BranchId, Lang);
 
                 //if (result1.Result && result2.Result && result3.Result && result4.Result)
@@ -241,31 +225,6 @@ namespace TaamerProject.Service.Services
                     //-----------------------------------------------------------------------------------------------------------------
 
                     result4.ReasonPhrase = Resources.General_SavedSuccessfully;
-
-                    ///---------Payroll Marches----------
-
-                    //payroll.CommunicationAllawance = salaryParts.Communication.AllowanceAmount;
-                    //payroll.ProfessionAllawance = salaryParts.Profession.AllowanceAmount;
-                    //payroll.TransportationAllawance = salaryParts.Transportation.AllowanceAmount;
-                    //payroll.HousingAllowance = salaryParts.HousingAllowance.AllowanceAmount;
-
-
-                    //var Emp = _EmployeesRepository.GetEmployeeById(salaryParts.Communication.EmployeeId.Value, Lang);
-                    //if (Emp != null)
-                    //{
-                    //    if (int.Parse(Emp.WorkStartDate.Split('-')[0]) == DateTime.Now.Year && int.Parse(Emp.WorkStartDate.Split('-')[1]) == DateTime.Now.Month)
-                    //    {
-                    //        int DaysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
-                    //        int RestDays = DaysInMonth - int.Parse(Emp.WorkStartDate.Split('-')[2]);
-
-                    //        decimal SalaryWithAllows = Emp.Salary.Value + Emp.CommunicationAllawance.Value + Emp.TransportationAllawance.Value + Emp.ProfessionAllawance.Value + Emp.HousingAllowance.Value
-                    //        + Emp.MonthlyAllowances.Value + Emp.ExtraAllowances.Value;
-
-                    //        Emp.ThisMonthSalary = Math.Round((decimal)((SalaryWithAllows / 30) * RestDays), 2);
-                    //    }
-                    //    else
-                    //        Emp.ThisMonthSalary = Emp.Salary;
-                    //}
 
                     _TaamerProContext.SaveChanges();
                     //-----------------------------------------------------------------------------------------------------------------

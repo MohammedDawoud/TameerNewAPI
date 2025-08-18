@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
@@ -72,39 +66,7 @@ namespace TaamerProject.Service.Services
                     return new GeneralMessage() { StatusCode = HttpStatusCode.BadRequest,ReasonPhrase = Resources.Posted_payroll_cannot_be_modified };
                 }
 
-                //if (discountReward.Type==1)
-                //{
-                //    if (Branch == null || Branch.PurchaseDiscAccId == null)
-                //    {
-                //        //-----------------------------------------------------------------------------------------------------------------
-                //        string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                //        string ActionNote2 = "فشل في حفظ خصم للموظف";
-                //         _SystemAction.SaveAction("SaveDiscountReward", "DiscountRewardService", 1, "تأكد من حساب الخصم للموظفين في حسابات الفرع", "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
-                //        //-----------------------------------------------------------------------------------------------------------------
 
-                //        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest,ReasonPhrase = "تأكد من حساب الخصم للموظفين في حسابات الفرع" };
-
-                //    }
-                //}
-                //else
-                //{
-                //    if (Branch == null || Branch.PurchaseApprovalAccId == null)
-                //    {
-                //        //-----------------------------------------------------------------------------------------------------------------
-                //        string ActionDate3 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                //        string ActionNote3 = "فشل في حفظ خصم للموظف";
-                //         _SystemAction.SaveAction("SaveDiscountReward", "DiscountRewardService", 1, "تأكد من حساب المكافئات للموظفين في حسابات الفرع", "", "", ActionDate3, UserId, BranchId, ActionNote3, 0);
-                //        //-----------------------------------------------------------------------------------------------------------------
-
-                //        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest,ReasonPhrase = "تأكد من حساب المكافئات للموظفين في حسابات الفرع" };
-
-                //    }
-                //}
-
-                //discountReward.TransactionDetails = new List<Transactions>();
-
-                //decimal? AccDepit = 0;
-                //decimal? AccCredit = 0;
                 decimal? AccAmount = 0;
                 //mokf2at msrof yb2a mden hsab l mkaf2at w da2n hsab l mwzf    Employee.AccountIDs_Bouns   20
                 //5sm eradate yb2a mden hsab l mwzf w da2n hsab l 5somat  Employee.AccountIDs_Discount     21
@@ -129,123 +91,7 @@ namespace TaamerProject.Service.Services
 
                     _TaamerProContext.SaveChanges();
 
-                    //UpdatePayrollWithDiscountRewards(discountReward.EmployeeId.Value, UserId, BranchId);
-
-                    //if (discountReward.Type == 1)
-                    //{
-                    //    discountReward.TransactionDetails.Add(new Transactions
-                    //    {
-
-                    //        TransactionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en")),
-                    //        TransactionHijriDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("ar")),
-                    //        AccountId = Branch.PurchaseDiscAccId,
-                    //        CostCenterId = null,
-                    //        AccountType = AccountTypeDis,
-                    //        Type = TypeDis,
-                    //        LineNumber = 1,
-                    //        Depit = 0,
-                    //        Credit = AccAmount,
-                    //        YearId = yearid,
-                    //        Notes = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                    //        Details = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                    //        //InvoiceReference = voucher.InvoiceNumber.ToString(),
-                    //        InvoiceReference = "",
-
-                    //        InvoiceId = 0,
-                    //        DiscountRewardId = discountReward.DiscountRewardId,
-                    //        IsPost = true,
-                    //        BranchId = BranchId,
-                    //        AddDate = DateTime.Now,
-                    //        AddUser = UserId,
-                    //        IsDeleted = false,
-                    //    });
-                    //    discountReward.TransactionDetails.Add(new Transactions
-                    //    {
-
-                    //        TransactionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en")),
-                    //        TransactionHijriDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("ar")),
-                    //        AccountId = AccountIdDis,
-                    //        CostCenterId = null,
-                    //        AccountType = AccountTypeDis,
-                    //        Type = TypeDis,
-                    //        LineNumber = 2,
-                    //        Depit = AccAmount,
-                    //        Credit = 0,
-                    //        YearId = yearid,
-                    //        Notes = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                    //        Details = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                    //        //InvoiceReference = voucher.InvoiceNumber.ToString(),
-                    //        InvoiceReference = "",
-
-                    //        InvoiceId = 0,
-                    //        DiscountRewardId = discountReward.DiscountRewardId,
-                    //        IsPost = true,
-                    //        BranchId = BranchId,
-                    //        AddDate = DateTime.Now,
-                    //        AddUser = UserId,
-                    //        IsDeleted = false,
-                    //    });
-
-                    //}
-                    //else
-                    //{
-                    //    discountReward.TransactionDetails.Add(new Transactions
-                    //    {
-
-                    //        TransactionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en")),
-                    //        TransactionHijriDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("ar")),
-                    //        AccountId = Branch.PurchaseApprovalAccId,
-                    //        CostCenterId = null,
-                    //        AccountType =  AccountTypeDis,
-                    //        Type = TypeDis,
-                    //        LineNumber = 1,
-                    //        Depit = AccAmount,
-                    //        Credit = 0,
-                    //        YearId = yearid,
-                    //        Notes = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                    //        Details = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                    //        //InvoiceReference = voucher.InvoiceNumber.ToString(),
-                    //        InvoiceReference = "",
-
-                    //        InvoiceId = 0,
-                    //        DiscountRewardId = discountReward.DiscountRewardId,
-                    //        IsPost = true,
-                    //        BranchId = BranchId,
-                    //        AddDate = DateTime.Now,
-                    //        AddUser = UserId,
-                    //        IsDeleted = false,
-                    //    });
-                    //    discountReward.TransactionDetails.Add(new Transactions
-                    //    {
-
-                    //        TransactionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en")),
-                    //        TransactionHijriDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("ar")),
-                    //        AccountId = AccountIdDis,
-                    //        CostCenterId = null,
-                    //        AccountType = AccountTypeDis,
-                    //        Type = TypeDis,
-                    //        LineNumber = 2,
-                    //        Depit = 0,
-                    //        Credit = AccAmount,
-                    //        YearId = yearid,
-                    //        Notes = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                    //        Details = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                    //        //InvoiceReference = voucher.InvoiceNumber.ToString(),
-                    //        InvoiceReference = "",
-
-                    //        InvoiceId = 0,
-                    //        DiscountRewardId = discountReward.DiscountRewardId,
-                    //        IsPost = true,
-                    //        BranchId = BranchId,
-                    //        AddDate = DateTime.Now,
-                    //        AddUser = UserId,
-                    //        IsDeleted = false,
-                    //    });
-                    //}
-
-                    //_TransactionsRepository.AddRange(discountReward.TransactionDetails.ToList());
-
-
+                    
 
                     var ms = "";
                     if (discountReward.Type == 1)
@@ -287,123 +133,7 @@ namespace TaamerProject.Service.Services
                         DiscountRewardUpdated.UpdateUser = UserId;
                         //DiscountRewardUpdated.UpdatedDate = DateTime.Now;
 
-                        //_TransactionsRepository.RemoveRange(DiscountRewardUpdated.TransactionDetails.ToList());
-
-                        //if (discountReward.Type == 1)
-                        //{
-                        //    discountReward.TransactionDetails.Add(new Transactions
-                        //    {
-
-                        //        TransactionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en")),
-                        //        TransactionHijriDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("ar")),
-                        //        AccountId = Branch.PurchaseDiscAccId,
-                        //        CostCenterId = null,
-                        //        AccountType =  AccountTypeDis,
-                        //        Type = TypeDis,
-                        //        LineNumber = 1,
-                        //        Depit = 0,
-                        //        Credit = AccAmount,
-                        //        YearId = yearid,
-                        //        Notes = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                        //        Details = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                        //        //InvoiceReference = voucher.InvoiceNumber.ToString(),
-                        //        InvoiceReference = "",
-
-                        //        InvoiceId = 0,
-                        //        DiscountRewardId = discountReward.DiscountRewardId,
-                        //        IsPost = true,
-                        //        BranchId = BranchId,
-                        //        AddDate = DateTime.Now,
-                        //        AddUser = UserId,
-                        //        IsDeleted = false,
-                        //    });
-                        //    discountReward.TransactionDetails.Add(new Transactions
-                        //    {
-
-                        //        TransactionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en")),
-                        //        TransactionHijriDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("ar")),
-                        //        AccountId = AccountIdDis,
-                        //        CostCenterId = null,
-                        //        AccountType = AccountTypeDis,
-                        //        Type = TypeDis,
-                        //        LineNumber = 2,
-                        //        Depit = AccAmount,
-                        //        Credit = 0,
-                        //        YearId = yearid,
-                        //        Notes = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                        //        Details = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                        //        //InvoiceReference = voucher.InvoiceNumber.ToString(),
-                        //        InvoiceReference = "",
-
-                        //        InvoiceId = 0,
-                        //        DiscountRewardId = discountReward.DiscountRewardId,
-                        //        IsPost = true,
-                        //        BranchId = BranchId,
-                        //        AddDate = DateTime.Now,
-                        //        AddUser = UserId,
-                        //        IsDeleted = false,
-                        //    });
-
-                        //}
-                        //else
-                        //{
-                        //    discountReward.TransactionDetails.Add(new Transactions
-                        //    {
-
-                        //        TransactionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en")),
-                        //        TransactionHijriDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("ar")),
-                        //        AccountId = Branch.PurchaseApprovalAccId,
-                        //        CostCenterId = null,
-                        //        AccountType =  AccountTypeDis,
-                        //        Type = TypeDis,
-                        //        LineNumber = 1,
-                        //        Depit = AccAmount,
-                        //        Credit = 0,
-                        //        YearId = yearid,
-                        //        Notes = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                        //        Details = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                        //        //InvoiceReference = voucher.InvoiceNumber.ToString(),
-                        //        InvoiceReference = "",
-
-                        //        InvoiceId = 0,
-                        //        DiscountRewardId = discountReward.DiscountRewardId,
-                        //        IsPost = true,
-                        //        BranchId = BranchId,
-                        //        AddDate = DateTime.Now,
-                        //        AddUser = UserId,
-                        //        IsDeleted = false,
-                        //    });
-                        //    discountReward.TransactionDetails.Add(new Transactions
-                        //    {
-
-                        //        TransactionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en")),
-                        //        TransactionHijriDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("ar")),
-                        //        AccountId = AccountIdDis,
-                        //        CostCenterId = null,
-                        //        AccountType = AccountTypeDis,
-                        //        Type = TypeDis,
-                        //        LineNumber = 2,
-                        //        Depit = 0,
-                        //        Credit = AccAmount,
-                        //        YearId = yearid,
-                        //        Notes = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                        //        Details = "" + vouchertypename + " " + Resources.number + " " + discountReward.DiscountRewardId + "",
-                        //        //InvoiceReference = voucher.InvoiceNumber.ToString(),
-                        //        InvoiceReference = "",
-
-                        //        InvoiceId = 0,
-                        //        DiscountRewardId = discountReward.DiscountRewardId,
-                        //        IsPost = true,
-                        //        BranchId = BranchId,
-                        //        AddDate = DateTime.Now,
-                        //        AddUser = UserId,
-                        //        IsDeleted = false,
-                        //    });
-                        //}
-
-                        //_TransactionsRepository.AddRange(discountReward.TransactionDetails.ToList());
-
-                       
+                                        
                     }
                     _TaamerProContext.SaveChanges();
 
@@ -450,38 +180,7 @@ namespace TaamerProject.Service.Services
             }
         }
 
-        //private GeneralMessage UpdatePayrollWithDiscountRewards(int EmpId, int UserId, int BranchId) {
-        //    var Emp = _EmployeesRepository.GetById(EmpId);
-        //    var Payroll = _payrollMarchesRepository.GetPayrollMarches(EmpId, DateTime.Now.Month);
-
-        //    if (Payroll != null && Payroll.PostDate.HasValue)
-        //    { 
-        //        //-----------------------------------------------------------------------------------------------------------------
-        //        string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-        //        string ActionNote = "فشل في تعديل مسير الرواتب (المكافآت و الخصومات)) ";
-        //         _SystemAction.SaveAction("UpdatePayrollWithDiscountRewards", "DiscountRewardService", 2, Resources.Posted_payroll_cannot_be_modified, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
-        //        //-----------------------------------------------------------------------------------------------------------------
-        //        return new GeneralMessage() { StatusCode = HttpStatusCode.BadRequest, Message= Resources.Posted_payroll_cannot_be_modified };
-        //    }
-
-        //    if (Emp != null && Payroll != null)
-        //    {
-        //        Payroll.TotalDiscounts = Emp.DiscountRewards.Where(s => s.IsDeleted == false && s.Type == 1 && s.AddDate.Value.Month == DateTime.Now.Month).Sum(s => s.Amount) ?? 0;
-        //        Payroll.TotalRewards = Emp.DiscountRewards.Where(s => s.IsDeleted == false && s.Type == 2 && s.AddDate.Value.Month == DateTime.Now.Month).Sum(s => s.Amount) ?? 0;
-
-        //        Payroll.UpdatedDate = DateTime.Now;
-        //        Payroll.UpdateUser = UserId;
-
-        //    }
-        //    _TaamerProContext.SaveChanges();
-        //    //-----------------------------------------------------------------------------------------------------------------
-        //    string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-        //    string ActionNote2 = "تعديل مسير الرواتب (المكافآت و الخصومات) ";
-        //     _SystemAction.SaveAction("UpdatePayrollWithDiscountRewards", "DiscountRewardService", 2, Resources.General_SavedSuccessfully, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
-        //    //-----------------------------------------------------------------------------------------------------------------
-
-        //    return new GeneralMessage() { StatusCode = HttpStatusCode.OK,ReasonPhrase = Resources.General_SavedSuccessfully };
-        //}
+       
         public GeneralMessage DeleteDiscountReward(int DiscountRewardId,int UserId,int BranchId)
         {
             var ms = "";

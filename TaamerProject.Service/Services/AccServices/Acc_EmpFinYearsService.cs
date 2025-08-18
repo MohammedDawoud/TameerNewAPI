@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Globalization;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
@@ -134,26 +129,6 @@ namespace TaamerProject.Service.Services
             int CountYearin_OPBthis = 0;
             int CountYearin_Transaction = 0;
 
-
-            //try
-            //{
-            //    string selectTopics = "select COUNT(*) from Acc_Transactions where YearID=" + YearID.ToString();
-            //    // Define the ADO.NET Objects
-            //    using (SqlConnection con = new SqlConnection(Con))
-            //    {
-            //        SqlCommand topiccmd = new SqlCommand(selectTopics, con);
-            //        con.Open();
-            //        CountYearin_Transaction = (int)topiccmd.ExecuteScalar();
-            //    }
-            //}
-            //catch (Exception)
-            //{
-
-            //    CountYearin_Transaction=0;
-            //}
-
-
-
             try
             {
                 string selectTopics2 = "select COUNT(*) from Acc_OpenBalance where YearID=" + (YearID + 1).ToString();
@@ -170,26 +145,6 @@ namespace TaamerProject.Service.Services
 
                 CountYearin_OPB = 0;
             }
-
-
-            //try
-            //{
-            //    string selectTopics3 = "select COUNT(*) from Acc_OpenBalance where YearID=" + (YearID).ToString();
-            //    // Define the ADO.NET Objects
-            //    using (SqlConnection con = new SqlConnection(Con))
-            //    {
-            //        SqlCommand topiccmd3 = new SqlCommand(selectTopics3, con);
-            //        con.Open();
-            //        CountYearin_OPBthis = (int)topiccmd3.ExecuteScalar();
-            //    }
-            //}
-            //catch (Exception)
-            //{
-
-            //    CountYearin_OPBthis = 0;
-            //}
-
-
 
             if (CountYearin_OPB == 0)
             {
