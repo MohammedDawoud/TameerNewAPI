@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Models.DBContext;
@@ -11,7 +6,6 @@ using TaamerProject.Repository.Interfaces;
 using TaamerProject.Service.IGeneric;
 using System.Net;
 using TaamerProject.Service.Interfaces;
-using TaamerProject.Service.Generic;
 using TaamerP.Service.LocalResources;
 
 namespace TaamerProject.Service.Services
@@ -562,44 +556,7 @@ namespace TaamerProject.Service.Services
             {
                 IsSent = _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, "تفاصيل الراتب", htmlBody, true, EmployeeUpdated.Email);
             }
-            //if (directmanager != null)
-            //{
-            //    _customerMailService.SendMail_SysNotification((int)EmployeeUpdated.BranchId, 0, 0, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), htmlBody, true, directmanager.Email);
-
-            //}
-            //string NotStr = "تم انضمام الموظف " + EmployeeUpdated.EmployeeNameAr + " إلى فريق " + OrgName + ", الوظيفة: " + job.JobNameAr + " قسم : " + DepartmentNameAr + " فرع: " + NameAr;
-            //Notification UserNotification = new Notification();
-            //UserNotification.ReceiveUserId = EmployeeUpdated.UserId.Value;
-            //UserNotification.Name = Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar"));
-            //UserNotification.Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("en"));
-            //UserNotification.HijriDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.CreateSpecificCulture("ar"));
-            //UserNotification.SendUserId = 1;
-            //UserNotification.Type = 1; // notification
-            //UserNotification.Description = NotStr;
-            //UserNotification.AllUsers = false;
-            //UserNotification.SendDate = DateTime.Now;
-            //UserNotification.ProjectId = 0;
-            //UserNotification.TaskId = 0;
-            //UserNotification.IsHidden = false;
-            //UserNotification.AddUser = EmployeeUpdated.UserId.Value;
-            //UserNotification.AddDate = DateTime.Now;
-            //UserNotification.IsRead = false;
-            //_TaamerProContext.Notification.Add(UserNotification);
-            //_TaamerProContext.SaveChanges();
-            //if (directmanager != null)
-            //{
-            //    var Not_directmanager = new Notification();
-            //    Not_directmanager = UserNotification;
-            //    Not_directmanager.ReceiveUserId = directmanager.UserId.Value;
-            //    Not_directmanager.NotificationId = 0;
-            //    _TaamerProContext.Notification.Add(Not_directmanager);
-            //    _TaamerProContext.SaveChanges();
-            //}
-            //_notificationService.sendmobilenotification(EmployeeUpdated.UserId.Value, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), NotStr);
-            //if (directmanager != null)
-            //{
-            //    _notificationService.sendmobilenotification(directmanager.UserId.Value, Resources.ResourceManager.GetString("Con_StartWork", CultureInfo.CreateSpecificCulture("ar")), NotStr);
-            //}
+           
 
             return IsSent;
         }

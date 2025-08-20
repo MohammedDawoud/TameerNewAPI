@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -10,7 +9,6 @@ using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
 using TaamerProject.Repository.Interfaces;
-using TaamerProject.Repository.Repositories;
 using TaamerProject.Service.IGeneric;
 using TaamerProject.Service.Interfaces;
 using TaamerP.Service.LocalResources;
@@ -366,18 +364,7 @@ namespace TaamerProject.Service.Services
 
                 return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase =msg };
             }
-            //else if  (oldvac !=null &&oldvac.Count() > 0)
-            //{
-            //    //-----------------------------------------------------------------------------------------------------------------
-            //    string ActionDate1 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-            //    string ActionNote1 = Resources.General_SavedFailed;
-            //    string msg = "لا يمكنك عمل طلب إجازة وذلك لوجود طلب اجازه في نفس الفترة لهذا الموظف";
 
-            //    _SystemAction.SaveAction("SaveVacation2", "VacationService", 1, msg, "", "", ActionDate1, UserId, BranchId, ActionNote1, 0);
-            //    //-----------------------------------------------------------------------------------------------------------------
-
-            //    return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase =msg };
-            //}
 
             else
             {
@@ -826,54 +813,7 @@ namespace TaamerProject.Service.Services
                     }
                 else
                 {
-                    //if (emp != null && emp.UserId != null)
-                    //{
-                    //    var userTasks = _ProjectPhasesTasksRepository.GetMatching(s => s.IsDeleted == false && s.UserId == emp.UserId && s.Type == 3 && s.BranchId == BranchId && s.Status != 4).Count();
-                    //    if (userTasks > 0)
-                    //    {
-                    //        var massage2 = "";
-                    //        if (Lang == "rtl")
-                    //        {
-                    //            massage2 = "الموظف عليه " + userTasks + " مهام عمل حاليه يجب تحويلها لمستخدم اخر";
-                    //        }
-                    //        else
-                    //        {
-                    //            massage2 = "this Employee have" + userTasks + " tasks must be turn it";
-                    //        }
-                    //        return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase =massage2 };
-                    //    }
-
-                    //}
-                    //if (emp != null)
-                    //{
-                    //    var userLoan = _LoanRepository.GetMatching(s => s.IsDeleted == false && s.EmployeeId == emp.EmployeeId);
-                    //    var userLoanDatails = 0;
-                    //    if (userLoan != null)
-                    //    {
-                    //        foreach (var item in userLoan)
-                    //        {
-                    //            userLoanDatails = _LoanDetailsRepository.GetMatching(s => s.IsDeleted == false && s.LoanId == item.LoanId && s.Finished == false).Count();
-                    //        }
-                    //    }
-                    //    if (userLoanDatails > 0)
-                    //    {
-                    //        var massage1 = "";
-                    //        if (Lang == "rtl")
-                    //        {
-                    //            massage1 = " الموظف عليه سلف لابد من تسويتها اولا ";
-                    //        }
-                    //        else
-                    //        {
-                    //            massage1 = "An employee with ancestor who must be settled first";
-                    //        }
-                    //        return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase =massage1 };
-                    //    }
-                    //    //if (userLoan != null)
-                    //    //{
-                    //    //    return new GeneralMessage {StatusCode = HttpStatusCode.BadRequest, ReasonPhrase =" الموظف عليه سلف لابد من تسويتها اولا " };
-                    //    //}
-                    //}
-                    // var VacationUpdated = _VacationRepository.GetById(vacation.VacationId);
+                    
                     Vacation? VacationUpdated = _TaamerProContext.Vacation.Where(s => s.VacationId == vacation.VacationId).FirstOrDefault();
 
                     if (VacationUpdated != null)

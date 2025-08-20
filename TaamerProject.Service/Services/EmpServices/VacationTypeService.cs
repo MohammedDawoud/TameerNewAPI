@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Net;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;

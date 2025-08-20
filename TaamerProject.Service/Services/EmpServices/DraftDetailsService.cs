@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
@@ -13,7 +7,6 @@ using TaamerProject.Repository.Interfaces;
 using TaamerProject.Service.IGeneric;
 using TaamerProject.Service.Interfaces;
 using TaamerP.Service.LocalResources;
-using Twilio.TwiML.Voice;
 
 namespace TaamerProject.Service.Services
 {
@@ -80,9 +73,6 @@ namespace TaamerProject.Service.Services
         {
             try
             {
-               // var project = _ProjectRepository.GetById(draftDetails.ProjectId);
-
-                //Project? project = _TaamerProContext.Project.Where(s => s.ProjectId == draftDetails.ProjectId).FirstOrDefault();
                 var proDraftDetails = _TaamerProContext.DraftDetails.Where(s => s.ProjectId == draftDetails.ProjectId).ToList();
 
                 if (proDraftDetails.Count()>0)
@@ -114,47 +104,7 @@ namespace TaamerProject.Service.Services
                     return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
                 }
 
-                //if (draftDetails.DraftDetailId == 0)
-                //{
-                //    draftDetails.AddUser = UserId;
-                //    draftDetails.AddDate = DateTime.Now;
-                //    _DraftDetailsRepository.Add(draftDetails);
-                //    _TaamerProContext.SaveChanges();
-                //    //-----------------------------------------------------------------------------------------------------------------
-                //    string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                //    string ActionNote = "اضافة رابط بمسودة جديد";
-                //     _SystemAction.SaveAction("SaveDraftDetails", "DraftDetailsService", 1, Resources.General_SavedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
-                //    //-----------------------------------------------------------------------------------------------------------------
-                //    return new GeneralMessage { StatusCode = HttpStatusCode.OK,ReasonPhrase = Resources.General_SavedSuccessfully };
-                //}
-                //else
-                //{
-                //    var DraftDetailUpdated = _DraftDetailsRepository.GetById(draftDetails.DraftDetailId);
-                //    if (DraftDetailUpdated != null)
-                //    {
-                //        DraftDetailUpdated.ProjectId = draftDetails.ProjectId;
-                //        DraftDetailUpdated.ProjectId= draftDetails.ProjectId;
-
-                //        DraftDetailUpdated.UpdateUser = UserId;
-                //        DraftDetailUpdated.UpdatedDate = DateTime.Now;
-
-                //        DraftDetailUpdated.IsDeleted = draftDetails.IsDeleted;
-                //        if(draftDetails.IsDeleted)
-                //            DraftDetailUpdated.DeleteDate = DateTime.Now;
-                //        else
-                //            DraftDetailUpdated.DeleteDate = null;
-
-                //    }
-                //    _TaamerProContext.SaveChanges();
-
-                //    //-----------------------------------------------------------------------------------------------------------------
-                //    string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                //    string ActionNote = " تعديل  رابط بمسودة رقم " + draftDetails.DraftDetailId;
-                //     _SystemAction.SaveAction("SaveDraftDetails", "DraftDetailsService", 2, Resources.General_EditedSuccessfully, "", "", ActionDate, UserId, BranchId, ActionNote, 1);
-                //    //-----------------------------------------------------------------------------------------------------------------
-
-                //    return new GeneralMessage { StatusCode = HttpStatusCode.OK,ReasonPhrase = Resources.General_EditedSuccessfully };
-                //}
+              
             }
             catch (Exception ex)
             {

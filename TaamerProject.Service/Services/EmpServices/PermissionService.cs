@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Models.DBContext;
 using TaamerProject.Models.ViewModels;
 using TaamerProject.Repository.Interfaces;
-using TaamerProject.Repository.Repositories;
 using TaamerP.Service.LocalResources;
 using TaamerProject.Models.DomainObjects;
 using TaamerProject.Service.Interfaces;
@@ -115,68 +109,7 @@ namespace TaamerProject.Service.Services.EmpServices
                     }
                     else
                     {
-                        //if (emp != null)
-                        //{
-                        //    if (emp.UserId != null)
-                        //    {
-                        //        var userTasks = _TaamerProContext.ProjectPhasesTasks.Where(s => s.IsDeleted == false && (s.Project.StopProjectType != 1) && s.UserId == emp.UserId && s.Type == 3 && s.BranchId == BranchId && s.Status != 4).Count();
-                        //        if (userTasks > 0)
-                        //        {
-                        //            var massage2 = "";
-                        //            if (Lang == "rtl")
-                        //            {
-                        //                massage2 = userTasks + Resources.ExistingWorkTasksTransferredAnotherUser;
-                        //            }
-                        //            else
-                        //            {
-                        //                massage2 = userTasks + Resources.ExistingWorkTasksTransferredAnotherUser;
-                        //            }
-
-
-                        //            //-----------------------------------------------------------------------------------------------------------------
-                        //            string ActionDate2 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                        //            string ActionNote2 = "فشل في حفظ الاذن";
-                        //            _SystemAction.SaveAction("SaveVacation", "VacationService", 1, massage2, "", "", ActionDate2, UserId, BranchId, ActionNote2, 0);
-                        //            //-----------------------------------------------------------------------------------------------------------------
-
-                        //            return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = massage2 };
-                        //        }
-
-                        //    }
-                        //    var userLoan = _TaamerProContext.Loan.Where(s => s.IsDeleted == false && s.EmployeeId == emp.EmployeeId);
-
-                        //    var userLoanDatails = 0;
-                        //    if (userLoan != null)
-                        //    {
-                        //        foreach (var item in userLoan)
-                        //        {
-                        //            userLoanDatails = _TaamerProContext.LoanDetails.Where(s => s.IsDeleted == false && s.LoanId == item.LoanId && s.Finished == false).Count();
-
-                        //        }
-                        //    }
-                        //    if (userLoanDatails > 0)
-                        //    {
-                        //        var massage1 = "";
-                        //        if (Lang == "rtl")
-                        //        {
-                        //            massage1 = Resources.employeeEdvancesBeSettledFirst;
-                        //        }
-                        //        else
-                        //        {
-                        //            massage1 = Resources.employeeEdvancesBeSettledFirst;
-                        //        }
-
-                        //        //-----------------------------------------------------------------------------------------------------------------
-                        //        string ActionDate3 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                        //        string ActionNote3 = "فشل في حفظ الإجازة";
-                        //        _SystemAction.SaveAction("SaveVacation", "VacationService", 1, massage1, "", "", ActionDate3, UserId, BranchId, ActionNote3, 0);
-                        //        //-----------------------------------------------------------------------------------------------------------------
-
-                        //        return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = massage1 };
-                        //    }
                        
-                        //}
-
 
                         Permissions? PermissionUpdated = _TaamerProContext.Permissions.Where(s => s.PermissionId == permission.PermissionId).FirstOrDefault();
 
