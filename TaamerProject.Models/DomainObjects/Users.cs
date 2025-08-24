@@ -44,6 +44,8 @@ namespace TaamerProject.Models
         public string? FullNameAr { get; set; }
         public int? AppearWelcome { get; set; }
         public string? QrCodeUrl { get; set; }
+        public string? AuthenticatorSecret { get; set; }
+        public bool? Is2FAEnabled { get; set; }
         public int? AppearInInvoicePrint { get; set; }
         [NotMapped]
         public List<int>? BranchesList { get; set; }

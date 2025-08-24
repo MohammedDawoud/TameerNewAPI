@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Globalization;
-using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Net;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Service.Interfaces;
@@ -15,8 +10,6 @@ using TaamerProject.Models.DBContext;
 using TaamerProject.Repository.Interfaces;
 using TaamerProject.Service.IGeneric;
 using TaamerP.Service.LocalResources;
-using static Dropbox.Api.Team.DesktopPlatform;
-using TaamerProject.Repository.Repositories;
 
 namespace TaamerProject.Service.Services
 {
@@ -119,16 +112,7 @@ namespace TaamerProject.Service.Services
                 {
                     var Emp = _employeesRepository.GetById((int)CustodyUpdated.EmployeeId);
 
-                    //CustodyUpdated.EmployeeId = CustodyUpdated.EmployeeId;
-                    //CustodyUpdated.EmployeeId = null;
-                    //CustodyUpdated.ItemId = CustodyUpdated.ItemId;
-                    //CustodyUpdated.Date = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                    //CustodyUpdated.HijriDate = CustodyUpdated.HijriDate;
-                    //CustodyUpdated.Quantity = CustodyUpdated.Quantity;
-                    //CustodyUpdated.Type = CustodyUpdated.Type;
-                    //CustodyUpdated.BranchId = CustodyUpdated.BranchId;
-                    //CustodyUpdated.UpdateUser = UserId;
-                    //CustodyUpdated.UpdatedDate = DateTime.Now;
+
                     CustodyUpdated.Status = true;
 
 

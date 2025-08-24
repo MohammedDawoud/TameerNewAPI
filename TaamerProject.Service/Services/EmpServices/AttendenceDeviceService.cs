@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Models.DBContext;
 using TaamerProject.Repository.Interfaces;
 using TaamerProject.Service.IGeneric;
-using TaamerProject.Repository.Repositories;
 using System.Net;
 using TaamerProject.Service.Interfaces;
 using TaamerP.Service.LocalResources;
@@ -153,42 +147,7 @@ namespace TaamerProject.Service.Services
                 //-----------------------------------------------------------------------------------------------------------------
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
-        }
-
-
-        //public GeneralMessage SaveDevice(AttendenceDevice attendencedevice, int UserId, int BranchId)
-        //{
-        //    try
-        //    {
-        //        if (attendencedevice.AttendenceDeviceId == 0)
-        //        {
-        //            attendencedevice.BranchId = BranchId;
-        //            attendencedevice.AddUser = UserId;
-        //            attendencedevice.AddDate = DateTime.Now;
-        //            _AttendenceDeviceRepository.Add(attendencedevice);
-        //        }
-        //        else
-        //        {
-        //            var attendencedeviceUpdated = _AttendenceDeviceRepository.GetById(attendencedevice.AttendenceDeviceId);
-        //            if (attendencedeviceUpdated != null)
-        //            {
-
-        //                attendencedeviceUpdated.DeviceIP = attendencedevice.DeviceIP;
-        //                attendencedeviceUpdated.Port = attendencedevice.Port;
-        //                attendencedeviceUpdated.MachineNumber = attendencedevice.MachineNumber;
-        //                attendencedeviceUpdated.BranchId = attendencedevice.BranchId;
-        //                attendencedeviceUpdated.UpdateUser = UserId;
-        //                attendencedeviceUpdated.UpdatedDate = DateTime.Now;
-        //            }
-        //        }
-        //        _uow.SaveChanges();
-        //        return new GeneralMessage { Result = true, Message = Resources.General_SavedSuccessfully };
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new GeneralMessage { Result = false, Message = Resources.General_SavedFailed };
-        //    }
-        //}
+        }     
         public GeneralMessage DeleteAttendenceDevice(int attendencedeviceId, int UserId, int BranchId)
         {
             try

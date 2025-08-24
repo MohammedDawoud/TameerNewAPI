@@ -1,24 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Graph.Models;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
 using TaamerProject.Models.Enums;
 using TaamerProject.Repository.Interfaces;
-using TaamerProject.Repository.Repositories;
 using TaamerProject.Service.IGeneric;
 using TaamerProject.Service.Interfaces;
 using TaamerP.Service.LocalResources;
-using static Azure.Core.HttpHeader;
 
 namespace TaamerProject.Service.Services
 {
@@ -627,117 +619,7 @@ namespace TaamerProject.Service.Services
                             }
 
 
-                            //if (Branch != null && Branch.PurchaseDiscAccId != null)
-                            //{
-                            //    var parentEmpAcc = _accountsRepository.GetById(Branch.PurchaseDiscAccId);
-                            //    var newEmpAcc = new Accounts();
-                            //var substrCode = (_accountsRepository.GetMatching(s => s.IsDeleted == false && s.ParentId == parentEmpAcc.AccountId && s.BranchId == BranchId).Count() + 1).ToString();
-                            //    newEmpAcc.Code = parentEmpAcc.Code + substrCode;
-                            //    newEmpAcc.Classification = 15;
-                            //    newEmpAcc.ParentId = parentEmpAcc.AccountId;
-                            //    newEmpAcc.IsMain = false;
-                            //    newEmpAcc.Level = parentEmpAcc.Level + 1;
-                            //    newEmpAcc.Nature = 1;
-                            //    newEmpAcc.Halala = true;
-                            //    newEmpAcc.NameAr = " حساب  حصيلة جزاءات للموظف " + "  " + emp.EmployeeNameAr;
-                            //    newEmpAcc.NameEn = emp.EmployeeNameEn + " " + "  Employee Discount Account ";
-                            //    newEmpAcc.Type = 2; //bugget
-                            //    newEmpAcc.Active = true;
-                            //    newEmpAcc.AddUser = UserId;
-                            //    newEmpAcc.BranchId = BranchId;
-                            //    newEmpAcc.AddDate = DateTime.Now;
-
-                            //    _accountsRepository.Add(newEmpAcc);
-                            //    parentEmpAcc.IsMain = true; // update main acc
-                            //    _uow.SaveChanges();
-                            //    emp.AccountIDs_Discount = newEmpAcc.AccountId;//_accountsRepository.GetMaxId() + 1;
-                            //    //var cutAcc = _accountsRepository.GetById(emp.AccountIDs);
-                            //    //if (cutAcc != null)
-                            //    //{
-                            //    //    EmpAccCode = cutAcc.Code;
-                            //    //}
-                            //}
-                            //else
-                            //{
-                            //    //-----------------------------------------------------------------------------------------------------------------
-                            //    string ActionDate8 = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                            //    string ActionNote8 = "فشل في حفظ موظف";
-                            //    SaveAction("SaveEmployee", "EmployeeService", 1, "خطأ في الحفظ, فشل في انشاء حساب خصومات للموظف تأكد من انشاء حساب رئيسي  لحصيلة جزاءات الموظف وربطه بالفرع الحالي", "", "", ActionDate8, UserId, BranchId, ActionNote8, 0);
-                            //    //-----------------------------------------------------------------------------------------------------------------
-
-                            //    return new GeneralMessage { Result = false, Message = "خطأ في الحفظ, فشل في انشاء حساب خصومات للموظف تأكد من انشاء حساب رئيسي  لحصيلة جزاءات الموظف وربطه بالفرع الحالي " };
-                            //}
-
-
-                            //if (Branch != null && Branch.PurchaseApprovalAccId != null)
-                            //{
-                            //    var parentEmpAcc = _accountsRepository.GetById(Branch.PurchaseApprovalAccId);
-                            //    var newEmpAcc = new Accounts();
-                            //var substrCode = (_accountsRepository.GetMatching(s => s.IsDeleted == false && s.ParentId == parentEmpAcc.AccountId && s.BranchId == BranchId).Count() + 1).ToString();
-                            //    newEmpAcc.Code = parentEmpAcc.Code + substrCode;
-                            //    newEmpAcc.Classification = 15;
-                            //    newEmpAcc.ParentId = parentEmpAcc.AccountId;
-                            //    newEmpAcc.IsMain = false;
-                            //    newEmpAcc.Level = parentEmpAcc.Level + 1;
-                            //    newEmpAcc.Nature = 2;
-                            //    newEmpAcc.Halala = true;
-                            //    newEmpAcc.NameAr = " حساب مكافئات للموظف " + "  " + emp.EmployeeNameAr;
-                            //    newEmpAcc.NameEn = emp.EmployeeNameEn + " " + "  Employee Bouns Account ";
-                            //    newEmpAcc.Type = 2; //bugget
-                            //    newEmpAcc.Active = true;
-                            //    newEmpAcc.AddUser = UserId;
-                            //    newEmpAcc.BranchId = BranchId;
-                            //    newEmpAcc.AddDate = DateTime.Now;
-
-                            //    _accountsRepository.Add(newEmpAcc);
-                            //    parentEmpAcc.IsMain = true; // update main acc
-                            //    _uow.SaveChanges();
-                            //    emp.AccountIDs_Bouns = newEmpAcc.AccountId;//_accountsRepository.GetMaxId() + 1;
-                            //    //var cutAcc = _accountsRepository.GetById(emp.AccountIDs);
-                            //    //if (cutAcc != null)
-                            //    //{
-                            //    //    EmpAccCode = cutAcc.Code;
-                            //    //}
-                            //}
-                            //else
-                            //{
-                            //    return new GeneralMessage { Result = false, Message = "خطأ في الحفظ, فشل في انشاء حساب مكافئات للموظف تأكد من انشاء حساب رئيسي لمكافئات الموظف وربطه بالفرع الحالي " };
-                            //}
-
-                            //if (Branch != null && Branch.RevenuesAccountId != null)
-                            //{
-                            //    var parentEmpAcc = _accountsRepository.GetById(Branch.RevenuesAccountId);
-                            //    var newEmpAcc = new Accounts();
-                            //var substrCode = (_accountsRepository.GetMatching(s => s.IsDeleted == false && s.ParentId == parentEmpAcc.AccountId && s.BranchId == BranchId).Count() + 1).ToString();
-                            //    newEmpAcc.Code = parentEmpAcc.Code + substrCode;
-                            //    newEmpAcc.Classification = 15;
-                            //    newEmpAcc.ParentId = parentEmpAcc.AccountId;
-                            //    newEmpAcc.IsMain = false;
-                            //    newEmpAcc.Level = parentEmpAcc.Level + 1;
-                            //    newEmpAcc.Nature = 2; //depit
-                            //    newEmpAcc.Halala = true;
-                            //    newEmpAcc.NameAr = " حساب راتب للموظف " + "  " + emp.EmployeeNameAr;
-                            //    newEmpAcc.NameEn = emp.EmployeeNameEn + " " + "  Employee Salary Account ";
-                            //    newEmpAcc.Type = 2; //bugget
-                            //    newEmpAcc.Active = true;
-                            //    newEmpAcc.AddUser = UserId;
-                            //    newEmpAcc.BranchId = BranchId;
-                            //    newEmpAcc.AddDate = DateTime.Now;
-
-                            //    _accountsRepository.Add(newEmpAcc);
-                            //    parentEmpAcc.IsMain = true; // update main acc
-                            //    _uow.SaveChanges();
-                            //    emp.AccountIDs_Salary = newEmpAcc.AccountId;//_accountsRepository.GetMaxId() + 1;
-                            //    //var cutAcc = _accountsRepository.GetById(emp.AccountIDs);
-                            //    //if (cutAcc != null)
-                            //    //{
-                            //    //    EmpAccCode = cutAcc.Code;
-                            //    //}
-                            //}
-                            //else
-                            //{
-                            //    return new GeneralMessage { Result = false, Message = "خطأ في الحفظ, فشل في انشاء حساب راتب للموظف تأكد من انشاء حساب رئيسي لراتب الموظف وربطه بالفرع الحالي " };
-                            //}
+                           
 
                             if (Branch != null && Branch.PurchaseDelayAccId != null)
                             {
@@ -2533,75 +2415,7 @@ namespace TaamerProject.Service.Services
             return employees.ToList();
         }
 
-        //public IEnumerable<EmployeesVM> GetAllEmployeesByDepId(int empId)
-        //{
-        //    var employees = _employeeRepository.GetAllEmployeesByDeptId(empId).ToList();
-        //    return employees;
-        //}
-        //public GeneralMessage CreateUser (Employees emoloyee)
-        //{
-        //    try
-        //    {
-        //        var emp = _employeeRepository.GetById(emoloyee.EmployeeId);
-        //        if (emp != null)
-        //        {
-        //           emp.UserName = emoloyee.UserName;
-        //           emp.Password = EncryptValue(emoloyee.Password);
-        //           emp.IsUser = true;
-        //         }
-        //        _uow.SaveChanges();
-        //        return new GeneralMessage { Result = true, Message = " تم الحفظ بنجاح" };
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return new GeneralMessage { Result = false, Message = Resources.General_SavedFailed };
-        //    }
-        //}
-        //public bool ValidateUserPassword(string UserName, string Password)
-        //{
-        //    var user = _employeeRepository.GetMatching(s => s.UserName == UserName && s.IsDeleted == false && s.IsUser == true && DecryptValue(s.Password) == Password.Trim() ).FirstOrDefault();
-        //    if (user != null)
-        //    {
-        //        return true;
-        //    }
-        //    return false;
-        //}
-        //public EmployeesVM GetUser(string username)
-        //{
-        //    var user = _employeeRepository.GetMatching(s => s.UserName == username && s.IsDeleted == false && s.IsUser == true).FirstOrDefault();
-        //    return new EmployeesVM {EmployeeName = user.EmployeeName , UserName = user.UserName , ImageUrl = user.ImageUrl};
-        //}
-        //private string EncryptValue(string value)
-        //{
-        //    string hash = "f0xle@rn";
-        //    byte[] data =Encoding.UTF8.GetBytes(value);
-        //    using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
-        //    {
-        //        byte[] keys = md5.ComputeHash(Encoding.UTF8.GetBytes(hash));
-        //        using (TripleDESCryptoServiceProvider tripDesc = new TripleDESCryptoServiceProvider() { Key = keys , Mode = CipherMode.ECB , Padding = PaddingMode.PKCS7})
-        //        {
-        //            ICryptoTransform cryptoTransform = tripDesc.CreateEncryptor();
-        //            byte[] result = cryptoTransform.TransformFinalBlock(data, 0, data.Length);
-        //            return Convert.ToBase64String(result, 0 , result.Length);
-        //        }
-        //    } 
-        //}
-        //private string DecryptValue(string value)
-        //{
-        //    string hash = "f0xle@rn";
-        //    byte[] data = Convert.FromBase64String(value); ;
-        //    using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
-        //    {
-        //        byte[] keys = md5.ComputeHash(Encoding.UTF8.GetBytes(hash));
-        //        using (TripleDESCryptoServiceProvider tripDesc = new TripleDESCryptoServiceProvider() { Key = keys, Mode = CipherMode.ECB, Padding = PaddingMode.PKCS7 })
-        //        {
-        //            ICryptoTransform cryptoTransform = tripDesc.CreateDecryptor();
-        //            byte[] result = cryptoTransform.TransformFinalBlock(data, 0, data.Length);
-        //            return Encoding.UTF8.GetString(result);
-        //        }
-        //    }
-        //}
-
+        
         public IEnumerable< rptGetEmpLoans> GetEmpLoans(string Con)
         {
             try

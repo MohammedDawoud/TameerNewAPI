@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
@@ -86,16 +80,6 @@ namespace TaamerProject.Service.Services
                             DraftUpdated.UpdateUser = UserId;
                             DraftUpdated.UpdateDate = DateTime.Now;
                         }
-                        //if (draft.DraftDetails != null || draft.DraftDetails.Count() > 0)
-                        //{
-                        //    if (DraftUpdated.DraftDetails != null || DraftUpdated.DraftDetails.Count() > 0)
-                        //        _DraftDetailsRepository.RemoveRange(DraftUpdated.DraftDetails.ToList());
-
-                        //    foreach (var item in draft.DraftDetails)
-                        //    {
-                        //        _DraftDetailsRepository.Add(item);
-                        //    }
-                        //}
                     }
 
                     _TaamerProContext.SaveChanges();

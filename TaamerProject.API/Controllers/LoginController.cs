@@ -23,6 +23,7 @@ using Microsoft.EntityFrameworkCore;
 using TaamerProject.Models.DBContext;
 using OtpNet;
 using TaamerProject.Service.Services;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace TaamerProject.API.Controllers
 {
@@ -582,10 +583,25 @@ namespace TaamerProject.API.Controllers
 
                         var secretBytes = KeyGeneration.GenerateRandomKey(20); // 160-bit key
                         var base32Secret = Base32Encoding.ToString(secretBytes);
-                        var issuer = "TameerCloudApp";
-                        var qrCodeUrl = $"otpauth://totp/{issuer}:{user.Email}?secret={base32Secret}&issuer={issuer}&digits=6";
 
-                        UsersData.base32Secret = base32Secret;
+                        if(!(user.AuthenticatorSecret==null || user.AuthenticatorSecret == ""))
+                        {
+                            UsersData.base32Secret = user.AuthenticatorSecret;
+                        }
+                        else
+                        {
+                            UsersData.base32Secret = base32Secret;
+                            var userV = _TaamerProContext.Users.Where(s => s.UserId == user.UserId).FirstOrDefault();
+                            if(userV!=null)
+                            {
+                                userV.AuthenticatorSecret = UsersData.base32Secret;
+                                userV.Is2FAEnabled = true;
+                                _TaamerProContext.SaveChangesAsync();
+                            }
+                        }
+
+                        var issuer = "TameerCloudApp";
+                        var qrCodeUrl = $"otpauth://totp/{issuer}:{user.Email}?secret={UsersData.base32Secret}&issuer={issuer}&digits=6";
                         UsersData.qrCodeUrl = qrCodeUrl;
                         UsersData.Token = GenerateJwtToken(user.UserId, user.Password, user.UserName);
 
@@ -692,48 +708,96 @@ namespace TaamerProject.API.Controllers
 
                         var secretBytes = KeyGeneration.GenerateRandomKey(20); // 160-bit key
                         var base32Secret = Base32Encoding.ToString(secretBytes);
-                        var issuer = "TameerCloudApp";
-                        var qrCodeUrl = $"otpauth://totp/{issuer}:{user.Email}?secret={base32Secret}&issuer={issuer}&digits=6";
+                        if (!(user.AuthenticatorSecret == null || user.AuthenticatorSecret == ""))
+                        {
+                            UsersData.base32Secret = user.AuthenticatorSecret;
+                        }
+                        else
+                        {
+                            UsersData.base32Secret = base32Secret;
+                            if (type == 2 || type == 3)
+                            {
+                                var userV = _TaamerProContext.Sys_UserLogin.Where(s => s.UserLoginId == user.UserLoginId).FirstOrDefault();
+                                if (userV != null)
+                                {
+                                    userV.AuthenticatorSecret = UsersData.base32Secret;
+                                    userV.Is2FAEnabled = true;
+                                    _TaamerProContext.SaveChangesAsync();
+                                }
+                            }
+                            else
+                            {
+                                var userV = _TaamerProContext.Users.Where(s => s.UserId == user.UserId).FirstOrDefault();
+                                if (userV != null)
+                                {
+                                    userV.AuthenticatorSecret = UsersData.base32Secret;
+                                    userV.Is2FAEnabled = true;
+                                    _TaamerProContext.SaveChangesAsync();
+                                }
+                            }
 
-                        UsersData.base32Secret = base32Secret;
+                        }
+                        var issuer = "TameerCloudApp";
+                        var qrCodeUrl = $"otpauth://totp/{issuer}:{user.Email}?secret={UsersData.base32Secret}&issuer={issuer}&digits=6";
+
                         UsersData.qrCodeUrl = qrCodeUrl;
                         UsersData.Token = GenerateJwtToken(user.UserId, user.Password, user.UserName);
 
                         //UsersData.Token = Token(user.UserId, user.Password, user.UserName).ToString();
-
-                        if (ExpireUserDate != "0")
+                        if (type == 2 || type == 3)
                         {
-                            if (DateTime.ParseExact(ExpireUserDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > DateTime.ParseExact(DateNow, "yyyy-MM-dd", CultureInfo.InvariantCulture))
+                            //if (user.Status == 0)
+                            //{
+                            //    string msg;
+                            //    if (_globalshared.Lang_G != "en")
+                            //    {
+                            //        msg = "الحساب غير نشط لم يتم تنشيطة بعد";
+                            //    }
+                            //    else
+                            //    {
+                            //        msg = "The account is inactive and has not been activated yet.";
+                            //    }
+                            //    return Ok(msg);
+                            //}
+                        }
+                        else
+                        {
+                            if (ExpireUserDate != "0")
+                            {
+                                if (DateTime.ParseExact(ExpireUserDate, "yyyy-MM-dd", CultureInfo.InvariantCulture) > DateTime.ParseExact(DateNow, "yyyy-MM-dd", CultureInfo.InvariantCulture))
+                                {
+                                    string msg;
+                                    if (_globalshared.Lang_G != "en")
+                                    {
+                                        msg = "صلاحية الحساب منتهية، الرجاء مراجعة مدير النظام";
+                                    }
+                                    else
+                                    {
+                                        msg = "the account is expaired, please connect with the admin of the system";
+                                    }
+                                    return Ok(msg);
+                                }
+                                else
+                                {
+                                    _UsersService.ClearExpireDate(user.UserId);
+                                }
+                            }
+                            if (user.Status == 0)
                             {
                                 string msg;
                                 if (_globalshared.Lang_G != "en")
                                 {
-                                    msg = "صلاحية الحساب منتهية، الرجاء مراجعة مدير النظام";
+                                    msg = "الحساب تم إيقافه، الرجاء مراجعة مدير النظام";
                                 }
                                 else
                                 {
-                                    msg = "the account is expaired, please connect with the admin of the system";
+                                    msg = "the account is stopped, please connect with the admin of the system";
                                 }
                                 return Ok(msg);
                             }
-                            else
-                            {
-                                _UsersService.ClearExpireDate(user.UserId);
-                            }
                         }
-                        if (user.Status == 0)
-                        {
-                            string msg;
-                            if (_globalshared.Lang_G != "en")
-                            {
-                                msg = "الحساب تم إيقافه، الرجاء مراجعة مدير النظام";
-                            }
-                            else
-                            {
-                                msg = "the account is stopped, please connect with the admin of the system";
-                            }
-                            return Ok(msg);
-                        }
+                        
+
                         if (IsOnline != false)
                         {
                             string msg;
@@ -947,24 +1011,22 @@ namespace TaamerProject.API.Controllers
             var qrCodeUrl = $"otpauth://totp/YourApp:{user.Email}?secret={key}&issuer=YourApp&digits=6";
             return Ok(new { key, qrCodeUrl });
         }
-        [HttpPost("verify-2fa")] //2
+        [HttpPost("Verify2FA")] //2
         public async Task<IActionResult> Verify2FA([FromBody] Verify2FARequest request)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var isValid = await _userManager.VerifyTwoFactorTokenAsync(
-                user, TokenOptions.DefaultAuthenticatorProvider, request.Code);
 
-            if (!isValid)
-                return BadRequest("Invalid code");
-
-            user.TwoFactorEnabled = true;
-            await _userManager.UpdateAsync(user);
-
-            return Ok("2FA enabled");
+            var secretKey = Base32Encoding.ToBytes(request.secretKeyBase32);
+            var totp = new Totp(secretKey);
+            var check= totp.VerifyTotp(request.Code, out _, new VerificationWindow(2, 2));
+            if(check)
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = "2FA enabled" });
+            else
+                return Ok(new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "Invalid code" });
         }
 
         public class Verify2FARequest
         {
+            public string secretKeyBase32 { get; set; }
             public string Code { get; set; }
         }
 

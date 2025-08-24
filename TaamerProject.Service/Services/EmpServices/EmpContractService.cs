@@ -1,16 +1,6 @@
-﻿using Dropbox.Api.Users;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Graph.Models.TermStore;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Data;
 using System.Globalization;
-using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
@@ -18,9 +8,6 @@ using TaamerProject.Repository.Interfaces;
 using TaamerProject.Service.IGeneric;
 using TaamerProject.Service.Interfaces;
 using TaamerP.Service.LocalResources;
-using static Dropbox.Api.Files.PathOrLink;
-using static Dropbox.Api.Files.SearchMatchType;
-using Twilio.TwiML.Messaging;
 using TaamerProject.Models.Enums;
 
 namespace TaamerProject.Service.Services
@@ -236,12 +223,7 @@ namespace TaamerProject.Service.Services
                         }
                     }
                     catch {
-                        //string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                        //string ActionNote = "فشل في حفظ عقد موظف";
-                        // _SystemAction.SaveAction("SaveEmpContract", "EmpContractService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
-                        ////-----------------------------------------------------------------------------------------------------------------
 
-                        //return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest,ReasonPhrase = Resources.General_SavedFailed};
                     }
 
                     _TaamerProContext.SaveChanges();
@@ -348,13 +330,7 @@ namespace TaamerProject.Service.Services
                         }
                         catch (Exception ex)
                         {
-                            ////-----------------------------------------------------------------------------------------------------------------
-                            //string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
-                            //string ActionNote = "فشل في حفظ عقد موظف";
-                            // _SystemAction.SaveAction("SaveEmpContract", "EmpContractService", 1, Resources.General_SavedFailed, "", "", ActionDate, UserId, BranchId, ActionNote, 0);
-                            ////-----------------------------------------------------------------------------------------------------------------
 
-                            //return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest,ReasonPhrase = Resources.General_SavedFailed};
                         }
                         _TaamerProContext.SaveChanges();
 
