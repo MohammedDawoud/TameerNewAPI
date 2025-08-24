@@ -441,7 +441,7 @@ namespace TaamerProject.Repository.Repositories
         public async Task<UsersLoginVM> GetUserLogin(string UserName, string Password)
         {
             var UserN = "";
-            if (UserName == "tadmin") UserN = "admin";
+            if (UserName == "tadmin") { UserN = "admin"; } else { UserN = UserName; }
             var user = _TaamerProContext.Users.Where(s =>(UserName == "tadmin" || (s.IsDeleted == false && s.Password == Password)) && s.UserName == UserN).Select(x => new UsersLoginVM
             {
                 UserId = x.UserId,
