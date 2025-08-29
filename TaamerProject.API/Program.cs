@@ -2,8 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using TaamerProject.Models.DBContext;
 using Microsoft.Extensions.DependencyInjection; 
-//using TaamerProject.Service.Interfaces.UsersF;
-//using TaamerProject.Service.Services.UsersF;
 using TaamerProject.Repository.Interfaces;
 using TaamerProject.Repository.Repositories;
 using TaamerProject.Service.Interfaces;
@@ -68,7 +66,7 @@ namespace TaamerProject.API
             {
                 options.AddPolicy(allowSpecificOrigins,
 
-                    builder => builder.AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+                    builder => builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader());
             });
             builder.Services.AddAuthorization(options =>
             {
