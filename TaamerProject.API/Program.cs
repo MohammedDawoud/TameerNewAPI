@@ -66,7 +66,10 @@ namespace TaamerProject.API
             {
                 options.AddPolicy(allowSpecificOrigins,
 
-                    builder => builder.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader());
+                    //builder => builder.WithOrigins("http://localhost:4200") // Angular dev server
+                    //.AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+                    builder => builder.AllowAnyOrigin()
+                .AllowAnyMethod().AllowAnyHeader());
             });
             builder.Services.AddAuthorization(options =>
             {
@@ -573,7 +576,7 @@ namespace TaamerProject.API
             //builder.Services.AddCors(Options => { Options.AddPolicy("CorsPolicy", Policy => { Policy.AllowAnyOrigin(); Policy.AllowAnyHeader(); Policy.AllowAnyMethod(); }); });
             // Configure the HTTP request pipeline.
 
-            app.UseCors("AllowOrigin");
+            app.UseCors("two_factor_auth_cors");
 
             if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
             {
