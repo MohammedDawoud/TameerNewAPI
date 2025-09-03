@@ -1,13 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
+﻿
 using System.Globalization;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
@@ -554,78 +549,7 @@ namespace TaamerProject.Service.Services
                 return false;
             }
         }
-        //public bool SendMail_CustomersharefileStamp(string ProjectNo, string Filename, int BranchId, string FileNumber, string NationalNumber, string CustomerName, string Link, string CustomerEmail, int UserId,int type,string url,string imgurl, bool IsBodyHtml = false)
-        //{
-        //    try
-        //    {
-        //        var Organization = _BranchesRepository.GetById(BranchId).OrganizationId;
-        //        var Org = _OrganizationsRepository.GetById(Organization);
-        //        var mail = new MailMessage();
-        //        //var loginInfo = new NetworkCredential(_EmailSettingRepository.GetEmailSetting(Organization).SenderEmail, _EmailSettingRepository.GetEmailSetting(Organization).Password);
-        //        var loginInfo = new NetworkCredential(Org.Email, Org.Password);
-        //        var SenderEmail = _EmailSettingRepository.GetEmailSetting(Organization).SenderEmail;
-        //        //var loginInfo = new NetworkCredential(SenderEmail, _EmailSettingRepository.GetEmailSetting(Organization).Password);
-
-        //        var EmailFrom1 = Org.Email;
-
-        //        if (_EmailSettingRepository.GetEmailSetting(Organization).DisplayName != null)
-        //        {
-        //            mail.From = new MailAddress(EmailFrom1, _EmailSettingRepository.GetEmailSetting(Organization).DisplayName);
-        //        }
-        //        else
-        //        {
-        //            mail.From = new MailAddress(EmailFrom1, "لديك اشعار من نظام تعمير السحابي");
-        //        }
-        //        var title = "";
-        //        var body = "";
-        //        var textbody = "";
-        //        if (type == 1)
-        //        {
-        //            title = " الاستاذ " + "/" + CustomerName + " دعوي لمشاهدة ملف بواسطة  " + Org.NameAr;
-        //             textbody= "<br />للوصول لرابط الملف, فضلا قم بالضغط علي الرابط المبين واختر رابط الخدمة الالكترونية<br />" + Link + "<br />" + " فضلا أدخل المعلومات التالية للتحقق " + "<br />" + " رقم الهوية " + " : " + NationalNumber + "<br />" + " رقم المشروع " + " : " + ProjectNo + "<br />";
-
-        //            body = PopulateBody(textbody, CustomerName, title, "مع تحيات قسم ادارة المشاريع", url, Org.NameAr);
-        //        }
-        //        else if (type == 2)
-        //        {
-        //            title = " الاستاذ " + "/" + CustomerName + "  الغاء دعوي لمشاهدة ملف بواسطة  " + Org.NameAr;
-        //            textbody = "تم الغاء دعوي المشاركة";
-        //            body = PopulateBody(textbody, CustomerName, title, "مع تحيات قسم ادارة المشاريع", url, Org.NameAr);
-        //        }
-
-
-        //          LinkedResource logo = new LinkedResource(imgurl);
-        //        logo.ContentId = "companylogo";
-        //        // done HTML formatting in the next line to display my bayanatech logo
-        //        AlternateView av1 = AlternateView.CreateAlternateViewFromString(body.Replace("{Header}", title), null, MediaTypeNames.Text.Html);
-        //        av1.LinkedResources.Add(logo);
-        //        mail.AlternateViews.Add(av1);
-        //        mail.To.Add(new MailAddress(CustomerEmail));
-
-
-        //        mail.Subject = title;
-
-        //        mail.Body = textbody;
-        //        //mail.IsBodyHtml = IsBodyHtml;
-        //        mail.IsBodyHtml = true;
-        //        //Dawoud Added
-        //        System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-        //        var smtpClient = new SmtpClient(_EmailSettingRepository.GetEmailSetting(BranchId).Host);
-        //        smtpClient.EnableSsl = true;
-        //        smtpClient.UseDefaultCredentials = false;
-        //        smtpClient.Port = 587;
-        //        smtpClient.Credentials = loginInfo;
-        //        smtpClient.Send(mail);
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return false;
-        //    }
-        //}
-
-
+      
         public GeneralMessage SendCustomerMail_Share(string ProjectNo, string Filename, int BranchId, string FileNumber, string NationalNumber, string CustomerName, string Link, string CustomerEmail, int UserId)
         {
             try
@@ -1067,65 +991,7 @@ namespace TaamerProject.Service.Services
         }
 
 
-        //public bool SendMail_CustomerStamp(int BranchId, int UserId, int ReceivedUser, string Subject, string textBody, string Url, string ImgUrl, int type, string customername, bool IsBodyHtml = false)
-        //{
-        //    try
-        //    {
-        //        var branch = _BranchesRepository.GetById(BranchId).OrganizationId;
-        //        var org = _OrganizationsRepository.GetById(branch);
-
-        //        var mailuser = _usersRepository.GetById(ReceivedUser).Email;
-        //        string formattedDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-
-        //        var mail = new MailMessage();
-        //        var email = _EmailSettingRepository.GetEmailSetting(branch).SenderEmail;
-        //        var loginInfo = new NetworkCredential(_EmailSettingRepository.GetEmailSetting(branch).SenderEmail, _EmailSettingRepository.GetEmailSetting(branch).Password);
-        //        // mail.From = new MailAddress(_EmailSettingRepository.GetEmailSetting(branch).SenderEmail);
-        //        if (_EmailSettingRepository.GetEmailSetting(branch).DisplayName != null)
-        //        {
-        //            mail.From = new MailAddress(email, _EmailSettingRepository.GetEmailSetting(branch).DisplayName);
-        //        }
-        //        else
-        //        {
-        //            mail.From = new MailAddress(email, "لديك اشعار من نظام تعمير السحابي");
-        //        }
-        //        var title = "";
-        //        var body = "";
-        //        if (type == 1)
-        //        {
-        //            title = " ارسل اليك العميل "+ customername + " تعليق ";
-        //            body = PopulateBody(textBody, _usersRepository.GetUserById(ReceivedUser, "rtl").FullName, title, "مع تحيات قسم ادارة المشاريع", Url, org.NameAr);
-        //        }
-
-
-        //        LinkedResource logo = new LinkedResource(ImgUrl);
-        //        logo.ContentId = "companylogo";
-        //        // done HTML formatting in the next line to display my bayanatech logo
-        //        AlternateView av1 = AlternateView.CreateAlternateViewFromString(body.Replace("{Header}", title), null, MediaTypeNames.Text.Html);
-        //        av1.LinkedResources.Add(logo);
-        //        mail.AlternateViews.Add(av1);
-        //        mail.To.Add(new MailAddress(mailuser));
-
-
-        //        mail.Subject = Subject;
-
-        //        mail.Body = textBody;
-        //        mail.IsBodyHtml = IsBodyHtml;
-        //        System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-        //        var smtpClient = new SmtpClient(_EmailSettingRepository.GetEmailSetting(branch).Host);
-        //        smtpClient.EnableSsl = true;
-        //        smtpClient.UseDefaultCredentials = false;
-        //        smtpClient.Port = 587;
-        //        smtpClient.Send(mail);
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return false;
-        //    }
-        //}
-
+       
         public string PopulateBody(string bodytxt, string fullname, string header, string footer, string url, string orgname)
         {
             string body = string.Empty;

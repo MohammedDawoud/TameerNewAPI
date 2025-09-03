@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿
 using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models.Common;
 using TaamerProject.Models;
 using TaamerProject.Models.DBContext;
-using TaamerProject.Repository.Interfaces;
-using TaamerProject.Service.IGeneric;
 using System.Net;
 using TaamerProject.Service.Interfaces;
 using TaamerP.Service.LocalResources;
 using Dropbox.Api;
-using Dropbox.Api.Files;
-using static Dropbox.Api.Files.SearchMatchType;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Util.Store;
@@ -23,9 +15,7 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
-using System.Web.ApplicationServices;
 using Google.Apis.Download;
-using System.IO;
 
 namespace TaamerProject.Service.Services
 {

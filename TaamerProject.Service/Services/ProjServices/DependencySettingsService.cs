@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿
 using System.Globalization;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using TaamerProject.Models;
 using TaamerProject.Models.Common;
 using TaamerProject.Models.DBContext;
@@ -502,22 +497,6 @@ namespace TaamerProject.Service.Services
                 }
                 _TaamerProContext.DependencySettings.AddRange(copiesSettings);
 
-
-
-                //var resultNum = _ProSettingDetailsRepository.GenerateNextProSettingNumber();
-                //var proSettingDetails = new ProSettingDetails();
-
-                //var proSettingDetailsUpdated = _ProSettingDetailsRepository.GetMatching(s=>s.IsDeleted==false && s.ProjectSubtypeId == ProjSubTypeToId);
-
-
-                //proSettingDetails.AddDate = DateTime.Now;
-                //proSettingDetails.AddUser = UserId;
-                //proSettingDetails.IsDeleted = false;
-                //proSettingDetails.ProSettingNo = resultNum.ToString();
-                //proSettingDetails.ProSettingNote = "سير تم نسخه مسبقا";
-                //proSettingDetails.ProjectTypeId = proSettingDetailsUpdated.FirstOrDefault().ProjectTypeId;
-                //proSettingDetails.ProjectSubtypeId = proSettingDetailsUpdated.FirstOrDefault().ProjectSubtypeId;
-                //_ProSettingDetailsRepository.Add(proSettingDetails);
 
 
 
