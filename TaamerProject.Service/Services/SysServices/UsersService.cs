@@ -854,7 +854,7 @@ namespace TaamerProject.Service.Services
                    _SystemAction.SaveAction("DeleteUsers2", "UsersService", 3, Resources.userHave + userTasks + Resources.userTasks, "", "", ActionDate, Users, BranchId, ActionNote, 0);
                     //-----------------------------------------------------------------------------------------------------------------
 
-                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.userHave + userTasks + Resources.userTasks };
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "userHave", ReturnedStrExtra = userTasks.ToString(), ReturnedStrExtra2 = "userTasks" };
                 }
                 var userProject = _TaamerProContext.Project.Where(s => s.IsDeleted == false && s.MangerId == Users && s.Status != 1).Count();
                 if (userProject > 0)
@@ -865,7 +865,7 @@ namespace TaamerProject.Service.Services
                    _SystemAction.SaveAction("DeleteUsers2", "UsersService", 3, Resources.userHave + userProject + Resources.UserProjects, "", "", ActionDate, Users, BranchId, ActionNote, 0);
                     //-----------------------------------------------------------------------------------------------------------------
 
-                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.userHave + userProject + Resources.UserProjects };
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "userHave", ReturnedStrExtra = userProject.ToString(), ReturnedStrExtra2 = "UserProjects" };
                 }
                 var userWorkOrder = _TaamerProContext.WorkOrders.Where(s => s.IsDeleted == false && (s.ExecutiveEng == Users || s.ResponsibleEng == Users) && (s.WOStatus == 1 || s.WOStatus == 2)).Count();
                 if (userWorkOrder > 0)
@@ -876,7 +876,7 @@ namespace TaamerProject.Service.Services
                    _SystemAction.SaveAction("DeleteUsers2", "UsersService", 3, Resources.userHave + userWorkOrder + Resources.userWorkOrder, "", "", ActionDate, Users, BranchId, ActionNote, 0);
                     //-----------------------------------------------------------------------------------------------------------------
 
-                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.userHave + userWorkOrder + Resources.userWorkOrder };
+                    return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = "userHave", ReturnedStrExtra = userWorkOrder.ToString(), ReturnedStrExtra2 = "userWorkOrder" };
                 }
                 var emp = _TaamerProContext.Employees.Where(x => x.IsDeleted == false && x.UserId == Users).FirstOrDefault();
                 if (emp != null)

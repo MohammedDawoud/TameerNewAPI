@@ -229,6 +229,8 @@ namespace TaamerProject.Repository.Repositories
                  MessageUpdateEn=x.MessageUpdateEn??"",
                  SupportMessageAr=x.SupportMessageAr??"",
                  SupportMessageEn=x.SupportMessageEn??"",
+                RootFolder = x.RootFolder ?? null,
+                RetentionMonths = x.RetentionMonths ?? null,
 
             })
             .FirstOrDefault();

@@ -109,6 +109,21 @@ namespace TaamerProject.API.Controllers
             }
             return Ok(result);
         }
+        [HttpPost("SaveRetentionBackup")]
+        public ActionResult SaveRetentionBackup(Organizations organizations)
+        {
+            HttpContext httpContext = HttpContext; _globalshared = new GlobalShared(httpContext);
+            var result = _organizationsservice.SaveRetentionBackup(organizations, _globalshared.UserId_G, _globalshared.BranchId_G, organizations.VAT ?? 0, organizations.VATSetting ?? 0);
+            if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.OK)
+            {
+                result.ReasonPhrase = "Saved Successfully";
+            }
+            else if (_globalshared.Lang_G == "ltr" && result.StatusCode == HttpStatusCode.BadRequest)
+            {
+                result.ReasonPhrase = "Saved Falied";
+            }
+            return Ok(result);
+        }
         //Edit by Mohamed Nasser
         [HttpPost("SaveOrganizations")]
         public ActionResult SaveOrganizations(IFormFile? UploadedFile, [FromForm] Organizations organizations)

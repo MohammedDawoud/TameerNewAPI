@@ -109,5 +109,7 @@ namespace TaamerProject.Repository.Interfaces
         rptProjectStatus GetTaskData(int projectId, string con);
         ProjectLocationVM GetProjectLocation(int ProjectId);
         rptProjectStatus_phases GetTaskData_phases(int projectId, string con);
+        Task<List<ProjectVMProc>> getProjectsBackup_Proc(string? projectNumbers, string Lang, string Con, int BranchId);
+
     }
 }

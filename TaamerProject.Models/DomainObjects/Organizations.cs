@@ -75,6 +75,8 @@ namespace TaamerProject.Models
         public string? SupportMessageEn { get; set; }
         public string? TameerAPIURL { get; set; }
         public int? ModeType { get; set; }
+        public Int16? RetentionMonths { get; set; }
+        public string? RootFolder { get; set; }
 
     }
 }

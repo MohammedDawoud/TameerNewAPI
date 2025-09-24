@@ -57,4 +57,11 @@ namespace TaamerProject.Models
         public decimal? alltaskspercent { get; set; }
         public decimal? phasePercent { get; set; }
     }
+    public class ProjectVMProc
+    {
+        public int? ProjectId { get; set; }
+        public string? ProjectNo { get; set; }
+        public string? CustomerName { get; set; }
+        public int? Status { get; set; }
+    }
 }

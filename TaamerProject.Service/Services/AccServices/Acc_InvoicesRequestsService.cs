@@ -53,15 +53,15 @@ namespace TaamerProject.Service.Services
             {
                 Acc_InvoicesRequests InvoicesRequest = new Acc_InvoicesRequests();
                 InvoicesRequest.InvoiceReqId = InvoiceReqId;
-                if(InvoiceId!=0){InvoicesRequest.InvoiceId = InvoiceId;}
+                if (InvoiceId != 0) { InvoicesRequest.InvoiceId = InvoiceId; }
                 if (Type != 0) { InvoicesRequest.Type = Type; }
-                InvoicesRequest.InvoiceHash = InvoiceHash;
-                InvoicesRequest.SingedXML = SingedXML;
-                InvoicesRequest.EncodedInvoice = EncodedInvoice;
-                InvoicesRequest.ZatcaUUID = ZatcaUUID;
-                if (QRCode != null){InvoicesRequest.QRCode = QRCode;}
-                InvoicesRequest.PIH = PIH;
-                InvoicesRequest.SingedXMLFileName = SingedXMLFileName;
+                if (InvoiceHash != null) { InvoicesRequest.InvoiceHash = InvoiceHash; }
+                if (SingedXML != null) { InvoicesRequest.SingedXML = SingedXML; }
+                if (EncodedInvoice != null) { InvoicesRequest.EncodedInvoice = EncodedInvoice; }
+                if (ZatcaUUID != null) { InvoicesRequest.ZatcaUUID = ZatcaUUID; }
+                if (QRCode != null) { InvoicesRequest.QRCode = QRCode; }
+                if (PIH != null) { InvoicesRequest.PIH = PIH; }
+                if (SingedXMLFileName != null) { InvoicesRequest.SingedXMLFileName = SingedXMLFileName; }
                 if (InvoiceNoRequest != 0) { InvoicesRequest.InvoiceNoRequest = InvoiceNoRequest; }
                 InvoicesRequest.IsSent = IsSent;
                 InvoicesRequest.StatusCode = StatusCode;

@@ -4360,6 +4360,57 @@ y.Type == 3  && y.Remaining < 0 && y.Status != 4 && y.UserId == UserId && y.Bran
             return ProjectLocationVM;
 
         }
+        public async Task<List<ProjectVMProc>> getProjectsBackup_Proc(string? projectNumbers, string Lang, string Con, int BranchId)
+        {
+            try
+            {
+                List<ProjectVMProc> lmd = new List<ProjectVMProc>();
+                using (SqlConnection con = new SqlConnection(Con))
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.CommandText = "GetProjectsBackup_Proc";
+                        command.CommandTimeout = 180;
+                        command.Connection = con;
+
+
+                        if (projectNumbers == "" || projectNumbers == null || projectNumbers == "null" || projectNumbers == "0")
+                        {
+                            command.Parameters.Add(new SqlParameter("@projectNumbers_SearchStr", DBNull.Value));
+                        }
+                        else
+                        {
+                            command.Parameters.Add(new SqlParameter("@projectNumbers_SearchStr", projectNumbers));
+                        }
+
+
+                        con.Open();
+
+                        SqlDataAdapter a = new SqlDataAdapter(command);
+                        DataSet ds = new DataSet();
+                        a.Fill(ds);
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            lmd.Add(new ProjectVMProc
+                            {
+                                ProjectId = Convert.ToInt32((dr["ProjectId"]).ToString()),
+                                ProjectNo = (dr["ProjectNo"]).ToString(),
+                                CustomerName = (dr["CustomerName"]).ToString(),
+                                Status = Convert.ToInt32((dr["Status"]).ToString()),
+                            });
+                        }
+                    }
+                }
+                return lmd;
+            }
+            catch (Exception ex)
+            {
+                List<ProjectVMProc> lmd = new List<ProjectVMProc>();
+                return lmd;
+            }
+
+        }
 
 
     }

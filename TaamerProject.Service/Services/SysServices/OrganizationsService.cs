@@ -297,6 +297,8 @@ namespace TaamerProject.Service.Services
                 {
                     BranchOrganization.SupportMessageAr = organizations.SupportMessageAr;
                     BranchOrganization.SupportMessageEn = organizations.SupportMessageEn;
+                    BranchOrganization.RetentionMonths = organizations.RetentionMonths;
+                    BranchOrganization.RootFolder = organizations.RootFolder;
 
                     _TaamerProContext.SaveChanges();
                     //-----------------------------------------------------------------------------------------------------------------
@@ -427,6 +429,32 @@ namespace TaamerProject.Service.Services
                 return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
             }
         }
+        public GeneralMessage SaveRetentionBackup(Organizations organizations, int UserId, int BranchId, decimal VAT, int VATset)
+        {
+            try
+            {
+                var BranchOrganization = _OrganizationsRepository.GetById(organizations.OrganizationId);
+                BranchOrganization.RetentionMonths = BranchOrganization.RetentionMonths;
+                BranchOrganization.RootFolder = BranchOrganization.RootFolder;
+                _TaamerProContext.SaveChanges();
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = "تم الحفظ ";
+                _SystemAction.SaveAction("SaveRetentionBackup", "OrganizationsService", 1, "تم حفظ بيانات اسم فولدر الباك اب وعدد الشهور", "", "", ActionDate, UserId, BranchId, ActionNote, 1);
+                //-----------------------------------------------------------------------------------------------------------------
+                return new GeneralMessage { StatusCode = HttpStatusCode.OK, ReasonPhrase = Resources.General_SavedSuccessfully };
+            }
+            catch (Exception ex)
+            {
+                //-----------------------------------------------------------------------------------------------------------------
+                string ActionDate = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.CreateSpecificCulture("en"));
+                string ActionNote = Resources.General_SavedFailed;
+                _SystemAction.SaveAction("SaveRetentionBackup", "OrganizationsService", 1, "فشل في حفظ بيانات اسم فولدر الباك اب وعدد الشهور", "", "", ActionDate, UserId, BranchId, ActionNote, 0);
+                //-----------------------------------------------------------------------------------------------------------------
+                return new GeneralMessage { StatusCode = HttpStatusCode.BadRequest, ReasonPhrase = Resources.General_SavedFailed };
+            }
+        }
+
         public GeneralMessage SaveCSIDOrganizations(int OrganizationId, string CSR, string PrivateKey, string CSID, string SecretKey, int UserId, int BranchId)
         {
             try

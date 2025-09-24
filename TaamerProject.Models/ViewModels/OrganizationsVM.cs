@@ -76,6 +76,8 @@ namespace TaamerProject.Models
         public bool? SendCustomerMail { get; set; }
         public bool? SendCustomerSMS { get; set; }
         public int? ModeType { get; set; }
+        public Int16? RetentionMonths { get; set; }
+        public string? RootFolder { get; set; }
 
 
     }
